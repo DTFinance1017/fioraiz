@@ -243,7 +243,7 @@ export default function App() {
                 </div>
                 <button className="btn" onClick={() => navigate("/avaliacao")} style={{ ...c.ctaW, padding:"13px 28px", fontSize:13 }}>
                   Começar agora →
-                </a>
+                </button>
               </div>
             </div>
 
