@@ -70,6 +70,7 @@ const BENEFITS = [
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setTimeout(() => setLoaded(true), 100);
@@ -77,6 +78,11 @@ export default function App() {
     window.addEventListener("scroll", fn);
     return () => { window.removeEventListener("scroll", fn); };
   }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
 
   const c = {
     page: { fontFamily: "'Outfit',sans-serif", background: "#fff", color: "#0a0a0a", overflowX: "hidden" },
@@ -115,6 +121,8 @@ export default function App() {
           .test-grid{grid-template-columns:1fr!important;}
           .seals-grid{grid-template-columns:1fr 1fr!important;}
           .hero-video-wrap{height:360px!important;}
+          .hide-mob{display:none!important;}
+          .show-mob{display:flex!important;}
         }
       `}</style>
 
@@ -127,8 +135,41 @@ export default function App() {
               onMouseEnter={e=>e.target.style.color="#0a0a0a"} onMouseLeave={e=>e.target.style.color="#666"}>{l}</a>
           ))}
         </div>
-        <button className="btn" onClick={() => navigate("/avaliacao")} style={c.cta}>Avaliação gratuita</button>
+        <div style={{ display:"flex", gap:12, alignItems:"center" }}>
+          <button className="btn hide-mob" onClick={() => navigate("/avaliacao")} style={c.cta}>Avaliação gratuita</button>
+          {/* Hamburger mobile */}
+          <button onClick={() => setMenuOpen(o => !o)}
+            style={{ display:"none", background:"none", border:"none", cursor:"pointer", padding:8, flexDirection:"column", gap:5 }}
+            className="show-mob">
+            <span style={{ display:"block", width:22, height:2, background:"#0a0a0a", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#0a0a0a", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#0a0a0a", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
+          </button>
+        </div>
       </nav>
+
+      {/* Mobile drawer overlay */}
+      {menuOpen && (
+        <div style={{ position:"fixed", inset:0, zIndex:199, background:"rgba(0,0,0,0.3)", backdropFilter:"blur(4px)" }}
+          onClick={() => setMenuOpen(false)} />
+      )}
+      <div style={{
+        position:"fixed", top:64, right:0, bottom:0, zIndex:199,
+        width:"75vw", maxWidth:300, background:"#fff",
+        boxShadow:"-8px 0 40px rgba(0,0,0,0.12)",
+        transform: menuOpen?"translateX(0)":"translateX(100%)",
+        transition:"transform 0.3s cubic-bezier(0.4,0,0.2,1)",
+        padding:"32px 28px", display:"flex", flexDirection:"column", gap:8,
+      }}>
+        {[["#como-funciona","Como funciona"],["#tratamento","Tratamento"],["/comunidade","Comunidade"]].map(([h,l]) => (
+          <a key={h} href={h} onClick={() => setMenuOpen(false)}
+            style={{ fontSize:18, fontWeight:500, color:"#555", padding:"14px 0", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"block" }}>{l}</a>
+        ))}
+        <button className="btn" onClick={() => { setMenuOpen(false); navigate("/avaliacao"); }}
+          style={{ ...c.ctaLg, marginTop:24, textAlign:"center", width:"100%" }}>
+          Avaliação gratuita
+        </button>
+      </div>
 
       {/* HERO */}
       <section style={{
