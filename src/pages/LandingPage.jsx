@@ -190,7 +190,7 @@ export default function App() {
         <div style={{ position: "relative", opacity: loaded?1:0, transition: "opacity 0.9s ease 0.3s" }}>
           <Img src={IMGS.hero} alt="Homem verificando cabelo no espelho"
             gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
-            style={{ width: "100%", height: 580, borderRadius: 20, objectPosition: "center top",
+            style={{ width: "100%", height: 580, borderRadius: 20, objectPosition: "50% 12%",
               border: "none" }} />
           <div style={{
             position: "absolute", top: 20, left: 20,
@@ -243,7 +243,7 @@ export default function App() {
             <div style={{ background:"#0a0a0a", borderRadius:24, overflow:"hidden", position:"relative", minHeight:500, display:"flex", flexDirection:"column" }}>
               <Img src={IMGS.mirror2} alt="Tratamento capilar"
                 gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
-                style={{ width:"100%", height:280, flexShrink:0 }} />
+                style={{ width:"100%", height:280, flexShrink:0, objectPosition:"50% 15%" }} />
               <div style={{ padding:"32px 32px 36px", flex:1, display:"flex", flexDirection:"column", justifyContent:"space-between" }}>
                 <div>
                   <div style={{ ...c.tag, color:"rgba(255,255,255,0.35)", marginBottom:12 }}>Tratamento principal</div>
@@ -352,7 +352,7 @@ export default function App() {
             <div style={{ borderRadius:16, overflow:"hidden", marginBottom:20, height:200 }}>
               <Img src={IMGS.carlos} alt="Paciente Fio Raiz"
                 gradient="linear-gradient(135deg, #ddd, #ccc)"
-                style={{ width:"100%", height:"100%" }} />
+                style={{ width:"100%", height:"100%", objectPosition:"50% 15%" }} />
             </div>
 
             <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:16 }}>
