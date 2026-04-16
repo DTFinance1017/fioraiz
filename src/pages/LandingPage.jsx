@@ -188,10 +188,12 @@ export default function App() {
 
         {/* Right */}
         <div style={{ position: "relative", opacity: loaded?1:0, transition: "opacity 0.9s ease 0.3s" }}>
-          <Img src={IMGS.hero} alt="Homem verificando cabelo no espelho"
-            gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
-            style={{ width: "100%", height: 580, borderRadius: 20, objectPosition: "50% 12%",
-              border: "none" }} />
+          <video
+            src="/hero1.mp4"
+            autoPlay muted loop playsInline
+            style={{ width: "100%", height: 580, borderRadius: 20,
+              objectFit: "cover", objectPosition: "center top", display: "block" }}
+          />
           <div style={{
             position: "absolute", top: 20, left: 20,
             background: "#fff", borderRadius: 12, padding: "10px 16px",
