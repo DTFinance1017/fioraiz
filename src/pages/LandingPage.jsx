@@ -292,16 +292,6 @@ export default function App() {
                 ))}
               </div>
 
-              {/* Depoimento rápido */}
-              <div style={{ background:"#f8f8f6", borderRadius:16, padding:"20px 20px", border:"1px solid rgba(0,0,0,0.06)" }}>
-                <div style={{ display:"flex", gap:2, marginBottom:10 }}>
-                  {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize:12, color:"#f59e0b" }}>★</span>)}
-                </div>
-                <p style={{ fontSize:13, color:"#444", lineHeight:1.65, fontStyle:"italic", marginBottom:10 }}>
-                  "A queda parou no 3º mês. Deveria ter começado antes."
-                </p>
-                <div style={{ fontSize:11, color:"#aaa", fontWeight:600 }}>MARCOS A. · 36 anos · Belo Horizonte</div>
-              </div>
             </div>
           </div>
         </div>
@@ -394,10 +384,10 @@ export default function App() {
       <section style={{ padding:"32px 5%", background:"#fff", borderTop:"1px solid rgba(0,0,0,0.06)", borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
         <div style={{ maxWidth:1000, margin:"0 auto", display:"flex", justifyContent:"space-around", flexWrap:"wrap", gap:20 }}>
           {[
-            { icon:"🛡️", text:"Garantia de resultado" },
             { icon:"🚀", text:"Entrega rápida e discreta" },
-            { icon:"👨‍⚕️", text:"Planos com acompanhamento médico" },
-            { icon:"🔒", text:"Sem taxas escondidas" },
+            { icon:"👨‍⚕️", text:"Acompanhamento médico" },
+            { icon:"🔬", text:"Ativos com evidência científica" },
+            { icon:"🏥", text:"Farmácias certificadas pela ANVISA" },
           ].map((b,i) => (
             <div key={i} style={{ display:"flex", alignItems:"center", gap:10, fontSize:13, fontWeight:500, color:"#444" }}>
               <span style={{ fontSize:18 }}>{b.icon}</span>{b.text}
