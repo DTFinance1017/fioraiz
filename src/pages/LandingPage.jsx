@@ -47,9 +47,9 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { n: "01", title: "Responda o questionário", desc: "3 minutos. Sem sair de casa. Sem consulta presencial." },
-  { n: "02", title: "Médico avalia seu caso", desc: "Um especialista analisa seu perfil e prescreve o tratamento ideal." },
-  { n: "03", title: "Receba em casa", desc: "Fórmula manipulada, embalagem discreta, entrega em até 3 dias." },
+  { n: "01", title: "Responda o questionário", desc: "5 minutos. Do conforto da sua casa ou trabalho, direto do celular ou computador. Sem constrangimento, sem fila, sem espera." },
+  { n: "02", title: "Equipe médica avalia", desc: "Um profissional analisa seu perfil e prescreve o tratamento personalizado de acordo com sua situação e preferências." },
+  { n: "03", title: "Receba em casa", desc: "Embalagem discreta, produção e entrega rápida." },
 ];
 
 const TESTIMONIALS = [
@@ -120,7 +120,7 @@ export default function App() {
 
       {/* NAV */}
       <nav style={c.nav}>
-        <FioLogo color="#0a0a0a" size={20} />
+        <a href="/"><FioLogo color="#0a0a0a" size={20} /></a>
         <div className="hide-mob" style={{ display: "flex", gap: 32 }}>
           {[["#como-funciona","Como funciona"],["#tratamento","Tratamento"],["#depoimentos","Depoimentos"]].map(([h,l]) => (
             <a key={h} href={h} style={{ fontSize: 13, color: "#666", fontWeight: 500, transition: "color 0.2s" }}
@@ -151,18 +151,18 @@ export default function App() {
             opacity: loaded?1:0, transform: loaded?"translateY(0)":"translateY(24px)",
             transition: "all 0.7s ease 0.2s"
           }}>
-            Saúde capilar<br/>redefinida para<br/>
-            <span style={{ color: "#aaa" }}>a vida real.</span>
+            Mais de 50% dos homens sofrem com calvície.<br/>
+            <span style={{ color: "#aaa" }}>Não espere pelo pior.</span>
           </h1>
           <p style={{
             fontSize: 17, color: "#666", lineHeight: 1.75, maxWidth: 460, marginBottom: 36,
             opacity: loaded?1:0, transform: loaded?"translateY(0)":"translateY(20px)",
             transition: "all 0.7s ease 0.32s"
           }}>
-            Tratamento médico online — simples, direto e prescrito por especialistas. Sem sala de espera. Só o que funciona.
+            Temos o objetivo de te ajudar a se antecipar e sair da inércia. Tratamento personalizado, sem constrangimento, do conforto da sua casa.
           </p>
           <div style={{ display:"flex", gap:12, flexWrap:"wrap", marginBottom:40, opacity:loaded?1:0, transition:"opacity 0.7s ease 0.44s" }}>
-            <button className="btn" onClick={() => navigate("/avaliacao")} style={c.ctaLg}>Começar avaliação gratuita</button>
+            <button className="btn" onClick={() => navigate("/avaliacao")} style={c.ctaLg}>Começar agora</button>
             <a href="#como-funciona" style={{ ...c.ctaLg, background:"transparent", color:"#0a0a0a", border:"1.5px solid rgba(0,0,0,0.15)", padding:"16px 32px" }}>
               Como funciona
             </a>
