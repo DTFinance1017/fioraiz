@@ -243,8 +243,8 @@ export default function App() {
             <div style={{ background:"#0a0a0a", borderRadius:24, overflow:"hidden", position:"relative", minHeight:500, display:"flex", flexDirection:"column" }}>
               <Img src={IMGS.mirror2} alt="Tratamento capilar"
                 gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
-                style={{ width:"100%", height:280, flexShrink:0, objectPosition:"50% 15%" }} />
-              <div style={{ padding:"32px 32px 36px", flex:1, display:"flex", flexDirection:"column", justifyContent:"space-between" }}>
+                style={{ width:"100%", height:340, flexShrink:0, objectPosition:"50% 10%" }} />
+              <div style={{ padding:"20px 28px 28px", flex:1, display:"flex", flexDirection:"column", justifyContent:"space-between" }}>
                 <div>
                   <div style={{ ...c.tag, color:"rgba(255,255,255,0.35)", marginBottom:12 }}>Tratamento principal</div>
                   <h2 style={{ fontSize:28, fontWeight:800, color:"#fff", letterSpacing:"-0.02em", marginBottom:12 }}>Calvície masculina</h2>
