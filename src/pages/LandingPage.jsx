@@ -70,14 +70,12 @@ const BENEFITS = [
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [activeTest, setActiveTest] = useState(0);
 
   useEffect(() => {
     setTimeout(() => setLoaded(true), 100);
     const fn = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", fn);
-    const t = setInterval(() => setActiveTest(p => (p + 1) % TESTIMONIALS.length), 4500);
-    return () => { window.removeEventListener("scroll", fn); clearInterval(t); };
+    return () => { window.removeEventListener("scroll", fn); };
   }, []);
 
   const c = {
@@ -115,6 +113,7 @@ export default function App() {
           .hide-mob{display:none!important;}
           .hero-h{font-size:clamp(38px,10vw,56px)!important;}
           .test-grid{grid-template-columns:1fr!important;}
+          .seals-grid{grid-template-columns:1fr 1fr!important;}
         }
       `}</style>
 
@@ -122,7 +121,7 @@ export default function App() {
       <nav style={c.nav}>
         <a href="/"><FioLogo color="#0a0a0a" size={20} /></a>
         <div className="hide-mob" style={{ display: "flex", gap: 32 }}>
-          {[["#como-funciona","Como funciona"],["#tratamento","Tratamento"],["#depoimentos","Depoimentos"]].map(([h,l]) => (
+          {[["#como-funciona","Como funciona"],["#tratamento","Tratamento"]].map(([h,l]) => (
             <a key={h} href={h} style={{ fontSize: 13, color: "#666", fontWeight: 500, transition: "color 0.2s" }}
               onMouseEnter={e=>e.target.style.color="#0a0a0a"} onMouseLeave={e=>e.target.style.color="#666"}>{l}</a>
           ))}
@@ -191,7 +190,7 @@ export default function App() {
         <div style={{ position: "relative", opacity: loaded?1:0, transition: "opacity 0.9s ease 0.3s" }}>
           <Img src={IMGS.hero} alt="Homem verificando cabelo no espelho"
             gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
-            style={{ width: "100%", height: 580, borderRadius: 20, objectPosition: "center 20%",
+            style={{ width: "100%", height: 580, borderRadius: 20, objectPosition: "center top",
               border: "none" }} />
           <div style={{
             position: "absolute", top: 20, left: 20,
@@ -213,8 +212,8 @@ export default function App() {
       </section>
 
       {/* TRUST SEALS */}
-      <div style={{ background: "#0a0a0a", padding: "28px 5%" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 20 }}>
+      <div style={{ background: "#0a0a0a", padding: "28px 6%" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px 32px" }} className="seals-grid">
           {[
             { icon: "ANVISA",   label: "ANVISA",           sub: "Farmácias certificadas" },
             { icon: "RX",       label: "Prescrição Médica",sub: "Avaliação por profissional" },
@@ -382,59 +381,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section id="depoimentos" style={{ padding:"80px 5%", background:"#0a0a0a" }}>
-        <div style={{ maxWidth:1100, margin:"0 auto" }}>
-          <div style={{ textAlign:"center", marginBottom:52 }}>
-            <div style={{ ...c.tag, color:"rgba(255,255,255,0.3)", marginBottom:12 }}>Depoimentos</div>
-            <h2 style={{ fontSize:"clamp(28px,4vw,48px)", fontWeight:800, color:"#fff", letterSpacing:"-0.02em", lineHeight:1.1 }}>
-              Por que as pessoas<br/>confiam na Fio Raiz.
-            </h2>
-          </div>
-
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:16 }} className="test-grid two-col">
-            {TESTIMONIALS.map((t,i) => (
-              <div key={i}
-                onClick={() => setActiveTest(i)}
-                style={{
-                  background: activeTest===i ? "#fff" : "rgba(255,255,255,0.04)",
-                  borderRadius:20, overflow:"hidden",
-                  border:`1px solid ${activeTest===i ? "transparent" : "rgba(255,255,255,0.07)"}`,
-                  transition:"all 0.35s ease", cursor:"pointer"
-                }}>
-                {/* Photo header */}
-                <div style={{ display:"flex", alignItems:"center", gap:14, padding:"20px 24px 0" }}>
-                  <div style={{ width:52, height:52, borderRadius:"50%", overflow:"hidden", flexShrink:0 }}>
-                    <Img src={t.img} alt={t.name}
-                      gradient="linear-gradient(135deg, #ddd, #ccc)"
-                      style={{ width:"100%", height:"100%" }} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize:14, fontWeight:700, color: activeTest===i ? "#0a0a0a" : "#fff" }}>{t.name}, {t.age}</div>
-                    <div style={{ fontSize:11, color: activeTest===i ? "#888" : "rgba(255,255,255,0.35)" }}>{t.city}</div>
-                  </div>
-                  <div style={{ marginLeft:"auto", display:"flex", gap:2 }}>
-                    {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize:11, color:"#f59e0b" }}>★</span>)}
-                  </div>
-                </div>
-                <p style={{ fontSize:14, lineHeight:1.75, color: activeTest===i ? "#333" : "rgba(255,255,255,0.5)", fontStyle:"italic", padding:"16px 24px 24px" }}>
-                  "{t.text}"
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Dots */}
-          <div style={{ display:"flex", justifyContent:"center", gap:8, marginTop:28 }}>
-            {TESTIMONIALS.map((_,i) => (
-              <button key={i} onClick={()=>setActiveTest(i)}
-                style={{ width: activeTest===i ? 24 : 8, height:8, borderRadius:100, background: activeTest===i ? "#fff" : "rgba(255,255,255,0.2)", border:"none", cursor:"pointer", transition:"all 0.3s", padding:0 }}/>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* TRUST BADGES */}
+{/* TRUST BADGES */}
       <section style={{ padding:"32px 5%", background:"#fff", borderTop:"1px solid rgba(0,0,0,0.06)", borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
         <div style={{ maxWidth:1000, margin:"0 auto", display:"flex", justifyContent:"space-around", flexWrap:"wrap", gap:20 }}>
           {[
@@ -472,7 +420,7 @@ export default function App() {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:32, marginBottom:40 }}>
             <FioLogo color="#fff" size={20} />
             <div style={{ display:"flex", gap:28, flexWrap:"wrap" }}>
-              {[["#como-funciona","Como funciona"],["#tratamento","Tratamento"],["#depoimentos","Depoimentos"],["#quiz","Avaliação"]].map(([h,l]) => (
+              {[["#como-funciona","Como funciona"],["#tratamento","Tratamento"],["#quiz","Avaliação"]].map(([h,l]) => (
                 <a key={h} href={h} style={{ fontSize:12, color:"rgba(255,255,255,0.3)" }}>{l}</a>
               ))}
             </div>
