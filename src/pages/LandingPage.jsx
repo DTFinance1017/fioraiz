@@ -114,6 +114,7 @@ export default function App() {
           .hero-h{font-size:clamp(38px,10vw,56px)!important;}
           .test-grid{grid-template-columns:1fr!important;}
           .seals-grid{grid-template-columns:1fr 1fr!important;}
+          .hero-video-wrap{height:360px!important;}
         }
       `}</style>
 
@@ -187,12 +188,17 @@ export default function App() {
         </div>
 
         {/* Right */}
-        <div style={{ position: "relative", opacity: loaded?1:0, transition: "opacity 0.9s ease 0.3s" }}>
+        <div className="hero-video-wrap" style={{
+          position: "relative", height: 580, borderRadius: 20,
+          overflow: "hidden", opacity: loaded?1:0, transition: "opacity 0.9s ease 0.3s",
+          background: "#e8e8e4"
+        }}>
           <video
             src="/hero1.mp4"
             autoPlay muted loop playsInline
-            style={{ width: "100%", height: 580, borderRadius: 20,
-              objectFit: "cover", objectPosition: "center top", display: "block" }}
+            style={{ position: "absolute", top: 0, left: 0,
+              width: "100%", height: "100%",
+              objectFit: "cover", objectPosition: "center 15%" }}
           />
           <div style={{
             position: "absolute", top: 20, left: 20,
