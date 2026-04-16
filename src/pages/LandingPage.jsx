@@ -181,7 +181,7 @@ export default function App() {
         <div style={{ position:"relative", opacity:loaded?1:0, transition:"opacity 0.9s ease 0.3s" }}>
           <Img src={IMGS.hero} alt="Homem verificando cabelo no espelho"
             gradient="linear-gradient(135deg, #e8e8e4, #d4d4d0)"
-            style={{ width:"100%", height:580, borderRadius:24 }} />
+            style={{ width:"100%", height:580, borderRadius:24, objectPosition:"center 20%" }} />
 
           {/* floating card */}
           <div style={{
