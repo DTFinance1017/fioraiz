@@ -369,12 +369,7 @@ export default function App() {
               ))}
             </div>
 
-            <div style={{ background:"#0a0a0a", borderRadius:14, padding:"16px 20px" }}>
-              <div style={{ ...c.tag, color:"rgba(255,255,255,0.4)", marginBottom:4 }}>A partir de</div>
-              <div style={{ fontSize:32, fontWeight:800, color:"#fff", letterSpacing:"-0.02em" }}>
-                R$ 99<span style={{ fontSize:13, fontWeight:400, opacity:0.4 }}>/mês</span>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
