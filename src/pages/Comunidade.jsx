@@ -22,7 +22,7 @@ function FioLogo({ color = "#0a0a0a", size = 22 }) {
 const NAV_LINKS = [
   { href: "/",               label: "Tratamento capilar masculino" },
   { href: "/#como-funciona", label: "Como funciona" },
-  { href: "/#tratamento",    label: "Tratamento" },
+  { href: "/#tratamento",    label: "Tudo incluso" },
   { href: "/comunidade",     label: "Comunidade" },
 ];
 
