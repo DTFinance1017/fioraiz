@@ -135,26 +135,26 @@ export default function App() {
         minHeight: "100vh", display: "grid",
         gridTemplateColumns: "1fr 1fr",
         alignItems: "center", padding: "100px 5% 60px", gap: 60,
-        background: "#0d0d0d"
+        background: "linear-gradient(160deg, #f7f7f5 0%, #fff 60%)"
       }} className="two-col">
 
         {/* Left */}
         <div style={{ opacity: loaded?1:0, transform: loaded?"translateY(0)":"translateY(20px)", transition: "all 0.7s ease 0.1s" }}>
           <div style={{ marginBottom: 24 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase",
-              color: "#4ade80", background: "rgba(74,222,128,0.1)", padding: "6px 16px", borderRadius: 100 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#888",
+              background: "#f0f0ee", padding: "6px 16px", borderRadius: 100 }}>
               Tratamento Capilar Masculino
             </span>
           </div>
           <h1 className="hero-h" style={{
             fontSize: "clamp(36px,4.5vw,64px)", fontWeight: 800, lineHeight: 1.08,
-            letterSpacing: "-0.03em", marginBottom: 20, color: "#fff"
+            letterSpacing: "-0.03em", marginBottom: 20, color: "#0a0a0a"
           }}>
             Calvície masculina<br/>
-            <span style={{ color: "#4ade80" }}>tem solução comprovada</span><br/>
+            <span style={{ color: "#aaa" }}>tem solução comprovada</span><br/>
             pela ciência.
           </h1>
-          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.6)", lineHeight: 1.8, maxWidth: 480, marginBottom: 36 }}>
+          <p style={{ fontSize: 16, color: "#666", lineHeight: 1.8, maxWidth: 480, marginBottom: 36 }}>
             Finasterida + Minoxidil — os ativos com maior evidência científica para parar a queda e estimular o crescimento. Tratamento personalizado com prescrição médica.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 40 }}>
@@ -165,23 +165,22 @@ export default function App() {
               "Acompanhamento durante todo o tratamento",
             ].map((b, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(74,222,128,0.15)",
-                  border: "1.5px solid #4ade80", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <span style={{ color: "#4ade80", fontSize: 10, fontWeight: 800 }}>✓</span>
+                <div style={{ width: 20, height: 20, borderRadius: "50%", background: "#0a0a0a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <span style={{ color: "#fff", fontSize: 9, fontWeight: 700 }}>✓</span>
                 </div>
-                <span style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>{b}</span>
+                <span style={{ fontSize: 14, color: "#333", fontWeight: 500 }}>{b}</span>
               </div>
             ))}
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <button className="btn" onClick={() => navigate("/avaliacao")}
-              style={{ background: "#4ade80", color: "#0a0a0a", padding: "17px 36px", borderRadius: 100,
+              style={{ background: "#0a0a0a", color: "#fff", padding: "17px 36px", borderRadius: 100,
                 fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer", transition: "all 0.2s" }}>
               Iniciar avaliação online agora
             </button>
             <a href="#tratamento"
-              style={{ background: "transparent", color: "#fff", padding: "16px 32px", borderRadius: 100,
-                fontSize: 14, fontWeight: 600, border: "1.5px solid rgba(255,255,255,0.2)",
+              style={{ background: "transparent", color: "#0a0a0a", padding: "16px 32px", borderRadius: 100,
+                fontSize: 14, fontWeight: 600, border: "1.5px solid rgba(0,0,0,0.15)",
                 cursor: "pointer", transition: "all 0.2s", display: "inline-block" }}>
               Conhecer os tratamentos
             </a>
@@ -193,29 +192,28 @@ export default function App() {
           <Img src={IMGS.hero} alt="Homem verificando cabelo no espelho"
             gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
             style={{ width: "100%", height: 580, borderRadius: 20, objectPosition: "center 20%",
-              border: "1px solid rgba(255,255,255,0.07)" }} />
+              border: "none" }} />
           <div style={{
             position: "absolute", top: 20, left: 20,
-            background: "rgba(13,13,13,0.88)", backdropFilter: "blur(12px)",
-            borderRadius: 12, padding: "10px 16px", border: "1px solid rgba(255,255,255,0.1)"
+            background: "#fff", borderRadius: 12, padding: "10px 16px",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.12)"
           }}>
-            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 2 }}>Tratamento</div>
-            <div style={{ fontSize: 13, color: "#fff", fontWeight: 700 }}>Finasterida + Minoxidil</div>
+            <div style={{ fontSize: 10, color: "#aaa", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 2 }}>Tratamento</div>
+            <div style={{ fontSize: 13, color: "#0a0a0a", fontWeight: 700 }}>Finasterida + Minoxidil</div>
           </div>
           <div style={{
             position: "absolute", bottom: 20, right: 20,
-            background: "rgba(74,222,128,0.12)", backdropFilter: "blur(12px)",
-            borderRadius: 12, padding: "10px 16px", border: "1px solid rgba(74,222,128,0.25)",
+            background: "#0a0a0a", borderRadius: 100, padding: "10px 18px", border: "none",
             display: "flex", alignItems: "center", gap: 8
           }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#4ade80", flexShrink: 0 }}/>
-            <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 600 }}>Entrega discreta garantida</span>
+            <span style={{ fontSize: 12, color: "#fff", fontWeight: 600 }}>Entrega discreta garantida</span>
           </div>
         </div>
       </section>
 
       {/* TRUST SEALS */}
-      <div style={{ background: "#111", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "24px 5%" }}>
+      <div style={{ background: "#0a0a0a", padding: "28px 5%" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 20 }}>
           {[
             { icon: "ANVISA",   label: "ANVISA",           sub: "Farmácias certificadas" },
@@ -224,12 +222,12 @@ export default function App() {
             { icon: "CHAT",     label: "Suporte Direto",   sub: "Acompanhamento contínuo" },
           ].map((s,i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(74,222,128,0.1)",
-                border: "1px solid rgba(74,222,128,0.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <span style={{ fontSize: 9, fontWeight: 800, color: "#4ade80", letterSpacing: "0.04em" }}>{s.icon}</span>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <span style={{ fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.04em" }}>{s.icon}</span>
               </div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{s.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", letterSpacing: "-0.01em" }}>{s.label}</div>
                 <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 1 }}>{s.sub}</div>
               </div>
             </div>
