@@ -123,7 +123,7 @@ export default function Comunidade() {
           <button
             className="hide-desk"
             onClick={() => setMenuOpen(o => !o)}
-            style={{ background: "none", border: "none", cursor: "pointer", padding: 8, display: "flex", flexDirection: "column", gap: 5 }}>
+            style={{ background: "none", border: "none", cursor: "pointer", padding: 8, flexDirection: "column", gap: 5 }}>
             <span style={{ display: "block", width: 22, height: 2, background: "#0a0a0a", borderRadius: 2, transition: "all 0.25s", transform: menuOpen ? "rotate(45deg) translate(5px,5px)" : "none" }} />
             <span style={{ display: "block", width: 22, height: 2, background: "#0a0a0a", borderRadius: 2, transition: "all 0.25s", opacity: menuOpen ? 0 : 1 }} />
             <span style={{ display: "block", width: 22, height: 2, background: "#0a0a0a", borderRadius: 2, transition: "all 0.25s", transform: menuOpen ? "rotate(-45deg) translate(5px,-5px)" : "none" }} />
