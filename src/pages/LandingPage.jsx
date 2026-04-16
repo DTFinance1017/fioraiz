@@ -135,89 +135,103 @@ export default function App() {
         minHeight: "100vh", display: "grid",
         gridTemplateColumns: "1fr 1fr",
         alignItems: "center", padding: "100px 5% 60px", gap: 60,
-        background: "linear-gradient(160deg, #f7f7f5 0%, #fff 60%)"
+        background: "#0d0d0d"
       }} className="two-col">
 
         {/* Left */}
-        <div>
-          <div style={{ opacity: loaded?1:0, transform: loaded?"translateY(0)":"translateY(16px)", transition: "all 0.6s ease 0.1s", marginBottom: 20 }}>
-            <span style={{ ...c.tag, background: "#f0f0ee", padding: "6px 16px", borderRadius: 100 }}>
-              Tratamento capilar masculino
+        <div style={{ opacity: loaded?1:0, transform: loaded?"translateY(0)":"translateY(20px)", transition: "all 0.7s ease 0.1s" }}>
+          <div style={{ marginBottom: 24 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase",
+              color: "#4ade80", background: "rgba(74,222,128,0.1)", padding: "6px 16px", borderRadius: 100 }}>
+              Tratamento Capilar Masculino
             </span>
           </div>
           <h1 className="hero-h" style={{
-            fontSize: "clamp(42px,5.5vw,76px)", fontWeight: 800, lineHeight: 1.05,
-            letterSpacing: "-0.03em", marginBottom: 24,
-            opacity: loaded?1:0, transform: loaded?"translateY(0)":"translateY(24px)",
-            transition: "all 0.7s ease 0.2s"
+            fontSize: "clamp(36px,4.5vw,64px)", fontWeight: 800, lineHeight: 1.08,
+            letterSpacing: "-0.03em", marginBottom: 20, color: "#fff"
           }}>
-            Mais de 50% dos homens sofrem com calvície.<br/>
-            <span style={{ color: "#aaa" }}>Não espere pelo pior.</span>
+            Calvície masculina<br/>
+            <span style={{ color: "#4ade80" }}>tem solução comprovada</span><br/>
+            pela ciência.
           </h1>
-          <p style={{
-            fontSize: 17, color: "#666", lineHeight: 1.75, maxWidth: 460, marginBottom: 36,
-            opacity: loaded?1:0, transform: loaded?"translateY(0)":"translateY(20px)",
-            transition: "all 0.7s ease 0.32s"
-          }}>
-            Temos o objetivo de te ajudar a se antecipar e sair da inércia. Tratamento personalizado, sem constrangimento, do conforto da sua casa.
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.6)", lineHeight: 1.8, maxWidth: 480, marginBottom: 36 }}>
+            Finasterida + Minoxidil — os ativos com maior evidência científica para parar a queda e estimular o crescimento. Tratamento personalizado com prescrição médica.
           </p>
-          <div style={{ display:"flex", gap:12, flexWrap:"wrap", marginBottom:40, opacity:loaded?1:0, transition:"opacity 0.7s ease 0.44s" }}>
-            <button className="btn" onClick={() => navigate("/avaliacao")} style={c.ctaLg}>Começar agora</button>
-            <a href="#como-funciona" style={{ ...c.ctaLg, background:"transparent", color:"#0a0a0a", border:"1.5px solid rgba(0,0,0,0.15)", padding:"16px 32px" }}>
-              Como funciona
-            </a>
-          </div>
-          {/* pills */}
-          <div style={{ display:"flex", gap:8, flexWrap:"wrap", opacity:loaded?1:0, transition:"opacity 0.7s ease 0.56s" }}>
-            {FEATURES.map((f,i) => (
-              <div key={i} style={{ display:"flex", alignItems:"center", gap:6, background:"#fff", border:"1px solid rgba(0,0,0,0.08)", padding:"7px 14px", borderRadius:100, fontSize:12, color:"#555", fontWeight:500 }}>
-                <span>{f.icon}</span>{f.text}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 40 }}>
+            {[
+              "Avaliação médica online discreta",
+              "Fórmulas manipuladas sob prescrição",
+              "Entrega rápida com embalagem sem identificação",
+              "Acompanhamento durante todo o tratamento",
+            ].map((b, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(74,222,128,0.15)",
+                  border: "1.5px solid #4ade80", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <span style={{ color: "#4ade80", fontSize: 10, fontWeight: 800 }}>✓</span>
+                </div>
+                <span style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>{b}</span>
               </div>
             ))}
           </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <button className="btn" onClick={() => navigate("/avaliacao")}
+              style={{ background: "#4ade80", color: "#0a0a0a", padding: "17px 36px", borderRadius: 100,
+                fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer", transition: "all 0.2s" }}>
+              Iniciar avaliação online agora
+            </button>
+            <a href="#tratamento"
+              style={{ background: "transparent", color: "#fff", padding: "16px 32px", borderRadius: 100,
+                fontSize: 14, fontWeight: 600, border: "1.5px solid rgba(255,255,255,0.2)",
+                cursor: "pointer", transition: "all 0.2s", display: "inline-block" }}>
+              Conhecer os tratamentos
+            </a>
+          </div>
         </div>
 
-        {/* Right — hero image */}
-        <div style={{ position:"relative", opacity:loaded?1:0, transition:"opacity 0.9s ease 0.3s" }}>
+        {/* Right */}
+        <div style={{ position: "relative", opacity: loaded?1:0, transition: "opacity 0.9s ease 0.3s" }}>
           <Img src={IMGS.hero} alt="Homem verificando cabelo no espelho"
-            gradient="linear-gradient(135deg, #e8e8e4, #d4d4d0)"
-            style={{ width:"100%", height:580, borderRadius:24, objectPosition:"center 20%" }} />
-
-          {/* floating card */}
+            gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
+            style={{ width: "100%", height: 580, borderRadius: 20, objectPosition: "center 20%",
+              border: "1px solid rgba(255,255,255,0.07)" }} />
           <div style={{
-            position:"absolute", bottom:28, left:-20,
-            background:"#fff", borderRadius:16, padding:"16px 20px",
-            boxShadow:"0 8px 40px rgba(0,0,0,0.12)", minWidth:200
+            position: "absolute", top: 20, left: 20,
+            background: "rgba(13,13,13,0.88)", backdropFilter: "blur(12px)",
+            borderRadius: 12, padding: "10px 16px", border: "1px solid rgba(255,255,255,0.1)"
           }}>
-            <div style={{ fontSize:11, color:"#aaa", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:4 }}>Eficácia comprovada</div>
-            <div style={{ fontFamily:"'Outfit',sans-serif", fontSize:32, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1 }}>9/10</div>
-            <div style={{ fontSize:12, color:"#888", marginTop:3 }}>homens travam a queda</div>
+            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 2 }}>Tratamento</div>
+            <div style={{ fontSize: 13, color: "#fff", fontWeight: 700 }}>Finasterida + Minoxidil</div>
           </div>
-
-          {/* pill top */}
           <div style={{
-            position:"absolute", top:24, right:-12,
-            background:"#0a0a0a", borderRadius:100, padding:"10px 18px",
-            display:"flex", alignItems:"center", gap:8
+            position: "absolute", bottom: 20, right: 20,
+            background: "rgba(74,222,128,0.12)", backdropFilter: "blur(12px)",
+            borderRadius: 12, padding: "10px 16px", border: "1px solid rgba(74,222,128,0.25)",
+            display: "flex", alignItems: "center", gap: 8
           }}>
-            <div style={{ width:8, height:8, borderRadius:"50%", background:"#4ade80" }}/>
-            <span style={{ fontSize:12, color:"#fff", fontWeight:600 }}>Médico online agora</span>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#4ade80", flexShrink: 0 }}/>
+            <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 600 }}>Entrega discreta garantida</span>
           </div>
         </div>
       </section>
 
-      {/* STATS BAR */}
-      <div style={{ background:"#0a0a0a", padding:"32px 5%" }}>
-        <div style={{ maxWidth:900, margin:"0 auto", display:"flex", justifyContent:"space-around", flexWrap:"wrap", gap:24 }}>
+      {/* TRUST SEALS */}
+      <div style={{ background: "#111", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "24px 5%" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 20 }}>
           {[
-            { n:"500k+", l:"homens tratados" },
-            { n:"9/10",  l:"travam a queda" },
-            { n:"3 min", l:"para começar" },
-            { n:"ANVISA",l:"farmácias certificadas" },
+            { icon: "ANVISA",   label: "ANVISA",           sub: "Farmácias certificadas" },
+            { icon: "RX",       label: "Prescrição Médica",sub: "Avaliação por profissional" },
+            { icon: "PKG",      label: "Entrega Discreta", sub: "Embalagem sem identificação" },
+            { icon: "CHAT",     label: "Suporte Direto",   sub: "Acompanhamento contínuo" },
           ].map((s,i) => (
-            <div key={i} style={{ textAlign:"center" }}>
-              <div style={{ fontSize:"clamp(22px,3vw,32px)", fontWeight:800, color:"#fff", letterSpacing:"-0.02em" }}>{s.n}</div>
-              <div style={{ fontSize:12, color:"rgba(255,255,255,0.4)", marginTop:3 }}>{s.l}</div>
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(74,222,128,0.1)",
+                border: "1px solid rgba(74,222,128,0.2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <span style={{ fontSize: 9, fontWeight: 800, color: "#4ade80", letterSpacing: "0.04em" }}>{s.icon}</span>
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{s.label}</div>
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 1 }}>{s.sub}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -260,15 +274,15 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Stats cards */}
+              {/* Trust cards */}
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
                 {[
-                  { n:"9/10",   l:"travam a queda com finasterida",     bg:"#0a0a0a", tc:"#fff", sc:"rgba(255,255,255,0.45)" },
-                  { n:"+90%",   l:"de eficácia com o protocolo completo", bg:"#f0f0ee", tc:"#0a0a0a", sc:"#888" },
+                  { label:"Evidência científica",  sub:"Finasterida e Minoxidil são os únicos ativos aprovados pela FDA para calvície",  bg:"#0a0a0a", tc:"#fff", sc:"rgba(255,255,255,0.5)" },
+                  { label:"Prescrição médica", sub:"Tratamento avaliado e personalizado por profissional de saúde licenciado",            bg:"#f0f0ee", tc:"#0a0a0a", sc:"#666" },
                 ].map((s,i) => (
                   <div key={i} style={{ background:s.bg, borderRadius:16, padding:"24px 20px" }}>
-                    <div style={{ fontSize:36, fontWeight:800, color:s.tc, letterSpacing:"-0.03em", lineHeight:1, marginBottom:8 }}>{s.n}</div>
-                    <div style={{ fontSize:12, color:s.sc, lineHeight:1.5 }}>{s.l}</div>
+                    <div style={{ fontSize:15, fontWeight:700, color:s.tc, letterSpacing:"-0.01em", lineHeight:1.2, marginBottom:8 }}>{s.label}</div>
+                    <div style={{ fontSize:12, color:s.sc, lineHeight:1.55 }}>{s.sub}</div>
                   </div>
                 ))}
               </div>
