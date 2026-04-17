@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const SITE_PASSWORD = "fioraiz@mvp";
+const SITE_PASSWORD = "fioraiz@mvp1719";
 const STORAGE_KEY = "fioraiz_gate";
 
 function Logo() {
