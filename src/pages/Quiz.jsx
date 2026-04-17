@@ -275,6 +275,8 @@ export default function Quiz() {
   const [discountApplied, setDiscountApplied] = useState(false);
   const [format, setFormat] = useState("unicas");
   const [planPeriod, setPlanPeriod] = useState("semestral");
+  const [contactInfo, setContactInfo] = useState({ nome:"", email:"", whatsapp:"" });
+  const [contactError, setContactError] = useState("");
 
   const prices = {
     semestral: { intro: discountApplied ? "R$ 69,38" : "R$ 99,12", after: "R$ 141,60", label: "6 meses", badge: "Maior desconto" },
@@ -299,7 +301,32 @@ export default function Quiz() {
   function continueFromProof() { setStep(5); setPhase("quiz"); }
   function continueFromDoctor() { setPhase("summary"); }
   function continueFromSummary() { setPhase("whatsapp"); }
-  function continueFromWhatsapp() { setPhase("plan"); setTimeout(() => setShowDiscount(true), 800); }
+  function continueFromWhatsapp() { setPhase("contact"); }
+
+  function saveLead() {
+    const lead = {
+      id: Date.now(),
+      timestamp: new Date().toLocaleString("pt-BR"),
+      nome: contactInfo.nome,
+      email: contactInfo.email,
+      whatsapp: contactInfo.whatsapp,
+      answers: answers,
+    };
+    try {
+      const existing = JSON.parse(localStorage.getItem("fioraiz_leads") || "[]");
+      existing.push(lead);
+      localStorage.setItem("fioraiz_leads", JSON.stringify(existing));
+    } catch {}
+  }
+
+  function continueFromContact() {
+    if (!contactInfo.nome.trim()) { setContactError("Por favor, informe seu nome."); return; }
+    if (!contactInfo.whatsapp.trim()) { setContactError("Por favor, informe seu WhatsApp."); return; }
+    setContactError("");
+    saveLead();
+    setPhase("plan");
+    setTimeout(() => setShowDiscount(true), 800);
+  }
   function continueFromPlan() { setPhase("checkout"); }
 
   const s = {
@@ -502,6 +529,56 @@ export default function Quiz() {
       </div>
       <div style={s.cta}>
         <button style={s.ctaBtn} onClick={continueFromWhatsapp}>Continuar</button>
+      </div>
+    </div>
+  );
+
+  // ── CONTATO ──
+  if (phase === "contact") return (
+    <div style={s.wrap}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');* { box-sizing:border-box; margin:0; padding:0; }`}</style>
+      <div style={s.nav}><Logo /></div>
+      <div style={s.body}>
+        <div style={s.tag}>Quase lá</div>
+        <h2 style={s.heading}>Para onde enviamos o seu plano?</h2>
+        <p style={s.sub}>Um médico vai analisar suas respostas e enviar a avaliação. Precisamos dos seus dados para isso.</p>
+
+        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          {[
+            { key:"nome",      label:"Nome completo",  placeholder:"Seu nome", type:"text" },
+            { key:"email",     label:"E-mail",         placeholder:"seu@email.com", type:"email" },
+            { key:"whatsapp",  label:"WhatsApp",       placeholder:"(11) 99999-9999", type:"tel" },
+          ].map(f => (
+            <div key={f.key}>
+              <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:6 }}>{f.label}</label>
+              <input
+                type={f.type}
+                placeholder={f.placeholder}
+                value={contactInfo[f.key]}
+                onChange={e => setContactInfo(p => ({ ...p, [f.key]: e.target.value }))}
+                style={{ width:"100%", padding:"14px 16px", border:"1.5px solid rgba(0,0,0,0.12)",
+                  borderRadius:12, fontSize:15, fontFamily:"'Outfit',sans-serif", outline:"none",
+                  transition:"border 0.2s" }}
+                onFocus={e => e.target.style.borderColor="#0a0a0a"}
+                onBlur={e => e.target.style.borderColor="rgba(0,0,0,0.12)"}
+              />
+            </div>
+          ))}
+        </div>
+
+        {contactError && (
+          <div style={{ marginTop:12, fontSize:13, color:"#e53e3e", fontWeight:500 }}>{contactError}</div>
+        )}
+
+        <div style={{ marginTop:20, background:"#f8f8f6", borderRadius:12, padding:"12px 16px",
+          fontSize:12, color:"#888", lineHeight:1.6 }}>
+          🔒 Seus dados são confidenciais e usados exclusivamente para envio da sua avaliação médica.
+        </div>
+      </div>
+      <div style={s.cta}>
+        <button style={s.ctaBtn} onClick={continueFromContact}>
+          Ver meu plano personalizado →
+        </button>
       </div>
     </div>
   );
