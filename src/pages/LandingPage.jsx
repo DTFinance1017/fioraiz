@@ -329,7 +329,7 @@ export default function App() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }} className="two-col">
 
             {/* Main dark card */}
-            <div className="dark-card" style={{ background:"#111", borderRadius:20, overflow:"hidden", position:"relative", minHeight:500, display:"flex", flexDirection:"column" }}>
+            <div className="dark-card" style={{ background:"#1e1e1e", borderRadius:24, border:"1px solid #2e2e2e", overflow:"hidden", position:"relative", minHeight:500, display:"flex", flexDirection:"column", padding:16 }}>
               <Img src={IMGS.mirror2} alt="Tratamento capilar"
                 gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
                 style={{ width:"100%", height:340, flexShrink:0, objectPosition:"50% 10%" }} />
