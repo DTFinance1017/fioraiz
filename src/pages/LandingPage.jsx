@@ -123,7 +123,7 @@ export default function App() {
   }, [menuOpen]);
 
   const c = {
-    page: { fontFamily: "'Outfit',sans-serif", background: "#fff", color: "#0a0a0a", overflowX: "hidden" },
+    page: { fontFamily: "'Outfit',sans-serif", background: "#FAFAFA", color: "#1A1A1A", overflowX: "hidden" },
     nav: {
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 200,
       padding: "0 5%", height: 64,
@@ -133,9 +133,9 @@ export default function App() {
       borderBottom: scrolled ? "1px solid rgba(0,0,0,0.07)" : "none",
       transition: "all 0.3s"
     },
-    cta: { background: "#0a0a0a", color: "#fff", padding: "13px 28px", borderRadius: 100, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
-    ctaLg: { background: "#0a0a0a", color: "#fff", padding: "18px 48px", borderRadius: 100, fontSize: 15, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
-    ctaW: { background: "#fff", color: "#0a0a0a", padding: "18px 48px", borderRadius: 100, fontSize: 15, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
+    cta: { background: "#004358", color: "#fff", padding: "13px 28px", borderRadius: 6, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
+    ctaLg: { background: "#004358", color: "#fff", padding: "18px 48px", borderRadius: 6, fontSize: 15, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
+    ctaW: { background: "#fff", color: "#1A1A1A", padding: "18px 48px", borderRadius: 6, fontSize: 15, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
     tag: { fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#888" },
   };
 
@@ -145,9 +145,9 @@ export default function App() {
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
         html{scroll-behavior:smooth;}
-        ::selection{background:#0a0a0a;color:#fff;}
+        ::selection{background:#004358;color:#fff;}
         a{text-decoration:none;color:inherit;}
-        .btn:hover{opacity:0.88;transform:translateY(-1px);}
+        .btn:hover{background:#003347!important;opacity:1;transform:translateY(-1px);}
         .card-hover:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.1);}
         @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
         @media(max-width:768px){
@@ -169,11 +169,11 @@ export default function App() {
 
       {/* NAV */}
       <nav style={c.nav}>
-        <a href="/"><FioLogo color="#0a0a0a" size={20} /></a>
+        <a href="/"><FioLogo color="#1A1A1A" size={20} /></a>
         <div className="hide-mob" style={{ display: "flex", gap: 32 }}>
           {[["/","Tratamento capilar masculino"],["#como-funciona","Como funciona"],["#tratamento","Tudo incluso"]].map(([h,l]) => (
             <a key={h} href={h} style={{ fontSize: 13, color: "#666", fontWeight: 500, transition: "color 0.2s" }}
-              onMouseEnter={e=>e.target.style.color="#0a0a0a"} onMouseLeave={e=>e.target.style.color="#666"}>{l}</a>
+              onMouseEnter={e=>e.target.style.color="#1A1A1A"} onMouseLeave={e=>e.target.style.color="#666"}>{l}</a>
           ))}
         </div>
         <div style={{ display:"flex", gap:12, alignItems:"center" }}>
@@ -182,9 +182,9 @@ export default function App() {
           <button onClick={() => setMenuOpen(o => !o)}
             style={{ display:"none", background:"none", border:"none", cursor:"pointer", padding:8, flexDirection:"column", gap:5 }}
             className="show-mob">
-            <span style={{ display:"block", width:22, height:2, background:"#0a0a0a", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
-            <span style={{ display:"block", width:22, height:2, background:"#0a0a0a", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
-            <span style={{ display:"block", width:22, height:2, background:"#0a0a0a", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#1A1A1A", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#1A1A1A", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#1A1A1A", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
           </button>
         </div>
       </nav>
@@ -230,7 +230,7 @@ export default function App() {
           </div>
           <h1 className="hero-h" style={{
             fontSize: "clamp(36px,4.5vw,64px)", fontWeight: 800, lineHeight: 1.08,
-            letterSpacing: "-0.03em", marginBottom: 20, color: "#0a0a0a"
+            letterSpacing: "-0.03em", marginBottom: 20, color: "#1A1A1A"
           }}>
             Calvície masculina<br/>
             <span style={{ color: "#aaa" }}>tem solução comprovada</span><br/>
@@ -248,7 +248,7 @@ export default function App() {
               "Acompanhamento completo",
             ].map((b, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 20, height: 20, borderRadius: "50%", background: "#0a0a0a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <div style={{ width: 20, height: 20, borderRadius: "50%", background: "#1B3022", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <span style={{ color: "#fff", fontSize: 9, fontWeight: 700 }}>✓</span>
                 </div>
                 <span style={{ fontSize: 14, color: "#333", fontWeight: 500 }}>{b}</span>
@@ -257,12 +257,12 @@ export default function App() {
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <button className="btn" onClick={() => navigate("/avaliacao")}
-              style={{ background: "#0a0a0a", color: "#fff", padding: "17px 36px", borderRadius: 100,
+              style={{ background: "#004358", color: "#fff", padding: "17px 36px", borderRadius: 6,
                 fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer", transition: "all 0.2s" }}>
               Iniciar avaliação online agora
             </button>
             <a href="#tratamento"
-              style={{ background: "transparent", color: "#0a0a0a", padding: "16px 32px", borderRadius: 100,
+              style={{ background: "transparent", color: "#1A1A1A", padding: "16px 32px", borderRadius: 6,
                 fontSize: 14, fontWeight: 600, border: "1.5px solid rgba(0,0,0,0.15)",
                 cursor: "pointer", transition: "all 0.2s", display: "inline-block" }}>
               Conhecer os tratamentos
@@ -288,7 +288,7 @@ export default function App() {
       </section>
 
       {/* TRUST SEALS */}
-      <div style={{ background: "#0a0a0a", padding: "28px 6%" }}>
+      <div style={{ background: "#1A1A1A", padding: "28px 6%" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px 32px" }} className="seals-grid">
           {[
             { icon: "ANVISA",   label: "ANVISA",           sub: "Farmácias certificadas" },
@@ -311,7 +311,7 @@ export default function App() {
       </div>
 
       {/* PRODUCT CARDS */}
-      <section style={{ padding:"80px 5%", background:"#fff" }}>
+      <section style={{ padding:"80px 5%", background:"#FAFAFA" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }} className="two-col">
 
@@ -350,8 +350,8 @@ export default function App() {
               {/* Trust cards */}
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
                 {[
-                  { label:"Evidência científica",  sub:"Finasterida e Minoxidil são os únicos ativos aprovados pela FDA para calvície",  bg:"#0a0a0a", tc:"#fff", sc:"rgba(255,255,255,0.5)" },
-                  { label:"Prescrição médica", sub:"Tratamento avaliado e personalizado por profissional de saúde licenciado",            bg:"#f0eeeb", tc:"#0a0a0a", sc:"#666" },
+                  { label:"Evidência científica",  sub:"Finasterida e Minoxidil são os únicos ativos aprovados pela FDA para calvície",  bg:"#1A1A1A", tc:"#fff", sc:"rgba(255,255,255,0.5)" },
+                  { label:"Prescrição médica", sub:"Tratamento avaliado e personalizado por profissional de saúde licenciado",            bg:"#f0eeeb", tc:"#1A1A1A", sc:"#666" },
                 ].map((s,i) => (
                   <div key={i} style={{ background:s.bg, borderRadius:16, padding:"24px 20px" }}>
                     <div style={{ fontSize:15, fontWeight:700, color:s.tc, letterSpacing:"-0.01em", lineHeight:1.2, marginBottom:8 }}>{s.label}</div>
@@ -366,7 +366,7 @@ export default function App() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section id="como-funciona" style={{ padding:"80px 5%", background:"#f8f8f6" }}>
+      <section id="como-funciona" style={{ padding:"80px 5%", background:"#FAFAFA" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:56 }}>
             <div style={{ ...c.tag, marginBottom:12 }}>Como funciona</div>
@@ -387,7 +387,7 @@ export default function App() {
       </section>
 
       {/* TREATMENT */}
-      <section id="tratamento" style={{ padding:"80px 5%", background:"#fff" }}>
+      <section id="tratamento" style={{ padding:"80px 5%", background:"#FAFAFA" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
 
           {/* Header */}
@@ -405,19 +405,19 @@ export default function App() {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:64 }} className="proto-grid">
             {PROTOCOLS.map((p,i) => (
               <div key={i} className={p.featured ? "proto-card-feat" : ""}
-                style={{ background: p.featured ? "#0a0a0a" : "#f0eeeb", borderRadius:20, padding:"28px 24px",
+                style={{ background: p.featured ? "#1A1A1A" : "#f0eeeb", borderRadius:20, padding:"28px 24px",
                   border: p.featured ? "none" : "1px solid rgba(0,0,0,0.06)", position:"relative",
                   boxShadow: p.featured ? "0 20px 60px rgba(0,0,0,0.18)" : "none" }}>
                 {p.featured && (
                   <span style={{ position:"absolute", top:16, right:16, fontSize:9, fontWeight:800,
-                    background:"#fff", color:"#0a0a0a", padding:"3px 10px", borderRadius:100, letterSpacing:"0.08em" }}>
+                    background:"#fff", color:"#1A1A1A", padding:"3px 10px", borderRadius:100, letterSpacing:"0.08em" }}>
                     MAIS POTENTE
                   </span>
                 )}
                 <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
                   color: p.featured ? "rgba(255,255,255,0.3)" : "#bbb", marginBottom:6 }}>Protocolo</div>
                 <h3 style={{ fontSize:24, fontWeight:800, letterSpacing:"-0.02em",
-                  color: p.featured ? "#fff" : "#0a0a0a", marginBottom:4 }}>{p.name}</h3>
+                  color: p.featured ? "#fff" : "#1A1A1A", marginBottom:4 }}>{p.name}</h3>
                 <div style={{ fontSize:11, fontWeight:600, color: p.featured ? "rgba(255,255,255,0.5)" : "#888",
                   marginBottom:8, lineHeight:1.4 }}>{p.label}</div>
                 <p style={{ fontSize:12, color: p.featured ? "rgba(255,255,255,0.38)" : "#aaa",
@@ -429,12 +429,12 @@ export default function App() {
                   {p.items.map((item,j) => (
                     <div key={j} style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
                       <div style={{ width:16, height:16, borderRadius:"50%", flexShrink:0, marginTop:2,
-                        background: p.featured ? "rgba(255,255,255,0.15)" : "#0a0a0a",
+                        background: p.featured ? "rgba(255,255,255,0.15)" : "#1B3022",
                         display:"flex", alignItems:"center", justifyContent:"center" }}>
                         <span style={{ color:"#fff", fontSize:8, fontWeight:700 }}>✓</span>
                       </div>
                       <div>
-                        <div style={{ fontSize:13, fontWeight:700, color: p.featured ? "#fff" : "#0a0a0a", lineHeight:1.3 }}>{item.name}</div>
+                        <div style={{ fontSize:13, fontWeight:700, color: p.featured ? "#fff" : "#1A1A1A", lineHeight:1.3 }}>{item.name}</div>
                         <div style={{ fontSize:11, color: p.featured ? "rgba(255,255,255,0.38)" : "#aaa", marginTop:1 }}>{item.detail}</div>
                       </div>
                     </div>
@@ -456,7 +456,7 @@ export default function App() {
               </p>
               {BENEFITS.map((b,i) => (
                 <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
-                  <div style={{ width:20, height:20, borderRadius:"50%", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                  <div style={{ width:20, height:20, borderRadius:"50%", background:"#1B3022", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                     <span style={{ color:"#fff", fontSize:9, fontWeight:700 }}>✓</span>
                   </div>
                   <span style={{ fontSize:14, color:"#333", fontWeight:500 }}>{b}</span>
@@ -486,7 +486,7 @@ export default function App() {
 
       {/* TRUST BADGES */}
 {/* TRUST BADGES */}
-      <section style={{ padding:"32px 5%", background:"#fff", borderTop:"1px solid rgba(0,0,0,0.06)", borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
+      <section style={{ padding:"32px 5%", background:"#FAFAFA", borderTop:"1px solid rgba(0,0,0,0.06)", borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
         <div style={{ maxWidth:1000, margin:"0 auto", display:"flex", justifyContent:"space-around", flexWrap:"wrap", gap:20 }}>
           {[
             { icon:"🚀", text:"Entrega rápida e discreta" },
@@ -502,7 +502,7 @@ export default function App() {
       </section>
 
       {/* CTA FINAL */}
-      <section id="quiz" style={{ padding:"100px 5%", background:"#f8f8f6", textAlign:"center" }}>
+      <section id="quiz" style={{ padding:"100px 5%", background:"#FAFAFA", textAlign:"center" }}>
         <div style={{ maxWidth:580, margin:"0 auto" }}>
           <div style={{ ...c.tag, marginBottom:20 }}>Comece hoje</div>
           <h2 style={{ fontSize:"clamp(32px,5vw,60px)", fontWeight:800, letterSpacing:"-0.03em", lineHeight:1.05, marginBottom:20 }}>
@@ -518,7 +518,7 @@ export default function App() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background:"#0a0a0a", padding:"48px 5% 32px" }}>
+      <footer style={{ background:"#1A1A1A", padding:"48px 5% 32px" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:32, marginBottom:40 }}>
             <FioLogo color="#fff" size={20} />
