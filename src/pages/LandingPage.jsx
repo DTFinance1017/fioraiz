@@ -161,6 +161,7 @@ export default function App() {
           .show-mob{display:flex!important;}
           .proto-grid{grid-template-columns:1fr!important;}
           .proto-card-feat{order:-1;}
+          .dark-card{margin:0 16px!important;}
         }
       `}</style>
 
@@ -233,15 +234,16 @@ export default function App() {
             <span style={{ color: "#aaa" }}>tem solução comprovada</span><br/>
             pela ciência.
           </h1>
-          <p style={{ fontSize: 16, color: "#666", lineHeight: 1.8, maxWidth: 480, marginBottom: 36 }}>
-            Finasterida + Minoxidil — os ativos com maior evidência científica para parar a queda e estimular o crescimento. Tratamento personalizado com prescrição médica.
+          <p style={{ fontSize: 16, color: "#666", lineHeight: 1.8, maxWidth: 480, marginBottom: 36,
+            borderLeft: "2px solid #111", paddingLeft: 10 }}>
+            Os únicos ativos clinicamente comprovados para calvície masculina — formulados sob medida, com acompanhamento médico do início ao fim.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 40 }}>
             {[
-              "Avaliação médica online discreta",
-              "Fórmulas manipuladas sob prescrição",
-              "Entrega rápida com embalagem sem identificação",
-              "Acompanhamento durante todo o tratamento",
+              "Avaliação online discreta",
+              "Fórmula sob prescrição",
+              "Entrega sem identificação",
+              "Acompanhamento completo",
             ].map((b, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <div style={{ width: 20, height: 20, borderRadius: "50%", background: "#0a0a0a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -327,11 +329,11 @@ export default function App() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }} className="two-col">
 
             {/* Main dark card */}
-            <div style={{ background:"#0a0a0a", borderRadius:24, overflow:"hidden", position:"relative", minHeight:500, display:"flex", flexDirection:"column" }}>
+            <div className="dark-card" style={{ background:"#111", borderRadius:20, overflow:"hidden", position:"relative", minHeight:500, display:"flex", flexDirection:"column" }}>
               <Img src={IMGS.mirror2} alt="Tratamento capilar"
                 gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
                 style={{ width:"100%", height:340, flexShrink:0, objectPosition:"50% 10%" }} />
-              <div style={{ padding:"20px 28px 28px", flex:1, display:"flex", flexDirection:"column", justifyContent:"space-between" }}>
+              <div style={{ padding:"14px 14px 14px", flex:1, display:"flex", flexDirection:"column", justifyContent:"space-between" }}>
                 <div>
                   <div style={{ ...c.tag, color:"rgba(255,255,255,0.35)", marginBottom:12 }}>Tratamento principal</div>
                   <h2 style={{ fontSize:28, fontWeight:800, color:"#fff", letterSpacing:"-0.02em", marginBottom:12 }}>Calvície masculina</h2>
