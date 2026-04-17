@@ -515,28 +515,66 @@ export default function Quiz() {
         tag: "Seu cabelo · Passo 1 de 2",
         question: "Qual imagem mais representa a situação do seu cabelo hoje?",
         render: () => (
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+          <div style={{
+            display:"grid",
+            gridTemplateColumns:"repeat(2, minmax(0, 1fr))",
+            gap:"clamp(8px, 2.5vw, 14px)",
+            width:"100%",
+          }}>
             {HAIR_TYPES.map(ht => {
               const active = answers.hairType === ht.label;
               return (
                 <div key={ht.id} onClick={() => answerHair("hairType", ht.label)}
-                  style={{ background: active ? "#004358" : "#EDF5F8", borderRadius:14, padding:"12px 10px",
-                    textAlign:"center", cursor:"pointer",
-                    border:`2px solid ${active ? "#004358" : "#c8dde6"}`,
-                    transition:"all 0.15s", position:"relative", overflow:"hidden" }}>
+                  style={{
+                    background: active ? "#004358" : "#fff",
+                    borderRadius: 16,
+                    cursor: "pointer",
+                    border: `2px solid ${active ? "#004358" : "#E3EEF3"}`,
+                    boxShadow: active ? "0 6px 16px rgba(0,67,88,0.18)" : "0 1px 3px rgba(0,0,0,0.04)",
+                    transition: "all 0.2s ease",
+                    position: "relative",
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}>
                   {active && (
-                    <div style={{ position:"absolute", top:8, right:8, width:20, height:20, borderRadius:"50%",
-                      background:"#fff", display:"flex", alignItems:"center", justifyContent:"center", zIndex:2 }}>
-                      <span style={{ fontSize:11, fontWeight:700, color:"#004358" }}>✓</span>
+                    <div style={{ position:"absolute", top:10, right:10, width:22, height:22, borderRadius:"50%",
+                      background:"#fff", display:"flex", alignItems:"center", justifyContent:"center",
+                      zIndex:2, boxShadow:"0 2px 6px rgba(0,0,0,0.15)" }}>
+                      <span style={{ fontSize:12, fontWeight:800, color:"#004358" }}>✓</span>
                     </div>
                   )}
-                  <div style={{ width:"100%", height:110, overflow:"hidden", borderRadius:8, display:"flex", alignItems:"flex-end" }}>
+                  {/* Head-only crop: wide-short window shows just the upper head area */}
+                  <div style={{
+                    width:"100%",
+                    aspectRatio:"1.6 / 1",
+                    overflow:"hidden",
+                    background: active ? "rgba(255,255,255,0.08)" : "#F6FAFC",
+                    position:"relative",
+                  }}>
                     <img src={ht.img} alt={ht.label}
-                      style={{ width:"100%", height:"auto", objectFit:"cover", objectPosition:"bottom",
-                        filter: active ? "brightness(0.85)" : "none", display:"block" }} />
+                      style={{
+                        position:"absolute",
+                        top:"-8%",
+                        left:"50%",
+                        transform:"translateX(-50%)",
+                        width:"62%",
+                        height:"auto",
+                        filter: active ? "brightness(0) invert(1) opacity(0.96)" : "none",
+                        display:"block",
+                      }} />
                   </div>
-                  <div style={{ fontSize:13, fontWeight:600, marginTop:8,
-                    color: active ? "#fff" : "#1A3040" }}>{ht.label}</div>
+                  <div style={{
+                    width:"100%",
+                    padding:"12px 10px 14px",
+                    textAlign:"center",
+                    fontSize:"clamp(12px, 3.4vw, 14px)",
+                    fontWeight:700,
+                    letterSpacing:"-0.01em",
+                    lineHeight:1.25,
+                    color: active ? "#fff" : "#1A3040",
+                  }}>{ht.label}</div>
                 </div>
               );
             })}
