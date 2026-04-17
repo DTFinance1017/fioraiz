@@ -131,15 +131,47 @@ const HAIR_TYPES = [
 ];
 
 const CONDITIONS = [
-  "Libido reduzida ou dificuldade de ereção recorrente",
-  "Ginecomastia (crescimento de tecido mamário)",
-  "Problemas cardíacos, pressão não controlada ou tonturas frequentes",
-  "Doença renal crônica",
-  "Histórico de câncer de próstata, mama ou outras doenças prostáticas",
-  "Doença hepática, cirrose ou hepatite crônica",
-  "Depressão, ansiedade ou transtorno do pânico em tratamento",
-  "Nenhuma das alternativas acima",
+  "Queda de libido ou disfunção erétil recorrente",
+  "Ginecomastia (aumento do tecido mamário)",
+  "Quadro cardiovascular, hipertensão instável ou episódios de tontura",
+  "Disfunção renal crônica",
+  "Diagnóstico oncológico atual ou pregresso (próstata, mama, hormônio-dependente)",
+  "Comprometimento hepático (hepatite, cirrose ou esteatose avançada)",
+  "Quadro de ansiedade, depressão ou síndrome do pânico em acompanhamento",
+  "Nenhuma das situações acima",
 ];
+
+// ── Motor de blindagem: mapeia condições para categorias ────────────────────
+function getSafetyFlags(conds = [], scalpConds = [], perf = {}) {
+  const has = (rx) => conds.some(c => rx.test(c));
+  const cardiac   = has(/cardiovascular|hipertens|tontur/i);
+  const endocrine = has(/libido|ereç|erét|ginecomastia/i);
+  const hepatic   = has(/hepát|hepatit|cirrose|esteatose/i);
+  const renal     = has(/renal/i);
+  const oncologic = has(/oncológico|oncologico|câncer|cancer/i);
+
+  // Reação adversa a qualquer comprimido reportado no drill-down de performance
+  const ORAL_IDS = ["mnx_oral","fin_1mg","dut_05","saw","vitaminas"];
+  const pillAdverse = ORAL_IDS.some(id => perf[id] === "efx");
+
+  // Upgrade de potência: Finasterida 1mg sem evolução → sugerir Dutasterida
+  const finasteridaFail = perf["fin_1mg"] === "none";
+
+  // Couro cabeludo
+  const dermatitis = (scalpConds || []).some(c => /caspa|dermatit|psorías/i.test(c));
+  const topicalContraindicated =
+    (scalpConds || []).includes("Vermelhidão ou dor") ||
+    (scalpConds || []).includes("Psoríase (diagnóstico médico)");
+
+  return {
+    cardiac, endocrine, hepatic, renal, oncologic,
+    pillAdverse, finasteridaFail, dermatitis, topicalContraindicated,
+    // Derivados de alto nível
+    blockMinoxOral:   cardiac || hepatic || renal || (perf["mnx_oral"] === "efx"),
+    blockOralDHT:     endocrine || hepatic || renal || pillAdverse,
+    blockAllOral:     hepatic || renal,
+  };
+}
 
 
 // ── Termo de Consentimento Modal ─────────────────────────────────────────────
@@ -197,7 +229,7 @@ Estou ciente de que este atendimento é pessoal e intransferível, não podendo 
   },
   {
     titulo: "9. Aceitação e Consentimento",
-    texto: `Ao concordar com este Termo, expresso minha autorização livre, informada e esclarecida para iniciar o processo de avaliação médica assíncrona através da plataforma Fio Raiz, nos termos descritos acima, em conformidade com a Resolução CFM n.º 2.314/2022 e a Lei n.º 14.510/2022.`
+    texto: `Ao concordar com este Termo, expresso minha autorização livre, informada e esclarecida para iniciar o processo de análise clínica especializada assíncrona através da plataforma Fio Raiz, nos termos descritos acima, em conformidade com a Resolução CFM n.º 2.314/2022 e a Lei n.º 14.510/2022.`
   },
 ];
 
@@ -253,7 +285,7 @@ function ConsentModal({ onClose, onAccept }) {
             {accepted && <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>✓</span>}
           </div>
           <p style={{ fontSize: 13, color: "#333", lineHeight: 1.6 }}>
-            Li e compreendi o Termo de Consentimento Livre e Esclarecido e autorizo o início da avaliação médica.
+            Li e compreendi o Termo de Consentimento Livre e Esclarecido e autorizo o início da análise clínica especializada.
           </p>
         </div>
         <button
@@ -348,8 +380,6 @@ export default function Quiz() {
     const sel = updated.treatments || [];
     if (healthStep === 0) { setHealthStep(1); } // scalp multi handled by nextHealthMulti
     else if (healthStep === 1) { val === "Sim" ? setHealthStep(2) : setHealthStep(5); }
-    else if (healthStep === 3) { sel.includes("Minoxidil oral") ? setHealthStep(4) : setHealthStep(5); }
-    else if (healthStep === 4) { setHealthStep(5); }
     else if (healthStep === 6) { setHealthStep(7); }
     else if (healthStep === 7) { setPhase("section3-intro"); }
   }
@@ -363,10 +393,17 @@ export default function Quiz() {
     }
     const sel = answers.treatments || [];
     if (healthStep === 2) {
-      if (sel.includes("Minoxidil 5%")) setHealthStep(3);
-      else if (sel.includes("Minoxidil oral")) setHealthStep(4);
+      // Se selecionou ao menos 1 ativo, vai para drill-down de performance; senão, pula para condições
+      if (sel.length > 0) setHealthStep(3);
       else setHealthStep(5);
+    } else if (healthStep === 3) {
+      setHealthStep(5);
     } else if (healthStep === 5) {
+      const conds = answers.conditions || [];
+      // Bloqueio oncológico: interrompe o fluxo
+      if (conds.some(c => /oncológico|oncologico|câncer|cancer/i.test(c))) {
+        setPhase("oncology-stop"); return;
+      }
       setHealthStep(6);
     }
   }
@@ -463,7 +500,7 @@ export default function Quiz() {
               <a href="#" onClick={e => { e.preventDefault(); e.stopPropagation(); setShowConsent(true); }}
                 style={{ color: consentDone ? "#15803d" : "#1A3040", fontWeight:700, textDecoration:"underline" }}>
                 Termo de Consentimento Livre e Esclarecido
-              </a>{" "}e autorizo o início da avaliação médica.{" "}
+              </a>{" "}e autorizo o início da análise clínica especializada.{" "}
               <a href="/politica-privacidade" target="_blank" onClick={e => e.stopPropagation()}
                 style={{ color:"#888", textDecoration:"underline" }}>
                 Política de Privacidade
@@ -514,7 +551,7 @@ export default function Quiz() {
     const HAIR_STEPS = [
       // 0 – Tipo visual
       {
-        tag: "Seu cabelo · Passo 1 de 2",
+        tag: "Leitura capilar · Bloco 1 de 2",
         question: "Qual imagem mais representa a situação do seu cabelo hoje?",
         render: () => (
           <div style={{
@@ -567,7 +604,7 @@ export default function Quiz() {
       },
       // 1 – Gradual ou repentina
       {
-        tag: "Seu cabelo · Passo 1 de 2",
+        tag: "Leitura capilar · Bloco 1 de 2",
         question: "Como a queda está acontecendo?",
         render: () => (
           <>
@@ -593,7 +630,7 @@ export default function Quiz() {
       },
       // 2 – Couro cabeludo
       {
-        tag: "Seu cabelo · Passo 1 de 2",
+        tag: "Leitura capilar · Bloco 1 de 2",
         question: "Como você classificaria o seu couro cabeludo?",
         render: () => (
           <>
@@ -614,7 +651,7 @@ export default function Quiz() {
       },
       // 3 – Histórico familiar
       {
-        tag: "Seu cabelo · Passo 1 de 2",
+        tag: "Leitura capilar · Bloco 1 de 2",
         question: "Alguém da sua família paterna ou materna perdeu cabelo?",
         why: "Cerca de 95% das calvícies masculinas têm origem genética. Saber o histórico da família ajuda o médico a entender a causa provável da sua queda.",
         render: () => (
@@ -635,7 +672,7 @@ export default function Quiz() {
       },
       // 4 – Objetivo
       {
-        tag: "Seu cabelo · Passo 1 de 2",
+        tag: "Leitura capilar · Bloco 1 de 2",
         question: "O que você quer conquistar com o tratamento?",
         render: () => (
           <>
@@ -723,7 +760,7 @@ export default function Quiz() {
             (eflúvio telógeno), deficiências nutricionais, condições hormonais ou reações a medicamentos.
           </p>
           <p style={{ fontSize:14, color:"#555", lineHeight:1.75, marginTop:10 }}>
-            Nesses casos, o nosso protocolo pode não ser o mais indicado <em>sem uma avaliação médica presencial</em> primeiro.
+            Nesses casos, o nosso protocolo pode não ser o mais indicado <em>sem uma análise clínica especializada presencial</em> primeiro.
           </p>
         </div>
         <div style={{ background:"#fff", border:"1px solid rgba(0,0,0,0.08)", borderRadius:14,
@@ -748,6 +785,46 @@ export default function Quiz() {
     </div>
   );
 
+  // ── BLOQUEIO ONCOLÓGICO ────────────────────────────────────────────────────
+  if (phase === "oncology-stop") return (
+    <div style={s.wrap}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}`}</style>
+      <div style={s.nav}><Logo /></div>
+      <div style={s.progressBg}><div style={{ ...s.progressBar, width:"85%" }}/></div>
+      <div style={s.body}>
+        <div style={{ textAlign:"center", padding:"40px 0 20px" }}>
+          <div style={{ width:64, height:64, borderRadius:"50%", background:"#FFF4F4",
+            border:"2px solid #F87171", display:"flex", alignItems:"center",
+            justifyContent:"center", margin:"0 auto 24px", fontSize:28 }}>🛡️</div>
+          <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.14em",
+            textTransform:"uppercase", color:"#aaa", marginBottom:12 }}>Protocolo de Risco Crítico</div>
+          <h2 style={{ fontSize:"clamp(22px,5vw,30px)", fontWeight:800,
+            letterSpacing:"-0.02em", lineHeight:1.2, color:"#1A1A1A", marginBottom:16 }}>
+            A sua jornada pede acompanhamento presencial.
+          </h2>
+          <p style={{ fontSize:15, color:"#555", lineHeight:1.75, maxWidth:460, margin:"0 auto 28px" }}>
+            Você sinalizou um histórico oncológico. Por compromisso ético, encerramos aqui a triagem digital — ativos hormonais e sistêmicos exigem leitura presencial por especialistas em parceria com a sua equipe médica.
+          </p>
+        </div>
+        <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:14,
+          padding:"22px 20px", marginBottom:16 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:"#1A1A1A", marginBottom:10 }}>Próximos passos sugeridos:</div>
+          <ul style={{ paddingLeft:18, fontSize:14, color:"#555", lineHeight:1.9 }}>
+            <li>Converse com o seu oncologista antes de qualquer protocolo capilar</li>
+            <li>Procure um dermatologista com experiência em pacientes oncológicos</li>
+            <li>Quando houver liberação clínica, retorne — teremos protocolos seguros adaptados</li>
+          </ul>
+        </div>
+        <button style={{ background:"none", border:"1px solid #c8dde6", color:"#1A1A1A",
+          borderRadius:6, padding:"14px 0", fontSize:14, fontWeight:600,
+          cursor:"pointer", width:"100%", fontFamily:"'Outfit',sans-serif" }}
+          onClick={() => { setHealthStep(5); setPhase("quiz-health"); }}>
+          ← Voltar ao questionário
+        </button>
+      </div>
+    </div>
+  );
+
   // ── PARADA PRESENCIAL ──────────────────────────────────────────────────────
   if (phase === "presential-stop") return (
     <div style={s.wrap}>
@@ -766,7 +843,7 @@ export default function Quiz() {
             Recomendamos uma consulta presencial.
           </h2>
           <p style={{ fontSize:15, color:"#555", lineHeight:1.75, maxWidth:420, margin:"0 auto 28px" }}>
-            Você indicou <strong>queda de pelos em outras partes do corpo</strong>, o que pode sinalizar condições sistêmicas que exigem avaliação médica mais ampla.
+            Você indicou <strong>queda de pelos em outras partes do corpo</strong>, o que pode sinalizar condições sistêmicas que exigem análise clínica especializada mais ampla.
           </p>
         </div>
         <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:14,
@@ -903,15 +980,19 @@ export default function Quiz() {
     // healthStep 7: tipo de Minoxidil (single) → auto → section3-intro
 
     const TREATMENTS_LIST = [
-      "Minoxidil 5% (tópico)",
-      "Minoxidil oral",
-      "Finasterida 1mg",
-      "Finasterida tópica",
-      "Dutasterida 0,5mg",
-      "Saw Palmetto",
-      "Biotina ou outras vitaminas",
-      "Shampoo antiqueda",
-      "Outros",
+      { id:"mnx_topico",  label:"Minoxidil 5% (Spray/Tópico)",          route:"topica" },
+      { id:"mnx_oral",    label:"Minoxidil Oral",                       route:"oral"   },
+      { id:"fin_1mg",     label:"Finasterida 1mg (Comprimido)",         route:"oral"   },
+      { id:"fin_topico",  label:"Finasterida Tópica",                   route:"topica" },
+      { id:"dut_05",      label:"Dutasterida 0,5mg",                    route:"oral"   },
+      { id:"saw",         label:"Saw Palmetto",                         route:"oral"   },
+      { id:"vitaminas",   label:"Suplementação Vitamínica",             route:"oral"   },
+      { id:"higiene",     label:"Higiene Terapêutica (shampoo clínico)", route:"topica" },
+    ];
+    const PERFORMANCE_OPTS = [
+      { val:"sat",  label:"Resultados satisfatórios sem reações" },
+      { val:"efx",  label:"Eficaz, mas apresentou efeitos indesejados" },
+      { val:"none", label:"Não houve evolução perceptível" },
     ];
 
     const totalHealthSteps = 8;
@@ -996,70 +1077,67 @@ export default function Quiz() {
           <div>
             <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
             <h2 style={s.heading}>Quais tratamentos você já usou?</h2>
-            <p style={s.sub}>Selecione todos que se aplicam.</p>
+            <p style={s.sub}>Marque todos os ativos que fizeram parte do seu protocolo.</p>
             {TREATMENTS_LIST.map(opt => (
-              <button key={opt} style={{ ...s.option(sel.includes(opt)), alignItems:"center" }}
-                onClick={() => toggle(opt)}>
+              <button key={opt.id} style={{ ...s.option(sel.includes(opt.id)), alignItems:"center" }}
+                onClick={() => toggle(opt.id)}>
                 <div style={{ width:18, height:18, borderRadius:4, flexShrink:0,
-                  border:`2px solid ${sel.includes(opt) ? "#fff" : "#ddd"}`,
-                  background: sel.includes(opt) ? "#fff" : "transparent",
+                  border:`2px solid ${sel.includes(opt.id) ? "#fff" : "#ddd"}`,
+                  background: sel.includes(opt.id) ? "#fff" : "transparent",
                   display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  {sel.includes(opt) && <span style={{ color:"#1A3040", fontSize:11, fontWeight:700 }}>✓</span>}
+                  {sel.includes(opt.id) && <span style={{ color:"#1A3040", fontSize:11, fontWeight:700 }}>✓</span>}
                 </div>
-                <span style={{ fontSize:14 }}>{opt}</span>
+                <span style={{ fontSize:14 }}>{opt.label}</span>
               </button>
             ))}
           </div>
         );
       }
 
-      // Step 3 – Eficácia Minoxidil 5% (conditional)
-      if (healthStep === 3) return (
-        <div>
-          <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
-          <h2 style={s.heading}>Como foi sua experiência com o Minoxidil 5% (tópico)?</h2>
-          {[
-            { val:"Funcionou bem", label:"Funcionou bem — tive bons resultados." },
-            { val:"Funcionou parcialmente", label:"Funcionou parcialmente — resultados medianos." },
-            { val:"Não funcionou", label:"Não funcionou — não vi resultados." },
-            { val:"Parei por efeitos colaterais", label:"Parei por causa de efeitos colaterais." },
-          ].map(opt => (
-            <button key={opt.val} style={s.option(answers.minox5Efficacy === opt.val)}
-              onClick={() => answerHealthSingle("minox5Efficacy", opt.val)}>
-              <div style={{ width:20, height:20, borderRadius:"50%",
-                border:`2px solid ${answers.minox5Efficacy === opt.val ? "#fff" : "#ddd"}`,
-                display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                {answers.minox5Efficacy === opt.val && <div style={{ width:10, height:10, borderRadius:"50%", background:"#fff" }}/>}
+      // Step 3 – Drill-down de performance por ativo
+      if (healthStep === 3) {
+        const selIds = answers.treatments || [];
+        const perf = answers.performance || {};
+        const setPerf = (id, val) => setAnswers(p => ({ ...p, performance: { ...(p.performance||{}), [id]: val } }));
+        const selectedTreatments = TREATMENTS_LIST.filter(t => selIds.includes(t.id));
+        return (
+          <div>
+            <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
+            <h2 style={s.heading}>Qual foi a sua percepção sobre cada ativo utilizado?</h2>
+            <p style={s.sub}>Esta leitura orienta o médico a manter, ajustar ou evoluir o seu protocolo.</p>
+            {selectedTreatments.map(t => (
+              <div key={t.id} style={{ background:"#fff", border:"1px solid rgba(0,0,0,0.08)",
+                borderRadius:12, padding:"14px 16px", marginBottom:10 }}>
+                <div style={{ fontSize:13, fontWeight:700, color:"#1A1A1A", marginBottom:10 }}>
+                  {t.label}
+                </div>
+                <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                  {PERFORMANCE_OPTS.map(opt => {
+                    const active = perf[t.id] === opt.val;
+                    return (
+                      <button key={opt.val} onClick={() => setPerf(t.id, opt.val)}
+                        style={{ display:"flex", alignItems:"center", gap:10,
+                          background: active ? "#004358" : "#F6FAFC",
+                          color: active ? "#fff" : "#1A1A1A",
+                          border: `1.5px solid ${active ? "#004358" : "#E3EEF3"}`,
+                          borderRadius:10, padding:"10px 14px", cursor:"pointer",
+                          fontFamily:"'Outfit',sans-serif", fontSize:13, fontWeight:500,
+                          textAlign:"left", transition:"all 0.15s" }}>
+                        <div style={{ width:16, height:16, borderRadius:"50%",
+                          border:`2px solid ${active ? "#fff" : "#c8dde6"}`,
+                          display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                          {active && <div style={{ width:8, height:8, borderRadius:"50%", background:"#fff" }}/>}
+                        </div>
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      );
-
-      // Step 4 – Eficácia Minoxidil oral (conditional)
-      if (healthStep === 4) return (
-        <div>
-          <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
-          <h2 style={s.heading}>Como foi sua experiência com o Minoxidil oral?</h2>
-          {[
-            { val:"Funcionou bem", label:"Funcionou bem — tive bons resultados." },
-            { val:"Funcionou parcialmente", label:"Funcionou parcialmente — resultados medianos." },
-            { val:"Não funcionou", label:"Não funcionou — não vi resultados." },
-            { val:"Parei por efeitos colaterais", label:"Parei por causa de efeitos colaterais." },
-          ].map(opt => (
-            <button key={opt.val} style={s.option(answers.minoxOralEfficacy === opt.val)}
-              onClick={() => answerHealthSingle("minoxOralEfficacy", opt.val)}>
-              <div style={{ width:20, height:20, borderRadius:"50%",
-                border:`2px solid ${answers.minoxOralEfficacy === opt.val ? "#fff" : "#ddd"}`,
-                display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                {answers.minoxOralEfficacy === opt.val && <div style={{ width:10, height:10, borderRadius:"50%", background:"#fff" }}/>}
-              </div>
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      );
+            ))}
+          </div>
+        );
+      }
 
       // Step 5 – Condições médicas (multi-select)
       if (healthStep === 5) {
@@ -1097,43 +1175,68 @@ export default function Quiz() {
         );
       }
 
-      // Step 6 – Preferência de medicamento bloqueador de DHT
-      if (healthStep === 6) return (
-        <div>
-          <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
-          <h2 style={s.heading}>Qual abordagem você prefere para bloquear o DHT?</h2>
-          <p style={s.sub}>Não se preocupe — o médico vai avaliar seu perfil e indicar o mais adequado. Isso é só uma preferência inicial.</p>
-          {[
-            { val:"Dutasterida", label:"Máxima eficácia", sub:"Dutasterida — bloqueio mais potente do DHT" },
-            { val:"Finasterida", label:"Equilíbrio eficácia e segurança", sub:"Finasterida — o tratamento mais prescrito no mundo" },
-            { val:"Saw Palmetto", label:"Opção natural", sub:"Saw Palmetto — sem intervenção hormonal" },
-          ].map(opt => (
-            <button key={opt.val}
-              style={{ ...s.option(answers.medication === opt.val), flexDirection:"column", alignItems:"flex-start" }}
-              onClick={() => answerHealthSingle("medication", opt.val)}>
-              <div style={{ fontWeight:600 }}>{opt.label}</div>
-              <div style={{ fontSize:12, opacity:0.6 }}>{opt.sub}</div>
-            </button>
-          ))}
-        </div>
-      );
+      // Step 6 – Preferência do bloqueador de DHT (com blindagem)
+      if (healthStep === 6) {
+        const flags = getSafetyFlags(answers.conditions, answers.scalpConditions, answers.performance);
+        const allOpts = [
+          { val:"Dutasterida",           label:"Protocolo de Alta Potência",      sub:"Dutasterida 0,5mg — bloqueio ampliado da via DHT",                route:"oral",   key:"dutOral" },
+          { val:"Finasterida",           label:"Protocolo Equilibrado",           sub:"Finasterida 1mg — perfil consolidado de eficácia e tolerância",   route:"oral",   key:"finOral" },
+          { val:"Finasterida tópica",    label:"Protocolo de Ação Local",         sub:"Finasterida Tópica — aplicação direta, menor exposição sistêmica", route:"topica", key:"finTop"  },
+          { val:"Saw Palmetto",          label:"Protocolo Fitoterápico",          sub:"Saw Palmetto — rota natural, sem fármaco sintético",               route:"oral",   key:"saw"     },
+          { val:"Decido depois",         label:"Prefiro que o médico decida",     sub:"O profissional escolhe o ativo ideal ao analisar o seu caso",      route:"any",    key:"dr"      },
+        ];
+        const visible = allOpts.filter(o => {
+          if (o.route === "any" || o.route === "topica") return !flags.topicalContraindicated ? true : o.route !== "topica" || true;
+          // orais bloqueados por insuficiência hepato-renal, endócrino, ou reação adversa
+          if (o.route === "oral" && flags.blockOralDHT) return false;
+          return true;
+        });
+        const suggestDut = flags.finasteridaFail && !flags.blockOralDHT;
+        const filtered = visible.length !== allOpts.length;
+        return (
+          <div>
+            <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
+            <h2 style={s.heading}>Qual rota terapêutica ressoa melhor com você?</h2>
+            <p style={s.sub}>Esta é apenas uma sinalização de preferência — a Análise Clínica Especializada define o plano final.</p>
+            {filtered && (
+              <div style={{ background:"#FFF8E7", border:"1px solid #FCD34D", borderRadius:8, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#78350F", lineHeight:1.6 }}>
+                <strong>Blindagem clínica ativa:</strong> algumas vias orais foram ocultadas com base no seu histórico para preservar a sua segurança.
+              </div>
+            )}
+            {suggestDut && (
+              <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:8, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#1A3040", lineHeight:1.6 }}>
+                <strong>Sugestão do motor:</strong> você reportou ausência de evolução com Finasterida 1mg — o Protocolo de Alta Potência (Dutasterida) pode trazer ganho clínico.
+              </div>
+            )}
+            {visible.map(opt => (
+              <button key={opt.val}
+                style={{ ...s.option(answers.medication === opt.val), flexDirection:"column", alignItems:"flex-start" }}
+                onClick={() => answerHealthSingle("medication", opt.val)}>
+                <div style={{ fontWeight:600 }}>{opt.label}</div>
+                <div style={{ fontSize:12, opacity:0.6 }}>{opt.sub}</div>
+              </button>
+            ))}
+          </div>
+        );
+      }
 
       // Step 7 – Tipo de Minoxidil preferido
       if (healthStep === 7) {
-        const sc7 = answers.scalpConditions || [];
-        const hideTopico = sc7.includes("Vermelhidão ou dor") || sc7.includes("Psoríase (diagnóstico médico)");
+        const flags7 = getSafetyFlags(answers.conditions, answers.scalpConditions, answers.performance);
+        const hideTopico = flags7.topicalContraindicated;
+        const hideOral = flags7.blockMinoxOral;
         const minoxOpts = [
-          { val:"Minoxidil oral", label:"Minoxidil oral", sub:"Comprimido diário — máxima cobertura sistêmica" },
-          ...(!hideTopico ? [{ val:"Minoxidil 5% tópico", label:"Minoxidil 5% tópico", sub:"Aplicado direto no couro — ação local" }] : []),
-          { val:"Ainda não sei", label:"Ainda não sei", sub:"Deixo o médico decidir o que é melhor" },
+          ...(!hideOral ? [{ val:"Minoxidil oral", label:"Via Sistêmica", sub:"Minoxidil Oral — cobertura ampla via comprimido" }] : []),
+          ...(!hideTopico ? [{ val:"Minoxidil 5% tópico", label:"Via Local", sub:"Minoxidil 5% Spray — aplicação direta no couro cabeludo" }] : []),
+          { val:"Ainda não sei", label:"Prefiro que o médico decida", sub:"O profissional escolhe a rota mais adequada ao seu perfil" },
         ];
         return (
           <div>
             <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
-            <h2 style={s.heading}>Para estimular o crescimento, qual opção você prefere?</h2>
-            {hideTopico && (
+            <h2 style={s.heading}>Para ativar o crescimento capilar, qual rota prefere?</h2>
+            {(hideTopico || hideOral) && (
               <div style={{ background:"#FFF8E7", border:"1px solid #FCD34D", borderRadius:8, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#78350F", lineHeight:1.6 }}>
-                <strong>Baseado nas suas respostas</strong>, o Minoxidil tópico não é recomendado para o seu perfil. Apresentamos apenas as opções compatíveis.
+                <strong>Blindagem clínica ativa:</strong> {hideOral && hideTopico ? "ambas as rotas estão restritas — consulte o suporte." : hideOral ? "a via sistêmica (oral) foi ocultada para preservar o seu perfil cardiovascular/metabólico." : "a via local (tópica) não é recomendada devido a sinais no couro cabeludo."}
               </div>
             )}
             {minoxOpts.map(opt => (
@@ -1151,12 +1254,14 @@ export default function Quiz() {
       return null;
     }
 
-    const isMultiStep = healthStep === 0 || healthStep === 2 || healthStep === 5;
-    const canContinueMulti = healthStep === 0
-      ? (answers.scalpConditions || []).length > 0
-      : healthStep === 2
-        ? (answers.treatments || []).length > 0
-        : (answers.conditions || []).length > 0;
+    const isMultiStep = healthStep === 0 || healthStep === 2 || healthStep === 3 || healthStep === 5;
+    const selIds_ = answers.treatments || [];
+    const perf_ = answers.performance || {};
+    const canContinueMulti =
+      healthStep === 0 ? (answers.scalpConditions || []).length > 0 :
+      healthStep === 2 ? (answers.treatments || []).length > 0 :
+      healthStep === 3 ? selIds_.every(id => perf_[id]) :
+                         (answers.conditions || []).length > 0;
 
     return (
       <div style={s.wrap}>
@@ -1402,7 +1507,7 @@ export default function Quiz() {
 
         <div style={{ marginTop:20, background:"#F0F7FA", borderRadius:12, padding:"12px 16px",
           fontSize:12, color:"#888", lineHeight:1.6 }}>
-          🔒 Seus dados são confidenciais e usados exclusivamente para envio da sua avaliação médica.
+          🔒 Seus dados são confidenciais e usados exclusivamente para envio da sua análise clínica especializada.
         </div>
       </div>
       <div style={s.cta}>
@@ -1426,12 +1531,36 @@ export default function Quiz() {
         <span style={{ fontSize:12, color:"#aaa" }}>PEDIDO</span>
       </div>
       <div style={s.body}>
-        <h2 style={{ ...s.heading, textAlign:"center" }}>Seu Plano Capilar</h2>
-        <p style={{ ...s.sub, textAlign:"center" }}>Analisamos suas respostas. Após a compra, um médico avaliará se o plano é indicado para você.</p>
+        <h2 style={{ ...s.heading, textAlign:"center" }}>Seu Protocolo Capilar Personalizado</h2>
+        <p style={{ ...s.sub, textAlign:"center" }}>Personalizamos sua jornada com base na sua segurança clínica e experiências passadas. Após a confirmação, um médico parceiro valida o plano em Análise Clínica Especializada.</p>
+
+        {(() => {
+          const fl = getSafetyFlags(answers.conditions, answers.scalpConditions, answers.performance);
+          const items = [];
+          if (fl.cardiac)   items.push("Via oral do Minoxidil restrita por perfil cardiovascular");
+          if (fl.endocrine) items.push("Inibidores de DHT via oral ocultados por perfil endócrino");
+          if (fl.hepatic || fl.renal) items.push("Ativos sistêmicos desativados — protocolo 100% tópico");
+          if (fl.pillAdverse) items.push("Reação adversa em comprimido anterior: bloqueio de via oral");
+          if (fl.finasteridaFail) items.push("Escalonamento sugerido: Dutasterida 0,5mg");
+          if (fl.dermatitis) items.push("Higiene Terapêutica incluída como item essencial");
+          if (!items.length) return null;
+          return (
+            <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:12,
+              padding:"16px 18px", marginBottom:20 }}>
+              <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.12em",
+                color:"#004358", textTransform:"uppercase", marginBottom:8 }}>
+                🛡️ Blindagem clínica aplicada
+              </div>
+              <ul style={{ paddingLeft:18, fontSize:13, color:"#1A1A1A", lineHeight:1.7 }}>
+                {items.map((t, i) => <li key={i}>{t}</li>)}
+              </ul>
+            </div>
+          );
+        })()}
 
         <div style={{ marginBottom:20 }}>
-          <h3 style={{ fontSize:16, fontWeight:700, marginBottom:4 }}>Tratamento principal</h3>
-          <p style={{ fontSize:13, color:"#888", marginBottom:14 }}>Combate a calvície e promove crescimento capilar. Sob prescrição médica.</p>
+          <h3 style={{ fontSize:16, fontWeight:700, marginBottom:4 }}>Protocolo de Alta Performance</h3>
+          <p style={{ fontSize:13, color:"#888", marginBottom:14 }}>Atua na raiz hormonal da queda e ativa a fase de crescimento dos folículos. Sob prescrição médica.</p>
 
           <div style={{ fontSize:13, fontWeight:600, marginBottom:10 }}>Qual formato você prefere?</div>
           <div style={{ display:"flex", gap:0, background:"#EDF5F8", borderRadius:10, padding:4, marginBottom:16 }}>
@@ -1454,19 +1583,19 @@ export default function Quiz() {
             border:"1px solid rgba(0,0,0,0.08)", marginBottom:12 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
               <div style={{ flex:1 }}>
-                <div style={{ fontSize:15, fontWeight:700, marginBottom:4 }}>Bloqueador de DHT + Ativador de crescimento</div>
-                <p style={{ fontSize:13, color:"#888", lineHeight:1.6 }}>Combinação que atua na principal causa da calvície (o hormônio DHT) e estimula novos fios.</p>
+                <div style={{ fontSize:15, fontWeight:700, marginBottom:4 }}>Inibidor Hormonal + Ativador Folicular</div>
+                <p style={{ fontSize:13, color:"#888", lineHeight:1.6 }}>Dupla sinérgica que freia a via do DHT (gatilho hormonal da queda) e estimula novos fios na fase anágena.</p>
               </div>
               <div style={{ width:48, height:48, background:"#EDF5F8", borderRadius:10,
                 display:"flex", alignItems:"center", justifyContent:"center",
                 flexShrink:0, marginLeft:12, fontSize:22 }}>💊</div>
             </div>
             <div style={{ marginTop:14, paddingTop:14, borderTop:"1px solid rgba(0,0,0,0.06)" }}>
-              <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.12em", color:"#aaa", marginBottom:8 }}>SUAS PREFERÊNCIAS</div>
+              <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.12em", color:"#aaa", marginBottom:8 }}>LEITURA PERSONALIZADA</div>
               <div style={{ display:"flex", gap:8 }}>
                 {[
-                  ["Bloqueador DHT", answers.medication || "Finasterida"],
-                  ["Estimulador",    answers.minoxidilType || "Minoxidil oral"],
+                  ["Inibidor Hormonal", answers.medication || "Finasterida"],
+                  ["Ativador Folicular", answers.minoxidilType || "Minoxidil oral"],
                 ].map(([label, val], i) => (
                   <div key={i} style={{ flex:1, background:"#F0F7FA", borderRadius:8, padding:"10px 10px" }}>
                     <div style={{ fontSize:10, color:"#aaa", marginBottom:3 }}>{label}</div>
@@ -1479,21 +1608,22 @@ export default function Quiz() {
         </div>
 
         {/* Caspa recommendation */}
-        {(answers.scalpConditions || []).includes("Caspa frequente") && (
+        {(() => { const sc = answers.scalpConditions || []; return sc.includes("Caspa frequente") || sc.includes("Psoríase (diagnóstico médico)") || sc.includes("Vermelhidão ou dor"); })() && (
           <div style={{ marginBottom:20 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
               <h3 style={{ fontSize:16, fontWeight:700 }}>Recomendado para você</h3>
               <span style={{ background:"#004358", color:"#fff", fontSize:9, fontWeight:700,
-                padding:"2px 8px", borderRadius:100, letterSpacing:"0.08em" }}>PERSONALIZADO</span>
+                padding:"2px 8px", borderRadius:100, letterSpacing:"0.08em" }}>ITEM ESSENCIAL</span>
             </div>
             <div style={{ background:"#fff", borderRadius:14, padding:"18px 16px",
               border:"1px solid rgba(0,0,0,0.08)" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                 <div style={{ flex:1 }}>
-                  <div style={{ fontSize:15, fontWeight:700, marginBottom:4 }}>Shampoo Antiqueda com Anticaspa</div>
+                  <div style={{ fontSize:15, fontWeight:700, marginBottom:4 }}>Higiene Terapêutica — Shampoo Clínico</div>
                   <p style={{ fontSize:13, color:"#888", lineHeight:1.6 }}>
-                    Você mencionou caspa frequente. Este shampoo complementa o tratamento, controla a oleosidade e cria um ambiente mais saudável para os folículos.
+                    A sua leitura indicou sinais no couro cabeludo. O Shampoo Clínico equilibra a microbiota, controla a oleosidade e prepara o terreno folicular para o Protocolo de Alta Performance.
                   </p>
+                  <div style={{ fontSize:12, color:"#004358", fontWeight:700, marginTop:8 }}>+ R$ 20/mês</div>
                 </div>
                 <div style={{ width:48, height:48, background:"#EDF5F8", borderRadius:10,
                   display:"flex", alignItems:"center", justifyContent:"center",
@@ -1505,7 +1635,7 @@ export default function Quiz() {
 
       </div>
       <div style={s.cta}>
-        <button style={s.ctaBtn} onClick={continueFromPlan}>Ver meu plano →</button>
+        <button style={s.ctaBtn} onClick={continueFromPlan}>Avançar para o checkout →</button>
       </div>
     </div>
   );
