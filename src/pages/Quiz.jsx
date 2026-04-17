@@ -552,7 +552,7 @@ export default function Quiz() {
                   {/* Sprite cell from /calvicie-tipos.png (2 cols × 3 rows) */}
                   <div style={{
                     width:"100%",
-                    aspectRatio:"1 / 1.18",
+                    aspectRatio:"241 / 270",
                     backgroundImage:"url('/calvicie-tipos.png')",
                     backgroundSize:"200% 300%",
                     backgroundPosition:`${ht.col * 100}% ${ht.row * 50}%`,
