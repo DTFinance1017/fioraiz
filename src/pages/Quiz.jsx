@@ -95,7 +95,7 @@ function Countdown({ onClose, onApply }) {
   const pad = n => String(n).padStart(2, "0");
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 500, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "flex-end" }}>
-      <div style={{ background: "#fff", width: "100%", borderRadius: "20px 20px 0 0", padding: "28px 24px 40px" }}>
+      <div style={{ background: "#fff", width: "100%", maxWidth: "100vw", boxSizing: "border-box", borderRadius: "20px 20px 0 0", padding: "28px clamp(16px, 4vw, 24px) 40px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#888" }}>Oferta de hoje</span>
           <button onClick={onClose} style={{ background: "#EDF5F8", border: "none", borderRadius: "50%", width: 28, height: 28, cursor: "pointer", fontSize: 14, color: "#666" }}>×</button>
@@ -1529,10 +1529,10 @@ export default function Quiz() {
       {showDiscount && !discountApplied && (
         <Countdown onClose={() => setShowDiscount(false)} onApply={() => { setDiscountApplied(true); setShowDiscount(false); }}/>
       )}
-      <div style={s.nav}>
-        <span style={{ fontSize:12, color:"#aaa" }}>QUESTIONÁRIO ✓</span>
-        <span style={{ fontSize:12, fontWeight:700, borderBottom:"2px solid #1A3040", paddingBottom:2 }}>TRATAMENTO</span>
-        <span style={{ fontSize:12, color:"#aaa" }}>PEDIDO</span>
+      <div style={{ ...s.nav, justifyContent:"center", gap:"clamp(8px, 3vw, 18px)", padding:"14px 12px" }}>
+        <span style={{ fontSize:"clamp(9px, 2.6vw, 11px)", color:"#aaa", letterSpacing:"0.06em", whiteSpace:"nowrap" }}>QUESTIONÁRIO ✓</span>
+        <span style={{ fontSize:"clamp(9px, 2.6vw, 11px)", fontWeight:700, borderBottom:"2px solid #1A3040", paddingBottom:2, whiteSpace:"nowrap" }}>TRATAMENTO</span>
+        <span style={{ fontSize:"clamp(9px, 2.6vw, 11px)", color:"#aaa", letterSpacing:"0.06em", whiteSpace:"nowrap" }}>PEDIDO</span>
       </div>
       <div style={s.body}>
         <h2 style={{ ...s.heading, textAlign:"center" }}>Seu Protocolo Capilar Personalizado</h2>
@@ -1646,12 +1646,12 @@ export default function Quiz() {
 
   // ── CHECKOUT ───────────────────────────────────────────────────────────────
   if (phase === "checkout") return (
-    <div style={s.wrap}>
+    <div style={{ ...s.wrap, paddingBottom: 0 }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}`}</style>
-      <div style={s.nav}>
-        <span style={{ fontSize:12, color:"#aaa" }}>QUESTIONÁRIO ✓</span>
-        <span style={{ fontSize:12, color:"#aaa" }}>TRATAMENTO ✓</span>
-        <span style={{ fontSize:12, fontWeight:700, borderBottom:"2px solid #1A3040", paddingBottom:2 }}>PEDIDO</span>
+      <div style={{ ...s.nav, justifyContent:"center", gap:"clamp(8px, 3vw, 18px)", padding:"14px 12px" }}>
+        <span style={{ fontSize:"clamp(9px, 2.6vw, 11px)", color:"#aaa", letterSpacing:"0.06em", whiteSpace:"nowrap" }}>QUESTIONÁRIO ✓</span>
+        <span style={{ fontSize:"clamp(9px, 2.6vw, 11px)", color:"#aaa", letterSpacing:"0.06em", whiteSpace:"nowrap" }}>TRATAMENTO ✓</span>
+        <span style={{ fontSize:"clamp(9px, 2.6vw, 11px)", fontWeight:700, borderBottom:"2px solid #1A3040", paddingBottom:2, whiteSpace:"nowrap" }}>PEDIDO</span>
       </div>
       <div style={s.body}>
         <h2 style={s.heading}>Frequência do plano</h2>
@@ -1665,23 +1665,24 @@ export default function Quiz() {
         <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:24 }}>
           {Object.entries(prices).map(([key, p]) => (
             <div key={key} onClick={() => setPlanPeriod(key)}
-              style={{ background:"#fff", borderRadius:14, padding:"18px 16px",
+              style={{ background:"#fff", borderRadius:14, padding:"18px 14px",
                 border:`1.5px solid ${planPeriod===key ? "#1A3040" : "rgba(0,0,0,0.1)"}`,
-                cursor:"pointer", position:"relative", transition:"all 0.2s" }}>
-              {p.badge && <span style={{ position:"absolute", top:-8, left:16, background:"#16a34a",
+                cursor:"pointer", position:"relative", transition:"all 0.2s",
+                boxSizing:"border-box", maxWidth:"100%", overflow:"hidden" }}>
+              {p.badge && <span style={{ position:"absolute", top:-8, left:14, background:"#16a34a",
                 color:"#fff", fontSize:10, padding:"2px 10px", borderRadius:100, fontWeight:700 }}>{p.badge}</span>}
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <div style={{ display:"flex", gap:12, alignItems:"center" }}>
-                  <div style={{ width:20, height:20, borderRadius:"50%",
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:10, minWidth:0 }}>
+                <div style={{ display:"flex", gap:10, alignItems:"center", minWidth:0, flexShrink:1 }}>
+                  <div style={{ width:20, height:20, borderRadius:"50%", flexShrink:0,
                     border:`2px solid ${planPeriod===key ? "#1A3040" : "#ddd"}`,
                     display:"flex", alignItems:"center", justifyContent:"center" }}>
                     {planPeriod===key && <div style={{ width:10, height:10, borderRadius:"50%", background:"#004358" }}/>}
                   </div>
-                  <span style={{ fontSize:15, fontWeight:600 }}>{p.label}</span>
+                  <span style={{ fontSize:"clamp(13px, 3.6vw, 15px)", fontWeight:600 }}>{p.label}</span>
                 </div>
-                <div style={{ textAlign:"right" }}>
-                  <div style={{ fontSize:17, fontWeight:800 }}>{p.intro}<span style={{ fontSize:12, fontWeight:400, color:"#888" }}>/mês</span></div>
-                  <div style={{ fontSize:11, color:"#aaa" }}>{p.after} a partir do {key==="semestral"?"7º":"4º"} mês</div>
+                <div style={{ textAlign:"right", flexShrink:0, minWidth:0 }}>
+                  <div style={{ fontSize:"clamp(14px, 4vw, 17px)", fontWeight:800, whiteSpace:"nowrap" }}>{p.intro}<span style={{ fontSize:"clamp(10px, 2.8vw, 12px)", fontWeight:400, color:"#888" }}>/mês</span></div>
+                  <div style={{ fontSize:"clamp(9px, 2.6vw, 11px)", color:"#aaa", whiteSpace:"nowrap" }}>{p.after} após {key==="semestral"?"6":"3"} meses</div>
                 </div>
               </div>
             </div>
@@ -1700,20 +1701,27 @@ export default function Quiz() {
         </div>
       </div>
 
-      <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"#fff",
-        borderTop:"1px solid rgba(0,0,0,0.08)", padding:"12px 20px", zIndex:90 }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:12 }}>
-          <div>
-            <div style={{ display:"flex", gap:8, alignItems:"baseline" }}>
-              <span style={{ fontSize:20, fontWeight:800 }}>{activePrice.intro}</span>
-              {discountApplied && <span style={{ fontSize:13, color:"#aaa", textDecoration:"line-through" }}>{activePrice.after}</span>}
+      <div style={{
+        position:"fixed", bottom:0, left:0, right:0,
+        background:"#fff", borderTop:"1px solid rgba(0,0,0,0.08)",
+        padding:"12px clamp(12px, 3.5vw, 20px)",
+        zIndex:90, boxSizing:"border-box", maxWidth:"100vw", width:"100%"
+      }}>
+        <div style={{
+          display:"flex", alignItems:"center", gap:10, maxWidth:520, margin:"0 auto",
+          flexWrap:"nowrap"
+        }}>
+          <div style={{ flexShrink:0, minWidth:0 }}>
+            <div style={{ display:"flex", gap:6, alignItems:"baseline", flexWrap:"wrap" }}>
+              <span style={{ fontSize:"clamp(16px, 4.5vw, 20px)", fontWeight:800, color:"#1A1A1A" }}>{activePrice.intro}</span>
+              {discountApplied && <span style={{ fontSize:12, color:"#aaa", textDecoration:"line-through" }}>{activePrice.after}</span>}
             </div>
-            <div style={{ fontSize:11, color:"#aaa" }}>pelos {activePrice.label} primeiros</div>
+            <div style={{ fontSize:10, color:"#aaa", whiteSpace:"nowrap" }}>pelos {activePrice.label} primeiros</div>
           </div>
           <button onClick={() => setPhase("done")}
-            style={{ flex:1, background:"#004358", color:"#fff", border:"none", borderRadius:100,
-              padding:"15px 20px", fontSize:14, fontWeight:700, cursor:"pointer",
-              fontFamily:"'Outfit',sans-serif" }}>
+            style={{ flex:1, minWidth:0, background:"#004358", color:"#fff", border:"none", borderRadius:100,
+              padding:"14px 16px", fontSize:"clamp(12px, 3.4vw, 14px)", fontWeight:700, cursor:"pointer",
+              fontFamily:"'Outfit',sans-serif", whiteSpace:"nowrap" }}>
             Continuar →
           </button>
         </div>
