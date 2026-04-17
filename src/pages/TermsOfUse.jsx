@@ -4,11 +4,11 @@ function FioLogo() {
   return (
     <div style={{ display:"flex", alignItems:"center", gap:7 }}>
       <svg width={10} height={22} viewBox="0 0 16 35" fill="none">
-        <ellipse cx="8" cy="4" rx="4" ry="4" fill="#0a0a0a" opacity="0.9"/>
+        <ellipse cx="8" cy="4" rx="4" ry="4" fill="#1A3040" opacity="0.9"/>
         <path d="M8 8 C7 12 9 15 8 19 C7 23 9 27 8 31 C7.5 33 8 34 8 35"
-          stroke="#0a0a0a" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+          stroke="#1A3040" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
       </svg>
-      <span style={{ fontFamily:"'Outfit',sans-serif", fontSize:18, fontWeight:700, color:"#0a0a0a", letterSpacing:"0.05em" }}>
+      <span style={{ fontFamily:"'Outfit',sans-serif", fontSize:18, fontWeight:700, color:"#1A3040", letterSpacing:"0.05em" }}>
         fio<span style={{ opacity:0.4 }}>raiz</span>
       </span>
     </div>
@@ -96,7 +96,7 @@ export default function TermsOfUse() {
   const font = `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Outfit',sans-serif;}`;
 
   return (
-    <div style={{ minHeight:"100vh", background:"#F9F8F6", fontFamily:"'Outfit',sans-serif", color:"#0a0a0a" }}>
+    <div style={{ minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif", color:"#1A3040" }}>
       <style>{font}</style>
 
       {/* Header */}
@@ -104,7 +104,7 @@ export default function TermsOfUse() {
         display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100 }}>
         <FioLogo />
         <button onClick={() => navigate(-1)}
-          style={{ background:"#f0eeeb", border:"none", borderRadius:100, padding:"8px 16px",
+          style={{ background:"#EDF5F8", border:"none", borderRadius:100, padding:"8px 16px",
             fontSize:13, fontWeight:600, cursor:"pointer", fontFamily:"'Outfit',sans-serif", color:"#333" }}>
           ← Voltar
         </button>

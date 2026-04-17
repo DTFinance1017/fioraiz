@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function FioRaizLogo({ color = "#0a0a0a", size = 18 }) {
+function FioRaizLogo({ color = "#1A3040", size = 18 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
       <svg width={size * 0.5} height={size * 1.1} viewBox="0 0 16 35" fill="none">
@@ -85,15 +85,15 @@ export default function ConsentForm() {
   }
 
   const s = {
-    wrap: { minHeight: "100vh", background: "#F9F8F6", fontFamily: "'Outfit',sans-serif", color: "#111" },
+    wrap: { minHeight: "100vh", background: "#F0F7FA", fontFamily: "'Outfit',sans-serif", color: "#111" },
     header: { background: "#fff", borderBottom: "1px solid rgba(0,0,0,0.07)", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" },
     body: { maxWidth: 720, margin: "0 auto", padding: "32px 20px 60px" },
     card: { background: "#fff", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 8, padding: "24px 20px", marginBottom: 12 },
     section: { marginBottom: 28 },
-    sectionTitle: { fontSize: 13, fontWeight: 700, color: "#0a0a0a", marginBottom: 10, letterSpacing: "-0.01em" },
+    sectionTitle: { fontSize: 13, fontWeight: 700, color: "#1A3040", marginBottom: 10, letterSpacing: "-0.01em" },
     sectionText: { fontSize: 13, color: "#555", lineHeight: 1.85, whiteSpace: "pre-wrap" },
-    checkbox: { width: 20, height: 20, borderRadius: 4, border: `2px solid ${accepted ? "#0a0a0a" : "rgba(0,0,0,0.2)"}`, background: accepted ? "#0a0a0a" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, transition: "all 0.2s" },
-    btn: { background: accepted ? "#0a0a0a" : "rgba(0,0,0,0.15)", color: "#fff", border: "none", padding: "17px 0", borderRadius: 100, fontSize: 14, fontWeight: 600, cursor: accepted ? "pointer" : "not-allowed", fontFamily: "'Outfit',sans-serif", width: "100%", transition: "all 0.2s", letterSpacing: "0.02em" },
+    checkbox: { width: 20, height: 20, borderRadius: 4, border: `2px solid ${accepted ? "#1A3040" : "rgba(0,0,0,0.2)"}`, background: accepted ? "#1A3040" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, transition: "all 0.2s" },
+    btn: { background: accepted ? "#1A3040" : "rgba(0,0,0,0.15)", color: "#fff", border: "none", padding: "17px 0", borderRadius: 100, fontSize: 14, fontWeight: 600, cursor: accepted ? "pointer" : "not-allowed", fontFamily: "'Outfit',sans-serif", width: "100%", transition: "all 0.2s", letterSpacing: "0.02em" },
   };
 
   if (confirmed) {
@@ -104,7 +104,7 @@ export default function ConsentForm() {
           <FioRaizLogo />
         </div>
         <div style={{ ...s.body, textAlign: "center", paddingTop: 80 }}>
-          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#0a0a0a", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#004358", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
             <span style={{ color: "#fff", fontSize: 28 }}>✓</span>
           </div>
           <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 12 }}>
@@ -113,7 +113,7 @@ export default function ConsentForm() {
           <p style={{ fontSize: 15, color: "#888", lineHeight: 1.7, maxWidth: 400, margin: "0 auto 32px" }}>
             Seu consentimento foi registrado. Você pode prosseguir com o questionário de saúde.
           </p>
-          <div style={{ background: "#f8f8f6", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 8, padding: "16px 20px", textAlign: "left", maxWidth: 400, margin: "0 auto" }}>
+          <div style={{ background: "#F0F7FA", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 8, padding: "16px 20px", textAlign: "left", maxWidth: 400, margin: "0 auto" }}>
             <div style={{ fontSize: 10, color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 8 }}>Registro</div>
             <div style={{ fontSize: 13, color: "#555", lineHeight: 1.7 }}>
               Data: {new Date().toLocaleDateString("pt-BR")}<br/>
@@ -136,7 +136,7 @@ export default function ConsentForm() {
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ fontSize: 11, color: "#aaa", letterSpacing: "0.06em" }}>TCLE — Telemedicina</div>
           <button onClick={() => navigate(-1)}
-            style={{ background:"#f0eeeb", border:"none", borderRadius:100, padding:"7px 14px",
+            style={{ background:"#EDF5F8", border:"none", borderRadius:100, padding:"7px 14px",
               fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"'Outfit',sans-serif", color:"#333" }}>
             ← Voltar
           </button>

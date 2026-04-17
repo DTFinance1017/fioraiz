@@ -8,18 +8,18 @@ function FioLogo() {
   return (
     <div style={{ display:"flex", alignItems:"center", gap:7 }}>
       <svg width={10} height={22} viewBox="0 0 16 35" fill="none">
-        <ellipse cx="8" cy="4" rx="4" ry="4" fill="#0a0a0a" opacity="0.9"/>
+        <ellipse cx="8" cy="4" rx="4" ry="4" fill="#1A3040" opacity="0.9"/>
         <path d="M8 8 C7 12 9 15 8 19 C7 23 9 27 8 31 C7.5 33 8 34 8 35"
-          stroke="#0a0a0a" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+          stroke="#1A3040" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
       </svg>
-      <span style={{ fontFamily:"'Outfit',sans-serif", fontSize:18, fontWeight:700, color:"#0a0a0a", letterSpacing:"0.05em" }}>
+      <span style={{ fontFamily:"'Outfit',sans-serif", fontSize:18, fontWeight:700, color:"#1A3040", letterSpacing:"0.05em" }}>
         fio<span style={{ opacity:0.4 }}>raiz</span>
       </span>
     </div>
   );
 }
 
-function Badge({ text, color="#f0eeeb", tc="#333" }) {
+function Badge({ text, color="#EDF5F8", tc="#333" }) {
   return (
     <span style={{ background:color, color:tc, fontSize:10, fontWeight:700, padding:"3px 10px",
       borderRadius:100, letterSpacing:"0.06em", textTransform:"uppercase" }}>{text}</span>
@@ -98,7 +98,7 @@ export default function Admin() {
 
   /* ── LOGIN ── */
   if (!authed) return (
-    <div style={{ minHeight:"100vh", background:"#f8f8f6", display:"flex", alignItems:"center",
+    <div style={{ minHeight:"100vh", background:"#F0F7FA", display:"flex", alignItems:"center",
       justifyContent:"center", fontFamily:"'Outfit',sans-serif", padding:20 }}>
       <style>{font}</style>
       <div style={{ background:"#fff", borderRadius:20, padding:"40px 36px", width:"100%", maxWidth:380,
@@ -125,7 +125,7 @@ export default function Admin() {
                 borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none" }} />
           </div>
           {error && <div style={{ fontSize:13, color:"#e53e3e", fontWeight:500 }}>{error}</div>}
-          <button type="submit" style={{ background:"#0a0a0a", color:"#fff", border:"none", borderRadius:100,
+          <button type="submit" style={{ background:"#004358", color:"#fff", border:"none", borderRadius:100,
             padding:"14px", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif",
             marginTop:8, transition:"opacity 0.2s" }}>
             Entrar
@@ -137,7 +137,7 @@ export default function Admin() {
 
   /* ── DETAIL MODAL ── */
   if (detail) return (
-    <div style={{ minHeight:"100vh", background:"#f8f8f6", fontFamily:"'Outfit',sans-serif", padding:"32px 5%" }}>
+    <div style={{ minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif", padding:"32px 5%" }}>
       <style>{font}</style>
       <button onClick={() => setDetail(null)} style={{ background:"none", border:"none", cursor:"pointer",
         fontSize:13, color:"#888", marginBottom:24, display:"flex", alignItems:"center", gap:6 }}>
@@ -171,7 +171,7 @@ export default function Admin() {
               <div key={label} style={{ display:"flex", gap:12, padding:"10px 0",
                 borderBottom:"1px solid rgba(0,0,0,0.05)" }}>
                 <div style={{ fontSize:12, color:"#aaa", minWidth:180, fontWeight:500 }}>{label}</div>
-                <div style={{ fontSize:13, color:"#0a0a0a", fontWeight:600 }}>{val || "—"}</div>
+                <div style={{ fontSize:13, color:"#1A3040", fontWeight:600 }}>{val || "—"}</div>
               </div>
             ))}
           </div>
@@ -184,7 +184,7 @@ export default function Admin() {
             Abrir WhatsApp
           </a>
           <a href={`mailto:${detail.email}`}
-            style={{ background:"#0a0a0a", color:"#fff", borderRadius:100, padding:"12px 24px",
+            style={{ background:"#004358", color:"#fff", borderRadius:100, padding:"12px 24px",
               fontSize:13, fontWeight:700, textDecoration:"none", display:"inline-block" }}>
             Enviar e-mail
           </a>
@@ -200,7 +200,7 @@ export default function Admin() {
 
   /* ── PAINEL ── */
   return (
-    <div style={{ minHeight:"100vh", background:"#f8f8f6", fontFamily:"'Outfit',sans-serif" }}>
+    <div style={{ minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif" }}>
       <style>{font}</style>
 
       {/* nav */}
@@ -211,13 +211,13 @@ export default function Admin() {
         <div style={{ display:"flex", gap:12, alignItems:"center" }}>
           <span style={{ fontSize:12, color:"#aaa" }}>Painel · {ADMIN_USER}</span>
           <button onClick={exportCSV}
-            style={{ background:"#0a0a0a", color:"#fff", border:"none", borderRadius:100,
+            style={{ background:"#004358", color:"#fff", border:"none", borderRadius:100,
               padding:"9px 20px", fontSize:12, fontWeight:600, cursor:"pointer",
               fontFamily:"'Outfit',sans-serif" }}>
             Exportar CSV
           </button>
           <button onClick={() => setAuthed(false)}
-            style={{ background:"#f0eeeb", color:"#333", border:"none", borderRadius:100,
+            style={{ background:"#EDF5F8", color:"#333", border:"none", borderRadius:100,
               padding:"9px 16px", fontSize:12, fontWeight:600, cursor:"pointer",
               fontFamily:"'Outfit',sans-serif" }}>
             Sair
@@ -275,7 +275,7 @@ export default function Admin() {
                   </div>
                   <div style={{ fontSize:12, color:"#aaa" }}>📱 {lead.whatsapp || "—"}</div>
                   {lead.answers?.hairType && <Badge text={lead.answers.hairType} />}
-                  {lead.answers?.medication && <Badge text={lead.answers.medication} color="#0a0a0a" tc="#fff" />}
+                  {lead.answers?.medication && <Badge text={lead.answers.medication} color="#1A3040" tc="#fff" />}
                 </div>
                 <div style={{ display:"flex", gap:8, alignItems:"center", flexShrink:0 }}>
                   <div style={{ fontSize:11, color:"#bbb", textAlign:"right" }}>{lead.timestamp}</div>
