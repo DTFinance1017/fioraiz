@@ -283,7 +283,7 @@ export default function App() {
           />
           <div style={{
             position: "absolute", top: 20, left: 20,
-            background: "#fff", borderRadius: 12, padding: "10px 16px",
+            background: "#f0eeeb", borderRadius: 12, padding: "10px 16px",
             boxShadow: "0 4px 20px rgba(0,0,0,0.12)"
           }}>
             <div style={{ fontSize: 10, color: "#aaa", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 2 }}>Tratamento</div>
@@ -364,7 +364,7 @@ export default function App() {
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
                 {[
                   { label:"Evidência científica",  sub:"Finasterida e Minoxidil são os únicos ativos aprovados pela FDA para calvície",  bg:"#0a0a0a", tc:"#fff", sc:"rgba(255,255,255,0.5)" },
-                  { label:"Prescrição médica", sub:"Tratamento avaliado e personalizado por profissional de saúde licenciado",            bg:"#f0f0ee", tc:"#0a0a0a", sc:"#666" },
+                  { label:"Prescrição médica", sub:"Tratamento avaliado e personalizado por profissional de saúde licenciado",            bg:"#f0eeeb", tc:"#0a0a0a", sc:"#666" },
                 ].map((s,i) => (
                   <div key={i} style={{ background:s.bg, borderRadius:16, padding:"24px 20px" }}>
                     <div style={{ fontSize:15, fontWeight:700, color:s.tc, letterSpacing:"-0.01em", lineHeight:1.2, marginBottom:8 }}>{s.label}</div>
@@ -389,7 +389,7 @@ export default function App() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }} className="three-col">
             {STEPS.map((s,i) => (
-              <div key={i} className="card-hover" style={{ background:"#fff", borderRadius:20, padding:"36px 28px", border:"1px solid rgba(0,0,0,0.06)", transition:"all 0.25s" }}>
+              <div key={i} className="card-hover" style={{ background:"#f0eeeb", borderRadius:20, padding:"36px 28px", border:"1px solid rgba(0,0,0,0.06)", transition:"all 0.25s" }}>
                 <div style={{ fontSize:11, fontWeight:700, color:"#ddd", letterSpacing:"0.1em", marginBottom:20 }}>{s.n}</div>
                 <h3 style={{ fontSize:20, fontWeight:700, marginBottom:12, letterSpacing:"-0.01em" }}>{s.title}</h3>
                 <p style={{ fontSize:14, color:"#888", lineHeight:1.7 }}>{s.desc}</p>
@@ -418,7 +418,7 @@ export default function App() {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:64 }} className="proto-grid">
             {PROTOCOLS.map((p,i) => (
               <div key={i} className={p.featured ? "proto-card-feat" : ""}
-                style={{ background: p.featured ? "#0a0a0a" : "#f8f8f6", borderRadius:20, padding:"28px 24px",
+                style={{ background: p.featured ? "#0a0a0a" : "#f0eeeb", borderRadius:20, padding:"28px 24px",
                   border: p.featured ? "none" : "1px solid rgba(0,0,0,0.06)", position:"relative",
                   boxShadow: p.featured ? "0 20px 60px rgba(0,0,0,0.18)" : "none" }}>
                 {p.featured && (
@@ -480,7 +480,7 @@ export default function App() {
               </button>
             </div>
 
-            <div style={{ background:"linear-gradient(135deg, #f0f0ee 0%, #e6e6e2 100%)", borderRadius:24, padding:32, overflow:"hidden" }}>
+            <div style={{ background:"#f0eeeb", borderRadius:24, padding:32, overflow:"hidden" }}>
               <div style={{ ...c.tag, marginBottom:16 }}>Resultado real</div>
               <div style={{ borderRadius:16, overflow:"hidden", height:260, marginBottom:20 }}>
                 <Img src={IMGS.carlos} alt="Paciente Fio Raiz"
