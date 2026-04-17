@@ -1,12 +1,22 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ADMIN_USER = "admfioraiz";
 const ADMIN_PASS = "171921*";
 const STORAGE_KEY = "fioraiz_leads";
 
-function FioLogo() {
+function FioLogo({ clickable = true }) {
+  const navigate = useNavigate();
   return (
-    <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+    <div
+      onClick={clickable ? () => navigate("/") : undefined}
+      style={{ display:"flex", alignItems:"center", gap:7,
+        cursor: clickable ? "pointer" : "default",
+        userSelect: "none",
+        WebkitTapHighlightColor: "transparent" }}
+      role={clickable ? "link" : undefined}
+      aria-label={clickable ? "Voltar para a home" : undefined}>
+
       <svg width={10} height={22} viewBox="0 0 16 35" fill="none">
         <ellipse cx="8" cy="4" rx="4" ry="4" fill="#1A3040" opacity="0.9"/>
         <path d="M8 8 C7 12 9 15 8 19 C7 23 9 27 8 31 C7.5 33 8 34 8 35"

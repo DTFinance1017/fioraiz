@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ── Logo ──────────────────────────────────────────────────────────────────────
 function Logo({ dark = true }) {
   const c = dark ? "#1A3040" : "#fff";
+  const navigate = useNavigate();
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+    <div onClick={() => navigate("/")}
+      style={{ display: "flex", alignItems: "center", gap: 7, cursor: "pointer", userSelect: "none", WebkitTapHighlightColor: "transparent" }}
+      role="link" aria-label="Voltar para a página inicial">
       <svg width={10} height={22} viewBox="0 0 16 35" fill="none">
         <ellipse cx="8" cy="4" rx="4" ry="4" fill={c} opacity="0.9"/>
         <path d="M8 8 C7 12 9 15 8 19 C7 23 9 27 8 31 C7.5 33 8 34 8 35"
@@ -343,11 +347,11 @@ export default function Quiz() {
 
   // ── Styles ─────────────────────────────────────────────────────────────────
   const s = {
-    wrap: { minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif", color:"#1A3040", display:"flex", flexDirection:"column" },
-    nav: { background:"#fff", padding:"14px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:"1px solid rgba(0,0,0,0.07)", position:"sticky", top:0, zIndex:100 },
+    wrap: { minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif", color:"#1A3040", display:"flex", flexDirection:"column", width:"100%", maxWidth:"100vw", overflowX:"hidden" },
+    nav: { background:"#fff", padding:"14px 16px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:"1px solid rgba(0,0,0,0.07)", position:"sticky", top:0, zIndex:100, width:"100%", maxWidth:"100vw", boxSizing:"border-box", gap:10 },
     progressBar: { height:3, background:"#004358", transition:"width 0.4s ease" },
     progressBg: { height:3, background:"rgba(0,0,0,0.08)" },
-    body: { flex:1, padding:"28px 20px 100px", maxWidth:520, margin:"0 auto", width:"100%" },
+    body: { flex:1, padding:"28px clamp(14px, 4vw, 20px) 100px", maxWidth:520, margin:"0 auto", width:"100%", boxSizing:"border-box" },
     tag: { fontSize:10, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:"#888", marginBottom:12 },
     heading: { fontSize:"clamp(22px,5vw,32px)", fontWeight:800, lineHeight:1.2, letterSpacing:"-0.02em", marginBottom:8 },
     sub: { fontSize:14, color:"#888", lineHeight:1.65, marginBottom:24, fontWeight:400 },

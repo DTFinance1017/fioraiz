@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 
 function FioLogo() {
+  const navigate = useNavigate();
   return (
-    <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+    <div onClick={() => navigate("/")} style={{ display:"flex", alignItems:"center", gap:7, cursor:"pointer", userSelect:"none", WebkitTapHighlightColor:"transparent" }} role="link" aria-label="Voltar para a home">
       <svg width={10} height={22} viewBox="0 0 16 35" fill="none">
         <ellipse cx="8" cy="4" rx="4" ry="4" fill="#1A3040" opacity="0.9"/>
         <path d="M8 8 C7 12 9 15 8 19 C7 23 9 27 8 31 C7.5 33 8 34 8 35"
@@ -96,7 +97,7 @@ export default function PrivacyPolicy() {
   const font = `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Outfit',sans-serif;}`;
 
   return (
-    <div style={{ minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif", color:"#1A3040" }}>
+    <div style={{ minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif", color:"#1A3040", width:"100%", maxWidth:"100vw", overflowX:"hidden" }}>
       <style>{font}</style>
 
       {/* Header */}

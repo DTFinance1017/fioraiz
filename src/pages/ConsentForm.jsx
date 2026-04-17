@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function FioRaizLogo({ color = "#1A3040", size = 18 }) {
+  const navigate = useNavigate();
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+    <div onClick={() => navigate("/")} style={{ display: "flex", alignItems: "center", gap: 7, cursor: "pointer", userSelect: "none", WebkitTapHighlightColor: "transparent" }} role="link" aria-label="Voltar para a home">
       <svg width={size * 0.5} height={size * 1.1} viewBox="0 0 16 35" fill="none">
         <ellipse cx="8" cy="4" rx="4" ry="4" fill={color} opacity="0.9"/>
         <path d="M8 8 C7 12 9 15 8 19 C7 23 9 27 8 31 C7.5 33 8 34 8 35"
@@ -85,7 +86,7 @@ export default function ConsentForm() {
   }
 
   const s = {
-    wrap: { minHeight: "100vh", background: "#F0F7FA", fontFamily: "'Outfit',sans-serif", color: "#111" },
+    wrap: { minHeight: "100vh", background: "#F0F7FA", fontFamily: "'Outfit',sans-serif", color: "#111", width: "100%", maxWidth: "100vw", overflowX: "hidden" },
     header: { background: "#fff", borderBottom: "1px solid rgba(0,0,0,0.07)", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" },
     body: { maxWidth: 720, margin: "0 auto", padding: "32px 20px 60px" },
     card: { background: "#fff", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 8, padding: "24px 20px", marginBottom: 12 },
