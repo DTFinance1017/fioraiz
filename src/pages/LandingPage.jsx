@@ -279,26 +279,9 @@ export default function App() {
             autoPlay muted loop playsInline
             style={{ position: "absolute", top: 0, left: 0,
               width: "100%", height: "100%",
-              objectFit: "cover", objectPosition: "center 15%",
-              transform: "scale(2.2)", transformOrigin: "50% 20%",
+              objectFit: "cover", objectPosition: "center 20%",
               background: "transparent" }}
           />
-          <div style={{
-            position: "absolute", top: 20, left: 20,
-            background: "#f0eeeb", borderRadius: 12, padding: "10px 16px",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.12)"
-          }}>
-            <div style={{ fontSize: 10, color: "#aaa", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 2 }}>Tratamento</div>
-            <div style={{ fontSize: 13, color: "#0a0a0a", fontWeight: 700 }}>Finasterida + Minoxidil</div>
-          </div>
-          <div style={{
-            position: "absolute", bottom: 20, right: 20,
-            background: "#0a0a0a", borderRadius: 100, padding: "10px 18px", border: "none",
-            display: "flex", alignItems: "center", gap: 8
-          }}>
-            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#4ade80", flexShrink: 0 }}/>
-            <span style={{ fontSize: 12, color: "#fff", fontWeight: 600 }}>Entrega discreta garantida</span>
-          </div>
         </div>
       </section>
 
