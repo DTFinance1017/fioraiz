@@ -60,11 +60,47 @@ const TESTIMONIALS = [
 ];
 
 const BENEFITS = [
-  "Finasterida + Minoxidil prescritos por médico",
+  "Protocolo personalizado prescrito pelo médico",
+  "Finasterida, Dutasterida e Minoxidil disponíveis",
   "Avaliação clínica assíncrona — sem videochamada",
-  "Farmácia manipulação certificada pela ANVISA",
+  "Farmácias de manipulação certificadas pela ANVISA",
   "Entrega discreta em até 3 dias úteis",
-  "Suporte contínuo via WhatsApp",
+  "Ajuste de protocolo contínuo via WhatsApp",
+];
+
+const PROTOCOLS = [
+  {
+    name: "Básico",
+    label: "Para queda leve a moderada",
+    ideal: "Ideal para início de tratamento ou queda incipiente. A combinação mais estudada da medicina capilar.",
+    featured: false,
+    items: [
+      { name: "Finasterida 1mg", detail: "Oral · 1×/dia · Bloqueia 70% do DHT" },
+      { name: "Minoxidil 5% tópico", detail: "Solução · 2×/dia · Estimula crescimento" },
+      { name: "Biotina + Zinco", detail: "Suplemento · Suporte nutricional ao fio" },
+    ],
+  },
+  {
+    name: "Avançado",
+    label: "Para queda agressiva ou hereditária",
+    ideal: "Indicado para casos que não responderam ao básico, histórico familiar forte ou queda acelerada.",
+    featured: true,
+    items: [
+      { name: "Dutasterida 0,5mg", detail: "Oral · 1×/dia · Bloqueia 90% do DHT" },
+      { name: "Minoxidil oral 0,5–1mg", detail: "Comprimido · 1×/dia · Ação sistêmica" },
+      { name: "Minoxidil 5% tópico", detail: "Solução · 1×/dia · Estimula crescimento" },
+    ],
+  },
+  {
+    name: "Manutenção",
+    label: "Para consolidar e simplificar",
+    ideal: "Para quem já estabilizou a queda e busca praticidade no dia a dia com menos aplicações.",
+    featured: false,
+    items: [
+      { name: "Spray combinado", detail: "Minoxidil + Finasterida tópica · 1×/dia" },
+      { name: "Biotina + Zinco + Vit. D", detail: "Suplemento · Suporte capilar completo" },
+    ],
+  },
 ];
 
 export default function App() {
@@ -123,6 +159,8 @@ export default function App() {
           .hero-video-wrap{height:360px!important;}
           .hide-mob{display:none!important;}
           .show-mob{display:flex!important;}
+          .proto-grid{grid-template-columns:1fr!important;}
+          .proto-card-feat{order:-1;}
         }
       `}</style>
 
@@ -361,55 +399,97 @@ export default function App() {
 
       {/* TREATMENT */}
       <section id="tratamento" style={{ padding:"80px 5%", background:"#fff" }}>
-        <div style={{ maxWidth:1100, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1fr", gap:72, alignItems:"center" }} className="two-col">
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
 
-          {/* Text */}
-          <div>
-            <div style={{ ...c.tag, marginBottom:16 }}>Tudo incluso</div>
-            <h2 style={{ fontSize:"clamp(28px,3.5vw,44px)", fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.1, marginBottom:20 }}>
-              Tudo que você precisa,<br/>num só lugar.
+          {/* Header */}
+          <div style={{ textAlign:"center", marginBottom:52 }}>
+            <div style={{ ...c.tag, marginBottom:12 }}>Tudo incluso</div>
+            <h2 style={{ fontSize:"clamp(28px,4vw,48px)", fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.1, marginBottom:16 }}>
+              Protocolo personalizado<br/>para cada fase.
             </h2>
-            <p style={{ fontSize:15, color:"#666", lineHeight:1.8, marginBottom:28 }}>
-              Acompanhe seu progresso, fale com seu médico e gerencie o tratamento — tudo pelo WhatsApp.
+            <p style={{ fontSize:15, color:"#666", lineHeight:1.75, maxWidth:520, margin:"0 auto" }}>
+              Seu médico avalia seu perfil e prescreve o protocolo ideal — do básico ao avançado.
             </p>
-            {BENEFITS.map((b,i) => (
-              <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
-                <div style={{ width:20, height:20, borderRadius:"50%", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                  <span style={{ color:"#fff", fontSize:9, fontWeight:700 }}>✓</span>
-                </div>
-                <span style={{ fontSize:14, color:"#333", fontWeight:500 }}>{b}</span>
-              </div>
-            ))}
-            <button className="btn" onClick={() => navigate("/avaliacao")} style={{ ...c.ctaLg, marginTop:32, padding:"16px 36px", fontSize:14 }}>Começar agora</button>
           </div>
 
-          {/* Visual card */}
-          <div style={{ background:"linear-gradient(135deg, #f0f0ee 0%, #e6e6e2 100%)", borderRadius:24, padding:32, overflow:"hidden" }}>
-            <div style={{ ...c.tag, marginBottom:20 }}>Protocolo Fio Raiz</div>
+          {/* Protocol cards */}
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:64 }} className="proto-grid">
+            {PROTOCOLS.map((p,i) => (
+              <div key={i} className={p.featured ? "proto-card-feat" : ""}
+                style={{ background: p.featured ? "#0a0a0a" : "#f8f8f6", borderRadius:20, padding:"28px 24px",
+                  border: p.featured ? "none" : "1px solid rgba(0,0,0,0.06)", position:"relative",
+                  boxShadow: p.featured ? "0 20px 60px rgba(0,0,0,0.18)" : "none" }}>
+                {p.featured && (
+                  <span style={{ position:"absolute", top:16, right:16, fontSize:9, fontWeight:800,
+                    background:"#fff", color:"#0a0a0a", padding:"3px 10px", borderRadius:100, letterSpacing:"0.08em" }}>
+                    MAIS POTENTE
+                  </span>
+                )}
+                <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
+                  color: p.featured ? "rgba(255,255,255,0.3)" : "#bbb", marginBottom:6 }}>Protocolo</div>
+                <h3 style={{ fontSize:24, fontWeight:800, letterSpacing:"-0.02em",
+                  color: p.featured ? "#fff" : "#0a0a0a", marginBottom:4 }}>{p.name}</h3>
+                <div style={{ fontSize:11, fontWeight:600, color: p.featured ? "rgba(255,255,255,0.5)" : "#888",
+                  marginBottom:8, lineHeight:1.4 }}>{p.label}</div>
+                <p style={{ fontSize:12, color: p.featured ? "rgba(255,255,255,0.38)" : "#aaa",
+                  lineHeight:1.65, marginBottom:20, paddingBottom:20,
+                  borderBottom: p.featured ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)" }}>
+                  {p.ideal}
+                </p>
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {p.items.map((item,j) => (
+                    <div key={j} style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
+                      <div style={{ width:16, height:16, borderRadius:"50%", flexShrink:0, marginTop:2,
+                        background: p.featured ? "rgba(255,255,255,0.15)" : "#0a0a0a",
+                        display:"flex", alignItems:"center", justifyContent:"center" }}>
+                        <span style={{ color:"#fff", fontSize:8, fontWeight:700 }}>✓</span>
+                      </div>
+                      <div>
+                        <div style={{ fontSize:13, fontWeight:700, color: p.featured ? "#fff" : "#0a0a0a", lineHeight:1.3 }}>{item.name}</div>
+                        <div style={{ fontSize:11, color: p.featured ? "rgba(255,255,255,0.38)" : "#aaa", marginTop:1 }}>{item.detail}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
 
-            {/* Carlos foto */}
-            <div style={{ borderRadius:16, overflow:"hidden", marginBottom:20, height:200 }}>
-              <Img src={IMGS.carlos} alt="Paciente Fio Raiz"
-                gradient="linear-gradient(135deg, #ddd, #ccc)"
-                style={{ width:"100%", height:"100%", objectPosition:"50% 15%" }} />
-            </div>
+          {/* Bottom: benefits + photo */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:72, alignItems:"center" }} className="two-col">
 
-            <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:16 }}>
-              {[
-                { name:"Finasterida 1mg", detail:"Oral · 1×/dia · Bloqueia DHT", badge:"⭐ Mais eficaz" },
-                { name:"Minoxidil 5%",    detail:"Tópico · 2×/dia · Estimula crescimento", badge:null },
-                { name:"Biotina + Zinco", detail:"Suplemento · Suporte nutricional", badge:null },
-              ].map((p,i) => (
-                <div key={i} style={{ background:"#fff", borderRadius:12, padding:"14px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                  <div>
-                    <div style={{ fontSize:14, fontWeight:700, marginBottom:2 }}>{p.name}</div>
-                    <div style={{ fontSize:11, color:"#aaa" }}>{p.detail}</div>
+            <div>
+              <h3 style={{ fontSize:"clamp(22px,2.8vw,32px)", fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.15, marginBottom:16 }}>
+                Tudo que você precisa,<br/>num só lugar.
+              </h3>
+              <p style={{ fontSize:15, color:"#666", lineHeight:1.8, marginBottom:28 }}>
+                Acompanhe seu progresso, fale com seu médico e ajuste o protocolo — tudo pelo WhatsApp.
+              </p>
+              {BENEFITS.map((b,i) => (
+                <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
+                  <div style={{ width:20, height:20, borderRadius:"50%", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                    <span style={{ color:"#fff", fontSize:9, fontWeight:700 }}>✓</span>
                   </div>
-                  {p.badge && <span style={{ fontSize:10, background:"#0a0a0a", color:"#fff", padding:"3px 10px", borderRadius:100, fontWeight:600, whiteSpace:"nowrap" }}>{p.badge}</span>}
+                  <span style={{ fontSize:14, color:"#333", fontWeight:500 }}>{b}</span>
                 </div>
               ))}
+              <button className="btn" onClick={() => navigate("/avaliacao")} style={{ ...c.ctaLg, marginTop:32, padding:"16px 36px", fontSize:14 }}>
+                Fazer avaliação gratuita
+              </button>
             </div>
 
+            <div style={{ background:"linear-gradient(135deg, #f0f0ee 0%, #e6e6e2 100%)", borderRadius:24, padding:32, overflow:"hidden" }}>
+              <div style={{ ...c.tag, marginBottom:16 }}>Resultado real</div>
+              <div style={{ borderRadius:16, overflow:"hidden", height:260, marginBottom:20 }}>
+                <Img src={IMGS.carlos} alt="Paciente Fio Raiz"
+                  gradient="linear-gradient(135deg, #ddd, #ccc)"
+                  style={{ width:"100%", height:"100%", objectPosition:"50% 15%" }} />
+              </div>
+              <p style={{ fontSize:13, color:"#666", lineHeight:1.7, fontStyle:"italic" }}>
+                "Fiz tudo pelo celular. O tratamento chegou em 3 dias. No 5º mês minha namorada perguntou o que eu tinha feito no cabelo."
+              </p>
+              <p style={{ fontSize:11, color:"#aaa", marginTop:8 }}>— Rafael M., 34 anos · São Paulo</p>
+            </div>
 
           </div>
         </div>
