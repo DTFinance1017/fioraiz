@@ -335,6 +335,7 @@ export default function Quiz() {
   function answerHair(key, val) {
     const updated = { ...answers, [key]: val };
     setAnswers(updated);
+    if (key === "gradual" && val === "Repentina") { setPhase("abrupt-stop"); return; }
     if (hairStep < 4) setHairStep(p => p + 1);
     else setPhase("proof");
   }
@@ -343,7 +344,7 @@ export default function Quiz() {
     const updated = { ...answers, [key]: val };
     setAnswers(updated);
     const sel = updated.treatments || [];
-    if (healthStep === 0) { setHealthStep(1); }
+    if (healthStep === 0) { setHealthStep(1); } // scalp multi handled by nextHealthMulti
     else if (healthStep === 1) { val === "Sim" ? setHealthStep(2) : setHealthStep(5); }
     else if (healthStep === 3) { sel.includes("Minoxidil oral") ? setHealthStep(4) : setHealthStep(5); }
     else if (healthStep === 4) { setHealthStep(5); }
@@ -352,6 +353,12 @@ export default function Quiz() {
   }
 
   function nextHealthMulti() {
+    if (healthStep === 0) {
+      const sc = answers.scalpConditions || [];
+      if (sc.includes("Queda de pelos em outras partes do corpo")) { setPhase("presential-stop"); return; }
+      setHealthStep(1);
+      return;
+    }
     const sel = answers.treatments || [];
     if (healthStep === 2) {
       if (sel.includes("Minoxidil 5%")) setHealthStep(3);
@@ -513,19 +520,21 @@ export default function Quiz() {
               const active = answers.hairType === ht.label;
               return (
                 <div key={ht.id} onClick={() => answerHair("hairType", ht.label)}
-                  style={{ background: active ? "#1A3040" : "#fff", borderRadius:14, padding:"12px 10px",
+                  style={{ background: active ? "#004358" : "#EDF5F8", borderRadius:14, padding:"12px 10px",
                     textAlign:"center", cursor:"pointer",
-                    border:`2px solid ${active ? "#1A3040" : "rgba(0,0,0,0.08)"}`,
-                    transition:"all 0.15s", position:"relative" }}>
+                    border:`2px solid ${active ? "#004358" : "#c8dde6"}`,
+                    transition:"all 0.15s", position:"relative", overflow:"hidden" }}>
                   {active && (
                     <div style={{ position:"absolute", top:8, right:8, width:20, height:20, borderRadius:"50%",
-                      background:"#fff", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                      <span style={{ fontSize:11, fontWeight:700, color:"#1A3040" }}>✓</span>
+                      background:"#fff", display:"flex", alignItems:"center", justifyContent:"center", zIndex:2 }}>
+                      <span style={{ fontSize:11, fontWeight:700, color:"#004358" }}>✓</span>
                     </div>
                   )}
-                  <img src={ht.img} alt={ht.label}
-                    style={{ width:"100%", height:"auto", objectFit:"contain", borderRadius:8, display:"block",
-                      filter: active ? "brightness(0.8)" : "none" }} />
+                  <div style={{ width:"100%", height:110, overflow:"hidden", borderRadius:8, display:"flex", alignItems:"flex-end" }}>
+                    <img src={ht.img} alt={ht.label}
+                      style={{ width:"100%", height:"auto", objectFit:"cover", objectPosition:"bottom",
+                        filter: active ? "brightness(0.85)" : "none", display:"block" }} />
+                  </div>
                   <div style={{ fontSize:13, fontWeight:600, marginTop:8,
                     color: active ? "#fff" : "#1A3040" }}>{ht.label}</div>
                 </div>
@@ -662,6 +671,112 @@ export default function Quiz() {
     );
   }
 
+  // ── PARADA ABRUPTA ────────────────────────────────────────────────────────
+  if (phase === "abrupt-stop") return (
+    <div style={s.wrap}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}`}</style>
+      <div style={s.nav}><Logo /></div>
+      <div style={s.progressBg}><div style={{ ...s.progressBar, width:"22%" }}/></div>
+      <div style={s.body}>
+        <div style={{ textAlign:"center", padding:"40px 0 20px" }}>
+          <div style={{ width:64, height:64, borderRadius:"50%", background:"#FFF8E7",
+            border:"2px solid #FCD34D", display:"flex", alignItems:"center",
+            justifyContent:"center", margin:"0 auto 24px", fontSize:28 }}>⚠️</div>
+          <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.14em",
+            textTransform:"uppercase", color:"#aaa", marginBottom:12 }}>Atenção</div>
+          <h2 style={{ fontSize:"clamp(22px,5vw,30px)", fontWeight:800,
+            letterSpacing:"-0.02em", lineHeight:1.2, color:"#1A3040", marginBottom:16 }}>
+            Vamos pausar aqui.
+          </h2>
+          <p style={{ fontSize:15, color:"#555", lineHeight:1.75, maxWidth:420, margin:"0 auto 28px" }}>
+            Você mencionou que a queda de cabelo aconteceu de forma <strong>rápida, em dias ou semanas</strong>.
+          </p>
+        </div>
+        <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:14,
+          padding:"24px 20px", marginBottom:20 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:"#1A3040", marginBottom:10 }}>
+            Por que isso importa?
+          </div>
+          <p style={{ fontSize:14, color:"#555", lineHeight:1.75 }}>
+            Quedas abruptas podem ter causas que vão além da alopecia androgenética — como estresse intenso
+            (eflúvio telógeno), deficiências nutricionais, condições hormonais ou reações a medicamentos.
+          </p>
+          <p style={{ fontSize:14, color:"#555", lineHeight:1.75, marginTop:10 }}>
+            Nesses casos, o nosso protocolo pode não ser o mais indicado <em>sem uma avaliação médica presencial</em> primeiro.
+          </p>
+        </div>
+        <div style={{ background:"#fff", border:"1px solid rgba(0,0,0,0.08)", borderRadius:14,
+          padding:"20px", marginBottom:24 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:"#1A3040", marginBottom:8 }}>O que recomendamos:</div>
+          <ul style={{ paddingLeft:18, fontSize:14, color:"#555", lineHeight:1.85 }}>
+            <li>Consulte um dermatologista ou tricologista presencialmente</li>
+            <li>Realize exames de sangue básicos (ferritina, TSH, zinco, vitamina D)</li>
+            <li>Depois da avaliação, volte à Fio Raiz — teremos prazer em ajudar</li>
+          </ul>
+        </div>
+        <button style={{ ...s.ctaBtn, background:"#1A3040", marginBottom:12 }}
+          onClick={() => { setHairStep(1); setPhase("quiz-hair"); }}>
+          Entendido — quero continuar mesmo assim
+        </button>
+        <button style={{ background:"none", border:"none", color:"#aaa", fontSize:13,
+          cursor:"pointer", width:"100%", padding:"12px 0", fontFamily:"'Outfit',sans-serif" }}
+          onClick={() => { setHairStep(0); setPhase("quiz-hair"); }}>
+          ← Voltar
+        </button>
+      </div>
+    </div>
+  );
+
+  // ── PARADA PRESENCIAL ──────────────────────────────────────────────────────
+  if (phase === "presential-stop") return (
+    <div style={s.wrap}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}`}</style>
+      <div style={s.nav}><Logo /></div>
+      <div style={s.progressBg}><div style={{ ...s.progressBar, width:"65%" }}/></div>
+      <div style={s.body}>
+        <div style={{ textAlign:"center", padding:"40px 0 20px" }}>
+          <div style={{ width:64, height:64, borderRadius:"50%", background:"#F0F7FA",
+            border:"2px solid #c8dde6", display:"flex", alignItems:"center",
+            justifyContent:"center", margin:"0 auto 24px", fontSize:28 }}>🩺</div>
+          <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.14em",
+            textTransform:"uppercase", color:"#aaa", marginBottom:12 }}>Avaliação necessária</div>
+          <h2 style={{ fontSize:"clamp(22px,5vw,30px)", fontWeight:800,
+            letterSpacing:"-0.02em", lineHeight:1.2, color:"#1A3040", marginBottom:16 }}>
+            Recomendamos uma consulta presencial.
+          </h2>
+          <p style={{ fontSize:15, color:"#555", lineHeight:1.75, maxWidth:420, margin:"0 auto 28px" }}>
+            Você indicou <strong>queda de pelos em outras partes do corpo</strong>, o que pode sinalizar condições sistêmicas que exigem avaliação médica mais ampla.
+          </p>
+        </div>
+        <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:14,
+          padding:"24px 20px", marginBottom:20 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:"#1A3040", marginBottom:10 }}>
+            Por que uma consulta presencial?
+          </div>
+          <p style={{ fontSize:14, color:"#555", lineHeight:1.75 }}>
+            A queda de pelos em sobrancelhas, cílios, corpo ou barba pode estar associada a condições como alopecia areata,
+            doenças autoimunes ou desequilíbrios hormonais. Uma avaliação completa é fundamental para o diagnóstico correto.
+          </p>
+        </div>
+        <div style={{ background:"#fff", border:"1px solid rgba(0,0,0,0.08)", borderRadius:14,
+          padding:"20px", marginBottom:24 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:"#1A3040", marginBottom:8 }}>Próximos passos:</div>
+          <ul style={{ paddingLeft:18, fontSize:14, color:"#555", lineHeight:1.85 }}>
+            <li>Procure um dermatologista especialista em cabelo e pelos</li>
+            <li>Mencione todos os locais onde percebeu a queda</li>
+            <li>Após diagnóstico, a Fio Raiz pode complementar o seu tratamento</li>
+          </ul>
+        </div>
+        <button style={{ background:"none", border:"1px solid #c8dde6", color:"#1A3040",
+          borderRadius:100, padding:"14px 0", fontSize:14, fontWeight:600,
+          cursor:"pointer", width:"100%", fontFamily:"'Outfit',sans-serif", marginBottom:12 }}
+          onClick={() => { setHealthStep(0); setPhase("quiz-health"); }}>
+          ← Voltar ao questionário
+        </button>
+      </div>
+    </div>
+  );
+
   // ── PROVA SOCIAL ───────────────────────────────────────────────────────────
   if (phase === "proof") return (
     <div style={s.wrap}>
@@ -784,31 +899,48 @@ export default function Quiz() {
     const pct = 50 + Math.round((healthStep / totalHealthSteps) * 45);
 
     function renderHealthStep() {
-      // Step 0 – Sinais no couro cabeludo
-      if (healthStep === 0) return (
-        <div>
-          <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
-          <h2 style={s.heading}>Você notou algum desses sinais no couro cabeludo nos últimos meses?</h2>
-          <div style={s.why}>
-            <div style={{ fontSize:12, fontWeight:700, marginBottom:4 }}>Por que estamos perguntando?</div>
-            <p style={{ fontSize:13, color:"#666", lineHeight:1.6 }}>Coceira intensa, feridas ou irritação podem indicar condições que precisam de atenção antes de iniciar o tratamento.</p>
+      // Step 0 – Sinais no couro cabeludo (multi-select)
+      if (healthStep === 0) {
+        const SCALP_OPTS = [
+          "Coceira intensa ou irritação",
+          "Vermelhidão ou dor",
+          "Psoríase (diagnóstico médico)",
+          "Caspa frequente",
+          "Queda de pelos em outras partes do corpo",
+          "Feridas ou lesões",
+          "Nenhum desses",
+        ];
+        const sel0 = answers.scalpConditions || [];
+        const toggle0 = (opt) => {
+          let next;
+          if (opt === "Nenhum desses") { next = sel0.includes(opt) ? [] : ["Nenhum desses"]; }
+          else { const without = sel0.filter(x => x !== "Nenhum desses"); next = without.includes(opt) ? without.filter(x => x !== opt) : [...without, opt]; }
+          setAnswers(p => ({ ...p, scalpConditions: next }));
+        };
+        return (
+          <div>
+            <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
+            <h2 style={s.heading}>Você notou algum desses sinais no couro cabeludo nos últimos meses?</h2>
+            <p style={s.sub}>Selecione todos que se aplicam.</p>
+            <div style={s.why}>
+              <div style={{ fontSize:12, fontWeight:700, marginBottom:4 }}>Por que estamos perguntando?</div>
+              <p style={{ fontSize:13, color:"#666", lineHeight:1.6 }}>Algumas condições precisam ser avaliadas antes de iniciar o tratamento capilar.</p>
+            </div>
+            {SCALP_OPTS.map(opt => (
+              <button key={opt} style={{ ...s.option(sel0.includes(opt)), alignItems:"center" }}
+                onClick={() => toggle0(opt)}>
+                <div style={{ width:18, height:18, borderRadius:4, flexShrink:0,
+                  border:`2px solid ${sel0.includes(opt) ? "#fff" : "#ddd"}`,
+                  background: sel0.includes(opt) ? "#fff" : "transparent",
+                  display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  {sel0.includes(opt) && <span style={{ color:"#1A3040", fontSize:11, fontWeight:700 }}>✓</span>}
+                </div>
+                <span style={{ fontSize:14 }}>{opt}</span>
+              </button>
+            ))}
           </div>
-          {[
-            { val:"Sim", label:"Sim — coceira, irritação, feridas ou vermelhidão." },
-            { val:"Não", label:"Não — couro cabeludo sem alterações." },
-          ].map(opt => (
-            <button key={opt.val} style={s.option(answers.scalp === opt.val)}
-              onClick={() => answerHealthSingle("scalp", opt.val)}>
-              <div style={{ width:20, height:20, borderRadius:"50%",
-                border:`2px solid ${answers.scalp === opt.val ? "#fff" : "#ddd"}`,
-                display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                {answers.scalp === opt.val && <div style={{ width:10, height:10, borderRadius:"50%", background:"#fff" }}/>}
-              </div>
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      );
+        );
+      }
 
       // Step 1 – Tratamento nos últimos 12 meses?
       if (healthStep === 1) return (
@@ -966,32 +1098,44 @@ export default function Quiz() {
       );
 
       // Step 7 – Tipo de Minoxidil preferido
-      if (healthStep === 7) return (
-        <div>
-          <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
-          <h2 style={s.heading}>Para estimular o crescimento, qual opção você prefere?</h2>
-          {[
-            { val:"Minoxidil oral", label:"Minoxidil oral", sub:"Comprimido diário — máxima cobertura sistêmica" },
-            { val:"Minoxidil 5% tópico", label:"Minoxidil 5% tópico", sub:"Aplicado direto no couro — ação local" },
-            { val:"Ainda não sei", label:"Ainda não sei", sub:"Deixo o médico decidir o que é melhor" },
-          ].map(opt => (
-            <button key={opt.val}
-              style={{ ...s.option(answers.minoxidilType === opt.val), flexDirection:"column", alignItems:"flex-start" }}
-              onClick={() => answerHealthSingle("minoxidilType", opt.val)}>
-              <div style={{ fontWeight:600 }}>{opt.label}</div>
-              <div style={{ fontSize:12, opacity:0.6 }}>{opt.sub}</div>
-            </button>
-          ))}
-        </div>
-      );
+      if (healthStep === 7) {
+        const sc7 = answers.scalpConditions || [];
+        const hideTopico = sc7.includes("Vermelhidão ou dor") || sc7.includes("Psoríase (diagnóstico médico)");
+        const minoxOpts = [
+          { val:"Minoxidil oral", label:"Minoxidil oral", sub:"Comprimido diário — máxima cobertura sistêmica" },
+          ...(!hideTopico ? [{ val:"Minoxidil 5% tópico", label:"Minoxidil 5% tópico", sub:"Aplicado direto no couro — ação local" }] : []),
+          { val:"Ainda não sei", label:"Ainda não sei", sub:"Deixo o médico decidir o que é melhor" },
+        ];
+        return (
+          <div>
+            <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
+            <h2 style={s.heading}>Para estimular o crescimento, qual opção você prefere?</h2>
+            {hideTopico && (
+              <div style={{ background:"#FFF8E7", border:"1px solid #FCD34D", borderRadius:8, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#78350F", lineHeight:1.6 }}>
+                <strong>Baseado nas suas respostas</strong>, o Minoxidil tópico não é recomendado para o seu perfil. Apresentamos apenas as opções compatíveis.
+              </div>
+            )}
+            {minoxOpts.map(opt => (
+              <button key={opt.val}
+                style={{ ...s.option(answers.minoxidilType === opt.val), flexDirection:"column", alignItems:"flex-start" }}
+                onClick={() => answerHealthSingle("minoxidilType", opt.val)}>
+                <div style={{ fontWeight:600 }}>{opt.label}</div>
+                <div style={{ fontSize:12, opacity:0.6 }}>{opt.sub}</div>
+              </button>
+            ))}
+          </div>
+        );
+      }
 
       return null;
     }
 
-    const isMultiStep = healthStep === 2 || healthStep === 5;
-    const canContinueMulti = healthStep === 2
-      ? (answers.treatments || []).length > 0
-      : (answers.conditions || []).length > 0;
+    const isMultiStep = healthStep === 0 || healthStep === 2 || healthStep === 5;
+    const canContinueMulti = healthStep === 0
+      ? (answers.scalpConditions || []).length > 0
+      : healthStep === 2
+        ? (answers.treatments || []).length > 0
+        : (answers.conditions || []).length > 0;
 
     return (
       <div style={s.wrap}>
@@ -1312,6 +1456,32 @@ export default function Quiz() {
             </div>
           </div>
         </div>
+
+        {/* Caspa recommendation */}
+        {(answers.scalpConditions || []).includes("Caspa frequente") && (
+          <div style={{ marginBottom:20 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
+              <h3 style={{ fontSize:16, fontWeight:700 }}>Recomendado para você</h3>
+              <span style={{ background:"#004358", color:"#fff", fontSize:9, fontWeight:700,
+                padding:"2px 8px", borderRadius:100, letterSpacing:"0.08em" }}>PERSONALIZADO</span>
+            </div>
+            <div style={{ background:"#fff", borderRadius:14, padding:"18px 16px",
+              border:"1px solid rgba(0,0,0,0.08)" }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:15, fontWeight:700, marginBottom:4 }}>Shampoo Antiqueda com Anticaspa</div>
+                  <p style={{ fontSize:13, color:"#888", lineHeight:1.6 }}>
+                    Você mencionou caspa frequente. Este shampoo complementa o tratamento, controla a oleosidade e cria um ambiente mais saudável para os folículos.
+                  </p>
+                </div>
+                <div style={{ width:48, height:48, background:"#EDF5F8", borderRadius:10,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  flexShrink:0, marginLeft:12, fontSize:22 }}>🧴</div>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
       <div style={s.cta}>
         <button style={s.ctaBtn} onClick={continueFromPlan}>Ver meu plano →</button>
