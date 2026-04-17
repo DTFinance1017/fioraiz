@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function FioRaizLogo({ color = "#0a0a0a", size = 18 }) {
   return (
@@ -18,62 +19,60 @@ function FioRaizLogo({ color = "#0a0a0a", size = 18 }) {
 const SECTIONS = [
   {
     titulo: "1. Natureza do Serviço",
-    texto: `Pelo presente Termo, declaro que estou informado e esclarecido de que minha consulta médica será realizada por telemedicina na modalidade assíncrona, em conformidade com a Resolução n.º 2.314/2022 do Conselho Federal de Medicina (CFM) e a Lei n.º 14.510, de 27 de dezembro de 2022.
+    texto: `Pelo presente termo, declaro que estou informado e esclarecido de que a minha consulta médica será realizada por telemedicina na modalidade assíncrona, em conformidade com a Resolução n.º 2314/2022 do Conselho Federal de Medicina (CFM) e Lei 14.510, de 27 de dezembro de 2022.
 
-A Fio Raiz opera exclusivamente como plataforma digital de intermediação, conectando pacientes a médicos parceiros independentes e farmácias de manipulação credenciadas pela ANVISA. A Fio Raiz não é uma clínica médica, não emprega médicos e não interfere, influencia ou participa das decisões clínicas tomadas durante as consultas.`
+As consultas médicas oferecidas são serviços independentes e distintos dos serviços prestados pela Fio Raiz, sendo realizadas por médicos externos, autônomos e devidamente habilitados. Esses profissionais são os únicos responsáveis por fornecer o diagnóstico e indicar o tratamento, caso necessário. A Fio Raiz atua exclusivamente como plataforma de intermediação e não interfere, influencia ou participa das decisões clínicas tomadas durante essas consultas.`
   },
   {
-    titulo: "2. Independência dos Médicos Parceiros",
-    texto: `As consultas médicas oferecidas são serviços independentes e distintos dos serviços prestados pela Fio Raiz. Os médicos parceiros são profissionais autônomos, devidamente habilitados e registrados no Conselho Regional de Medicina (CRM) de seu estado de atuação.
+    titulo: "2. Modalidade Assíncrona",
+    texto: `Declaro que tenho ciência de que a telemedicina assíncrona ocorre à distância e não é realizada em tempo real ou por videochamada. As informações clínicas, fotos e/ou vídeos enviados por intermédio do site da Fio Raiz serão analisados por um médico, que, após consulta assíncrona, emitirá um diagnóstico e, se necessário, um plano de tratamento.
 
-Esses profissionais são os únicos responsáveis por fornecer a avaliação clínica, o diagnóstico e indicar o tratamento, caso o considerem adequado ao perfil do paciente. A Fio Raiz não garante a emissão de prescrição — a decisão é exclusiva do médico avaliador.`
+Estou ciente de que o atendimento à distância é limitado por não permitir a realização do exame físico presencial. Dessa forma, me comprometo a informar todos os dados possíveis, não omitindo nenhuma informação referente à minha saúde, colaborando assim para o bom aproveitamento da teleconsulta.`
   },
   {
-    titulo: "3. Modalidade Assíncrona",
-    texto: `Declaro ter ciência de que a telemedicina assíncrona ocorre à distância e não é realizada em tempo real nem por videochamada. As informações clínicas fornecidas por mim por meio do questionário de saúde no site da Fio Raiz serão analisadas por um médico parceiro que, após a consulta assíncrona, emitirá uma avaliação e, se indicado, um plano de tratamento com prescrição médica digital.
+    titulo: "3. Limitações do Atendimento",
+    texto: `Ao concordar, expresso minha autorização e aceite para iniciar minha teleconsulta. Estou ciente das limitações do atendimento à distância, como:
 
-Estou ciente de que o atendimento à distância é limitado por não permitir a realização de exame físico presencial. Comprometo-me a informar todos os dados de saúde relevantes, sem omissões, colaborando para a qualidade da avaliação.`
+a) Dificuldade de visualização de detalhes pelas fotos;
+b) Necessidade de envio de dados complementares;
+c) Necessidade de realização de exames;
+d) Possibilidade de declínio por parte do médico a depender da complexidade do caso clínico;
+e) Conversão da consulta assíncrona para videoconferência;
+f) Encaminhamento para um atendimento presencial ou especialista.`
   },
   {
-    titulo: "4. Limitações do Atendimento",
-    texto: `Estou ciente das seguintes limitações inerentes ao atendimento por telemedicina assíncrona:
+    titulo: "4. Proteção de Dados (LGPD)",
+    texto: `Autorizo a transmissão, compartilhamento e tratamento das minhas imagens, dados pessoais (nome, idade, endereço, e-mail, CPF) e dados clínicos (respostas ao questionário de saúde) com a clínica médica credenciada e o médico responsável, respeitando a Lei Geral de Proteção de Dados (LGPD).
 
-a) Impossibilidade de realização de exame físico presencial;
-b) Eventual necessidade de envio de dados complementares ou fotografias;
-c) Eventual necessidade de realização de exames laboratoriais ou de imagem;
-d) Possibilidade de recusa da prescrição pelo médico, a depender da complexidade ou contraindicações do caso clínico;
-e) Possibilidade de encaminhamento para atendimento presencial ou especialista;
-f) Limitação na visualização de detalhes clínicos por meio de respostas ao questionário.`
+Estou ciente de que minha privacidade será mantida e todos os dados sensíveis serão preservados pelo sigilo médico, incluindo os dados trocados por imagem, texto e/ou áudio entre médico e paciente.`
   },
   {
-    titulo: "5. Produtos Manipulados e Farmácias Parceiras",
-    texto: `Declaro ter ciência de que os medicamentos fornecidos são fórmulas manipuladas, produzidas por farmácias de manipulação parceiras devidamente credenciadas pela ANVISA. A Fio Raiz não produz, armazena ou dispensa medicamentos.
+    titulo: "5. Confidencialidade",
+    texto: `Comprometo-me a preservar e manter a confidencialidade das imagens, dos dados, dos diálogos, das orientações, das prescrições e de todo o conteúdo referente à telemedicina, sob pena de sanções legais por exposição de dados e imagem. Da mesma forma, afirmo meu compromisso em não gravar, fotografar ou editar qualquer momento ou etapa da telemedicina.`
+  },
+  {
+    titulo: "6. Prontuário Eletrônico",
+    texto: `Declaro ter ciência de que as informações relacionadas ao atendimento, diagnóstico, prescrição (se houver) e o presente termo de consentimento serão devidamente anexados em meu prontuário eletrônico na área logada do site www.fioraiz.com.br, o que desde já autorizo.
 
-Os produtos manipulados não são medicamentos industrializados com aprovação de eficácia e segurança pela ANVISA como produto acabado, mas são produzidos em farmácias regularizadas, seguindo a prescrição médica e as normas regulatórias vigentes. Os resultados podem variar de acordo com características individuais de cada organismo.`
+Autorizo a clínica médica credenciada a analisar meus dados clínicos e imagens e tenho ciência de que poderei entrar em contato com o médico responsável a qualquer tempo durante a vigência do meu plano, através da área logada no site da Fio Raiz.`
   },
   {
-    titulo: "6. Proteção de Dados (LGPD)",
-    texto: `Autorizo a coleta, transmissão, compartilhamento e tratamento dos meus dados pessoais (nome, idade, endereço, e-mail, CPF) e dados clínicos (respostas ao questionário de saúde) com a plataforma Fio Raiz, o médico parceiro responsável pela minha avaliação e a farmácia de manipulação responsável pelo preparo do meu tratamento, para as finalidades exclusivas de prestação do serviço contratado.
+    titulo: "7. Veracidade e Capacidade",
+    texto: `Estou ciente de que este tipo de atendimento é pessoal e intransferível, portanto, não poderá ser utilizado por terceiros. Assumo o dever de informar imediatamente ao médico sobre quaisquer alterações em meu estado de saúde atuais ou durante o tratamento que possam influenciar na avaliação médica.
 
-Declaro ter ciência de que minha privacidade será mantida e todos os dados sensíveis serão preservados sob sigilo, em conformidade com a Lei Geral de Proteção de Dados (Lei n.º 13.709/2018 — LGPD). Quando tecnicamente possível e não prejudicial ao atendimento, os dados serão anonimizados.`
-  },
-  {
-    titulo: "7. Confidencialidade",
-    texto: `Comprometo-me a preservar e manter a confidencialidade das informações, orientações, prescrições e de todo o conteúdo referente ao atendimento ao qual fui submetido. Afirmo não gravar, fotografar, publicar ou compartilhar qualquer etapa ou conteúdo do atendimento sem autorização expressa do médico responsável.`
-  },
-  {
-    titulo: "8. Veracidade das Informações",
-    texto: `Declaro que todas as informações prestadas no questionário de saúde são verídicas e completas. Comprometo-me a informar imediatamente ao médico parceiro sobre quaisquer alterações em meu estado de saúde que possam influenciar na avaliação ou no curso do tratamento.
+Declaro que é de minha expressa e espontânea vontade repassar minhas informações médicas sob minha responsabilidade por meio de comunicação modalidade síncrona ou assíncrona.
 
-Estou ciente de que este atendimento é pessoal e intransferível, não podendo ser utilizado por terceiros. Possuo capacidade civil plena para celebrar o presente termo.`
+Declaro que todas as informações prestadas são verídicas e que possuo capacidade plena para celebrar este termo.`
   },
   {
-    titulo: "9. Aceitação e Consentimento",
-    texto: `Ao concordar com este Termo, expresso minha autorização livre, informada e esclarecida para iniciar o processo de avaliação médica assíncrona através da plataforma Fio Raiz, nos termos descritos acima, em conformidade com a Resolução CFM n.º 2.314/2022 e a Lei n.º 14.510/2022.`
+    titulo: "8. Aceitação e Consentimento",
+    texto: `Declaro, para todos os fins e efeitos legais, que estou ciente e autorizo a minha consulta médica nos termos acima descritos, em conformidade com a Resolução n.º 2314/2022 do Conselho Federal de Medicina (CFM) e Lei 14.510, de 27 de dezembro de 2022.`
   },
 ];
 
+
 export default function ConsentForm() {
+  const navigate = useNavigate();
   const [accepted, setAccepted] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -134,7 +133,14 @@ export default function ConsentForm() {
       {/* Header */}
       <div style={s.header}>
         <FioRaizLogo />
-        <div style={{ fontSize: 11, color: "#aaa", letterSpacing: "0.06em" }}>TCLE — Telemedicina</div>
+        <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+          <div style={{ fontSize: 11, color: "#aaa", letterSpacing: "0.06em" }}>TCLE — Telemedicina</div>
+          <button onClick={() => navigate(-1)}
+            style={{ background:"#f0eeeb", border:"none", borderRadius:100, padding:"7px 14px",
+              fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"'Outfit',sans-serif", color:"#333" }}>
+            ← Voltar
+          </button>
+        </div>
       </div>
 
       <div style={s.body}>

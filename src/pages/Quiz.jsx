@@ -259,6 +259,11 @@ function ConsentModal({ onClose, onAccept }) {
           style={{ width: "100%", background: accepted ? "#0a0a0a" : "rgba(0,0,0,0.15)", color: "#fff", border: "none", borderRadius: 100, padding: "16px", fontSize: 14, fontWeight: 700, cursor: accepted ? "pointer" : "not-allowed", fontFamily: "'Outfit',sans-serif", transition: "all 0.2s" }}>
           {accepted ? "Aceitar e fechar →" : "Role até o final para aceitar"}
         </button>
+        <button onClick={onClose}
+          style={{ width:"100%", background:"none", border:"none", cursor:"pointer", fontSize:13,
+            color:"#aaa", marginTop:12, fontFamily:"'Outfit',sans-serif", padding:"4px 0" }}>
+          ← Voltar
+        </button>
       </div>
     </div>
   );
@@ -437,11 +442,11 @@ export default function Quiz() {
               style={{ color:"#0a0a0a", fontWeight:600, textDecoration:"underline" }}>
               Termo de Consentimento para Telessaúde
             </a>,{" "}
-            <a href="/termo-consentimento" target="_blank"
+            <a href="/politica-privacidade" target="_blank"
               style={{ color:"#0a0a0a", fontWeight:600, textDecoration:"underline" }}>
               Política de dados pessoais
             </a>{" "}e{" "}
-            <a href="#" style={{ color:"#0a0a0a", fontWeight:600, textDecoration:"underline" }}>
+            <a href="/termos-uso" target="_blank" style={{ color:"#0a0a0a", fontWeight:600, textDecoration:"underline" }}>
               Termos e condições de uso
             </a>
             , autorizando a coleta e tratamento de meus dados pela Fio Raiz.
@@ -613,15 +618,13 @@ export default function Quiz() {
             </div>
           )}
         </div>
-        {hairStep > 0 && (
-          <div style={{ position:"fixed", bottom:0, left:0, right:0, padding:"16px 20px",
+        <div style={{ position:"fixed", bottom:0, left:0, right:0, padding:"16px 20px",
             background:"#fff", borderTop:"1px solid rgba(0,0,0,0.07)", zIndex:90,
             textAlign:"center" }}>
-            <button onClick={() => setHairStep(p => p - 1)}
+            <button onClick={() => hairStep > 0 ? setHairStep(p => p - 1) : setPhase("intro")}
               style={{ background:"none", border:"none", cursor:"pointer", fontSize:13,
                 color:"#aaa", fontFamily:"'Outfit',sans-serif" }}>← Voltar</button>
           </div>
-        )}
       </div>
     );
   }

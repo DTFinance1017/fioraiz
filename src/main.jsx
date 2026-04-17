@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import Quiz from './pages/Quiz'
 import ConsentForm from './pages/ConsentForm'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsOfUse from './pages/TermsOfUse'
 import Admin from './pages/Admin'
 
 function App() {
@@ -13,6 +15,8 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/avaliacao" element={<Quiz />} />
         <Route path="/termo-consentimento" element={<ConsentForm />} />
+        <Route path="/politica-privacidade" element={<PrivacyPolicy />} />
+        <Route path="/termos-uso" element={<TermsOfUse />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
     </BrowserRouter>
