@@ -526,55 +526,42 @@ export default function Quiz() {
               return (
                 <div key={ht.id} onClick={() => answerHair("hairType", ht.label)}
                   style={{
-                    background: active ? "#004358" : "#fff",
+                    background: "#fff",
                     borderRadius: 16,
                     cursor: "pointer",
                     border: `2px solid ${active ? "#004358" : "#E3EEF3"}`,
-                    boxShadow: active ? "0 6px 16px rgba(0,67,88,0.18)" : "0 1px 3px rgba(0,0,0,0.04)",
+                    boxShadow: active
+                      ? "0 8px 20px rgba(0,67,88,0.18), 0 0 0 4px rgba(0,67,88,0.08)"
+                      : "0 1px 3px rgba(0,0,0,0.04)",
                     transition: "all 0.2s ease",
                     position: "relative",
                     overflow: "hidden",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    justifyContent: "center",
+                    padding: "clamp(10px, 3vw, 16px) clamp(8px, 2.5vw, 14px)",
+                    WebkitTapHighlightColor: "transparent",
                   }}>
                   {active && (
-                    <div style={{ position:"absolute", top:10, right:10, width:22, height:22, borderRadius:"50%",
-                      background:"#fff", display:"flex", alignItems:"center", justifyContent:"center",
-                      zIndex:2, boxShadow:"0 2px 6px rgba(0,0,0,0.15)" }}>
-                      <span style={{ fontSize:12, fontWeight:800, color:"#004358" }}>✓</span>
+                    <div style={{
+                      position:"absolute", top:10, right:10, width:24, height:24, borderRadius:"50%",
+                      background:"#004358", display:"flex", alignItems:"center", justifyContent:"center",
+                      zIndex:2, boxShadow:"0 2px 6px rgba(0,67,88,0.25)"
+                    }}>
+                      <span style={{ fontSize:13, fontWeight:800, color:"#fff", lineHeight:1 }}>✓</span>
                     </div>
                   )}
-                  {/* Head-only crop: wide-short window shows just the upper head area */}
-                  <div style={{
-                    width:"100%",
-                    aspectRatio:"1.6 / 1",
-                    overflow:"hidden",
-                    background: active ? "rgba(255,255,255,0.08)" : "#F6FAFC",
-                    position:"relative",
-                  }}>
-                    <img src={ht.img} alt={ht.label}
-                      style={{
-                        position:"absolute",
-                        top:"-8%",
-                        left:"50%",
-                        transform:"translateX(-50%)",
-                        width:"62%",
-                        height:"auto",
-                        filter: active ? "brightness(0) invert(1) opacity(0.96)" : "none",
-                        display:"block",
-                      }} />
-                  </div>
-                  <div style={{
-                    width:"100%",
-                    padding:"12px 10px 14px",
-                    textAlign:"center",
-                    fontSize:"clamp(12px, 3.4vw, 14px)",
-                    fontWeight:700,
-                    letterSpacing:"-0.01em",
-                    lineHeight:1.25,
-                    color: active ? "#fff" : "#1A3040",
-                  }}>{ht.label}</div>
+                  <img src={ht.img} alt={ht.label}
+                    style={{
+                      width:"100%",
+                      maxWidth:"100%",
+                      height:"auto",
+                      objectFit:"contain",
+                      display:"block",
+                      pointerEvents:"none",
+                      userSelect:"none",
+                    }} />
                 </div>
               );
             })}
