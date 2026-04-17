@@ -277,9 +277,10 @@ export default function App() {
           <video
             src="/hero1.mp4"
             autoPlay muted loop playsInline
-            style={{ position: "absolute", top: 0, left: "-20%",
-              width: "140%", height: "100%",
+            style={{ position: "absolute", top: 0, left: 0,
+              width: "100%", height: "100%",
               objectFit: "cover", objectPosition: "center 15%",
+              transform: "scale(2.2)", transformOrigin: "50% 20%",
               background: "transparent" }}
           />
           <div style={{
