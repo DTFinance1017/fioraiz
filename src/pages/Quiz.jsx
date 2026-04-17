@@ -369,46 +369,72 @@ export default function Quiz() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');* { box-sizing:border-box; margin:0; padding:0; }`}</style>
       <div style={s.nav}><Logo /><span style={{ fontSize: 11, color: "#aaa" }}>Avaliação gratuita</span></div>
       <div style={s.progressBg}><div style={{ ...s.progressBar, width: "0%" }}/></div>
-      <div style={s.body}>
-        <h1 style={{ ...s.heading, marginBottom: 8 }}>Vamos descobrir o que está acontecendo</h1>
-        <p style={s.sub}>Algumas perguntas rápidas. O médico usa suas respostas para indicar o tratamento certo.</p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
+      <div style={s.body}>
+        <p style={{ fontSize: 13, color: "#888", marginBottom: 20, lineHeight: 1.6 }}>
+          Vamos fazer algumas perguntas para encontrar seu plano ideal.
+        </p>
+        <h1 style={{ ...s.heading, fontSize: "clamp(22px,6vw,30px)", marginBottom: 28 }}>
+          Primeiro, precisamos saber<br/>como está seu cabelo.
+        </h1>
+
+        {/* Steps */}
+        <div style={{ display:"flex", flexDirection:"column", gap:0, marginBottom:28,
+          border:"1px solid rgba(0,0,0,0.08)", borderRadius:16, overflow:"hidden", background:"#fff" }}>
           {[
-            { n: 1, label: "Situação do seu cabelo", time: "1 min", active: true },
-            { n: 2, label: "Sua saúde", time: "2 min", active: false },
-            { n: 3, label: "Seu protocolo", time: null, active: false },
-          ].map((item, i) => (
-            <div key={i} style={{ display: "flex", gap: 14, alignItems: "center" }}>
-              <div style={{ width: 32, height: 32, borderRadius: "50%", background: item.active ? "#0a0a0a" : "#e0e0de", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: item.active ? "#fff" : "#aaa" }}>{item.n}</span>
+            { n:"1", label:"Como está seu cabelo?",  time:"1 min",  active:true  },
+            { n:"2", label:"Falando da sua saúde",   time:null,     active:false },
+            { n:"3", label:"Seu Plano Fio Raiz",     time:null,     active:false },
+          ].map((item, i, arr) => (
+            <div key={i} style={{ display:"flex", alignItems:"center", gap:14, padding:"16px 18px",
+              borderBottom: i < arr.length-1 ? "1px solid rgba(0,0,0,0.06)" : "none",
+              background: item.active ? "#fafaf8" : "#fff" }}>
+              <div style={{ width:30, height:30, borderRadius:"50%", flexShrink:0,
+                background: item.active ? "#0a0a0a" : "#ececea",
+                display:"flex", alignItems:"center", justifyContent:"center" }}>
+                <span style={{ fontSize:13, fontWeight:700,
+                  color: item.active ? "#fff" : "#aaa" }}>{item.n}</span>
               </div>
-              <div style={{ flex: 1, background: item.active ? "#fff" : "transparent", borderRadius: 10, padding: item.active ? "12px 16px" : "8px 0", border: item.active ? "1px solid rgba(0,0,0,0.08)" : "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 15, fontWeight: item.active ? 700 : 500, color: item.active ? "#0a0a0a" : "#aaa" }}>{item.label}</span>
-                {item.time && <span style={{ fontSize: 12, color: "#aaa" }}>{item.time}</span>}
-              </div>
+              <span style={{ flex:1, fontSize:14,
+                fontWeight: item.active ? 700 : 400,
+                color: item.active ? "#0a0a0a" : "#aaa" }}>{item.label}</span>
+              {item.time && (
+                <span style={{ fontSize:11, color:"#aaa", background:"#f0eeeb",
+                  padding:"3px 10px", borderRadius:100 }}>{item.time}</span>
+              )}
             </div>
           ))}
         </div>
 
-        <div style={{ background: "#fff", borderRadius: 12, padding: "16px 18px", marginBottom: 24, border: "1px solid rgba(0,0,0,0.08)" }}>
-          <p style={{ fontSize: 12, color: "#666", lineHeight: 1.7 }}>
+        {/* Consent */}
+        <div style={{ background:"#f8f8f6", borderRadius:12, padding:"16px 18px",
+          border:"1px solid rgba(0,0,0,0.06)" }}>
+          <p style={{ fontSize:12, color:"#666", lineHeight:1.75 }}>
             Li e concordo com o{" "}
-            <a href="#" onClick={(e) => { e.preventDefault(); setShowConsent(true); }} style={{ color: "#0a0a0a", fontWeight: 600, textDecoration: "underline" }}>Termo de Consentimento para Telemedicina</a>,{" "}
-            <a href="#" style={{ color: "#0a0a0a", fontWeight: 600 }}>Política de dados pessoais</a> e{" "}
-            <a href="#" style={{ color: "#0a0a0a", fontWeight: 600 }}>Termos e condições de uso</a>.
+            <a href="#" onClick={e => { e.preventDefault(); setShowConsent(true); }}
+              style={{ color:"#0a0a0a", fontWeight:600, textDecoration:"underline" }}>
+              Termo de Consentimento para Telessaúde
+            </a>,{" "}
+            <a href="/termo-consentimento" target="_blank"
+              style={{ color:"#0a0a0a", fontWeight:600, textDecoration:"underline" }}>
+              Política de dados pessoais
+            </a>{" "}e{" "}
+            <a href="#" style={{ color:"#0a0a0a", fontWeight:600, textDecoration:"underline" }}>
+              Termos e condições de uso
+            </a>
+            , autorizando a coleta e tratamento de meus dados pela Fio Raiz.
           </p>
         </div>
       </div>
+
       <div style={s.cta}>
-        <button style={s.ctaBtn} onClick={() => { if (consentDone) { setPhase("quiz"); setStep(0); } else { setShowConsent(true); } }}>
-          {consentDone ? "Começar avaliação →" : "Li e concordo — começar"}
+        <button style={s.ctaBtn}
+          onClick={() => {
+            if (consentDone) { setPhase("quiz"); setStep(0); }
+            else { setShowConsent(true); }
+          }}>
+          {consentDone ? "Começar →" : "Sim, eu concordo"}
         </button>
-        {!consentDone && (
-          <p style={{ textAlign: "center", fontSize: 11, color: "#aaa", marginTop: 8 }}>
-            Leia e aceite o termo para continuar
-          </p>
-        )}
       </div>
     </div>
   );
@@ -740,7 +766,7 @@ export default function Quiz() {
     // 0 - Visual hair selector
     {
       tag: "Seu cabelo",
-      question: "Escolha a imagem que melhor descreve como está seu cabelo agora:",
+      question: "Qual imagem mais representa a situação do seu cabelo hoje?",
       render: () => (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {HAIR_TYPES.map(ht => (
