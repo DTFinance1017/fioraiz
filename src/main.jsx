@@ -7,19 +7,22 @@ import ConsentForm from './pages/ConsentForm'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfUse from './pages/TermsOfUse'
 import Admin from './pages/Admin'
+import SiteGate from './pages/SiteGate'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/avaliacao" element={<Quiz />} />
-        <Route path="/termo-consentimento" element={<ConsentForm />} />
-        <Route path="/politica-privacidade" element={<PrivacyPolicy />} />
-        <Route path="/termos-uso" element={<TermsOfUse />} />
-        <Route path="/admin" element={<Admin />} />
-      </Routes>
-    </BrowserRouter>
+    <SiteGate>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/avaliacao" element={<Quiz />} />
+          <Route path="/termo-consentimento" element={<ConsentForm />} />
+          <Route path="/politica-privacidade" element={<PrivacyPolicy />} />
+          <Route path="/termos-uso" element={<TermsOfUse />} />
+          <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </BrowserRouter>
+    </SiteGate>
   )
 }
 
