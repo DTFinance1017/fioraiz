@@ -270,16 +270,17 @@ export default function App() {
 
         {/* Right */}
         <div className="hero-video-wrap" style={{
-          position: "relative", height: 580,
+          position: "relative", height: 580, borderRadius: 20,
           overflow: "hidden", opacity: loaded?1:0, transition: "opacity 0.9s ease 0.3s",
-          background: "transparent"
+          background: "#f7f7f5"
         }}>
           <video
             src="/hero1.mp4"
             autoPlay muted loop playsInline
-            style={{ position: "absolute", top: 0, left: 0,
-              width: "100%", height: "100%",
-              objectFit: "cover", objectPosition: "center 15%" }}
+            style={{ position: "absolute", top: 0, left: "-20%",
+              width: "140%", height: "100%",
+              objectFit: "cover", objectPosition: "center 15%",
+              background: "transparent" }}
           />
           <div style={{
             position: "absolute", top: 20, left: 20,
