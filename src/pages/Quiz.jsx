@@ -524,7 +524,7 @@ export default function Quiz() {
                     </div>
                   )}
                   <img src={ht.img} alt={ht.label}
-                    style={{ width:"100%", height:100, objectFit:"cover", borderRadius:8, display:"block",
+                    style={{ width:"100%", height:"auto", objectFit:"contain", borderRadius:8, display:"block",
                       filter: active ? "brightness(0.8)" : "none" }} />
                   <div style={{ fontSize:13, fontWeight:600, marginTop:8,
                     color: active ? "#fff" : "#0a0a0a" }}>{ht.label}</div>
