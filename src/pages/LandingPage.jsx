@@ -270,10 +270,9 @@ export default function App() {
 
         {/* Right */}
         <div className="hero-video-wrap" style={{
-          position: "relative", height: 580, borderRadius: 24,
-          border: "1px solid #2e2e2e",
+          position: "relative", height: 580,
           overflow: "hidden", opacity: loaded?1:0, transition: "opacity 0.9s ease 0.3s",
-          background: "#1e1e1e"
+          background: "transparent"
         }}>
           <video
             src="/hero1.mp4"
