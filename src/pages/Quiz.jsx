@@ -284,6 +284,7 @@ export default function Quiz() {
   const [planPeriod, setPlanPeriod] = useState("semestral");
   const [contactInfo, setContactInfo] = useState({ nome:"", email:"", whatsapp:"" });
   const [contactError, setContactError] = useState("");
+  const [showConsentTooltip, setShowConsentTooltip] = useState(false);
 
   // ── Loading animation ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -434,32 +435,64 @@ export default function Quiz() {
           ))}
         </div>
 
-        <div style={{ background:"#f8f8f6", borderRadius:12, padding:"16px 18px",
-          border:"1px solid rgba(0,0,0,0.06)" }}>
-          <p style={{ fontSize:12, color:"#666", lineHeight:1.75 }}>
-            Li e concordo com o{" "}
-            <a href="#" onClick={e => { e.preventDefault(); setShowConsent(true); }}
-              style={{ color:"#0a0a0a", fontWeight:600, textDecoration:"underline" }}>
-              Termo de Consentimento para Telessaúde
-            </a>,{" "}
-            <a href="/politica-privacidade" target="_blank"
-              style={{ color:"#0a0a0a", fontWeight:600, textDecoration:"underline" }}>
-              Política de dados pessoais
-            </a>{" "}e{" "}
-            <a href="/termos-uso" target="_blank" style={{ color:"#0a0a0a", fontWeight:600, textDecoration:"underline" }}>
-              Termos e condições de uso
-            </a>
-            , autorizando a coleta e tratamento de meus dados pela Fio Raiz.
-          </p>
+        {/* Bloco de consentimento com checkbox clicável */}
+        <div onClick={() => !consentDone && setShowConsent(true)}
+          style={{ background: consentDone ? "#f0fdf4" : "#f8f8f6", borderRadius:12, padding:"14px 16px",
+            border:`1.5px solid ${consentDone ? "#86efac" : showConsentTooltip ? "#f87171" : "rgba(0,0,0,0.06)"}`,
+            cursor: consentDone ? "default" : "pointer", transition:"border 0.2s" }}>
+          <div style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
+            {/* Checkbox */}
+            <div style={{ width:20, height:20, borderRadius:5, flexShrink:0, marginTop:1,
+              border:`2px solid ${consentDone ? "#16a34a" : "#ccc"}`,
+              background: consentDone ? "#16a34a" : "#fff",
+              display:"flex", alignItems:"center", justifyContent:"center",
+              transition:"all 0.2s" }}>
+              {consentDone && <span style={{ color:"#fff", fontSize:11, fontWeight:800 }}>✓</span>}
+            </div>
+            <p style={{ fontSize:12, color: consentDone ? "#15803d" : "#666", lineHeight:1.75, flex:1 }}>
+              Li e compreendi o{" "}
+              <a href="#" onClick={e => { e.preventDefault(); e.stopPropagation(); setShowConsent(true); }}
+                style={{ color: consentDone ? "#15803d" : "#0a0a0a", fontWeight:700, textDecoration:"underline" }}>
+                Termo de Consentimento Livre e Esclarecido
+              </a>{" "}e autorizo o início da avaliação médica.{" "}
+              <a href="/politica-privacidade" target="_blank" onClick={e => e.stopPropagation()}
+                style={{ color:"#888", textDecoration:"underline" }}>
+                Política de Privacidade
+              </a>{" "}·{" "}
+              <a href="/termos-uso" target="_blank" onClick={e => e.stopPropagation()}
+                style={{ color:"#888", textDecoration:"underline" }}>
+                Termos de Uso
+              </a>
+            </p>
+          </div>
         </div>
       </div>
 
       <div style={s.cta}>
+        {/* Tooltip de aviso */}
+        {showConsentTooltip && (
+          <div style={{ marginBottom:10, background:"#fffbeb", border:"1.5px solid #fcd34d",
+            borderRadius:10, padding:"10px 14px", display:"flex", gap:8, alignItems:"flex-start",
+            position:"relative" }}>
+            <span style={{ fontSize:16, flexShrink:0 }}>⚠️</span>
+            <div>
+              <div style={{ fontSize:13, fontWeight:700, color:"#78350f", marginBottom:2 }}>
+                Termo não aceito
+              </div>
+              <div style={{ fontSize:12, color:"#92400e", lineHeight:1.5 }}>
+                Leia e aceite o Termo de Consentimento Livre e Esclarecido para continuar.
+              </div>
+            </div>
+            <button onClick={() => setShowConsentTooltip(false)}
+              style={{ position:"absolute", top:8, right:10, background:"none", border:"none",
+                cursor:"pointer", fontSize:14, color:"#aaa", lineHeight:1 }}>×</button>
+          </div>
+        )}
         <button style={s.ctaBtn} onClick={() => {
           if (consentDone) { setPhase("quiz-hair"); setHairStep(0); }
-          else { setShowConsent(true); }
+          else { setShowConsentTooltip(true); setShowConsent(true); }
         }}>
-          {consentDone ? "Começar →" : "Sim, eu concordo"}
+          Começar →
         </button>
       </div>
     </div>
