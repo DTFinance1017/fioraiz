@@ -660,7 +660,7 @@ export default function Quiz() {
         why: "Cerca de 95% das calvícies masculinas têm origem genética. Saber o histórico da família ajuda o médico a entender a causa provável da sua queda.",
         render: () => (
           <>
-            {["Sim", "Não", "Não sei"].map(opt => (
+            {["Sim", "Não"].map(opt => (
               <button key={opt} style={s.option(answers.family === opt)}
                 onClick={() => answerHair("family", opt)}>
                 <div style={{ width:20, height:20, borderRadius:"50%",
@@ -1187,7 +1187,6 @@ export default function Quiz() {
           { val:"Finasterida",           label:"Protocolo Equilibrado",           sub:"Finasterida 1mg — perfil consolidado de eficácia e tolerância",   route:"oral",   key:"finOral" },
           { val:"Finasterida tópica",    label:"Protocolo de Ação Local",         sub:"Finasterida Tópica — aplicação direta, menor exposição sistêmica", route:"topica", key:"finTop"  },
           { val:"Saw Palmetto",          label:"Protocolo Fitoterápico",          sub:"Saw Palmetto — rota natural, sem fármaco sintético",               route:"oral",   key:"saw"     },
-          { val:"Decido depois",         label:"Prefiro que o médico decida",     sub:"O profissional escolhe o ativo ideal ao analisar o seu caso",      route:"any",    key:"dr"      },
         ];
         const visible = allOpts.filter(o => {
           if (o.route === "any" || o.route === "topica") return !flags.topicalContraindicated ? true : o.route !== "topica" || true;
@@ -1232,7 +1231,6 @@ export default function Quiz() {
         const minoxOpts = [
           ...(!hideOral ? [{ val:"Minoxidil oral", label:"Via Sistêmica", sub:"Minoxidil Oral — cobertura ampla via comprimido" }] : []),
           ...(!hideTopico ? [{ val:"Minoxidil 5% tópico", label:"Via Local", sub:"Minoxidil 5% Spray — aplicação direta no couro cabeludo" }] : []),
-          { val:"Ainda não sei", label:"Prefiro que o médico decida", sub:"O profissional escolhe a rota mais adequada ao seu perfil" },
         ];
         return (
           <div>
@@ -1413,10 +1411,18 @@ export default function Quiz() {
           <h2 style={{ ...s.heading, marginBottom:4 }}>Identificamos o seu perfil capilar</h2>
           <p style={s.sub}>Com base nas suas respostas, o médico vai montar um protocolo personalizado.</p>
 
-          {/* Hair visual */}
+          {/* Hair visual — usa a mesma imagem (sprite) da pergunta inicial */}
           <div style={{ background:"#fff", borderRadius:20, padding:"24px 20px", marginBottom:20,
             border:"1px solid rgba(0,0,0,0.08)", textAlign:"center" }}>
-            <HairHead type={hairType.id} />
+            <div style={{
+              width:"min(220px, 70%)",
+              aspectRatio:"241 / 270",
+              margin:"0 auto",
+              backgroundImage:"url('/calvicie-tipos.png')",
+              backgroundSize:"200% 300%",
+              backgroundPosition:`${hairType.col * 100}% ${hairType.row * 50}%`,
+              backgroundRepeat:"no-repeat",
+            }} />
             <div style={{ marginTop:12 }}>
               <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
                 color:"#888", marginBottom:4 }}>Estágio identificado</div>
