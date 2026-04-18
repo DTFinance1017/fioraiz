@@ -375,7 +375,7 @@ export default function Quiz() {
     setAnswers(updated);
     if (key === "gradual" && val === "Repentina") { setPhase("abrupt-stop"); return; }
     if (hairStep < 4) setHairStep(p => p + 1);
-    else setPhase("proof");
+    else { setPhase("health-intro"); setHealthStep(0); }
   }
 
   function answerHealthSingle(key, val) {
