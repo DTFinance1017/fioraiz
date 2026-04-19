@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PopupCTA from "./PopupCTA";
 import { useNavigate } from "react-router-dom";
 
 function FioLogo({ color = "#021d34", size = 20 }) {
@@ -488,6 +489,7 @@ export default function Comunidade() {
   // ── Grid index ────────────────────────────────────────────────────────────
   return (
     <div style={c.page}>
+      <PopupCTA />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}

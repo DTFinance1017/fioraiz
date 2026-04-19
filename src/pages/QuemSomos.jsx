@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
+import PopupCTA from "./PopupCTA";;
 
 function FioLogo({ color = "#021d34", size = 20 }) {
   const navigate = useNavigate();
@@ -139,6 +140,8 @@ export default function QuemSomos() {
           Avaliação gratuita
         </button>
       </div>
+
+      <PopupCTA />
 
       {/* HERO */}
       <section className="pad-hero" style={{
