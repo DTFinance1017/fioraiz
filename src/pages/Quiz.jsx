@@ -366,6 +366,7 @@ export default function Quiz() {
     const updated = { ...answers, [key]: val };
     setAnswers(updated);
     if (key === "gradual" && val === "Repentina") { setPhase("abrupt-stop"); return; }
+    if (key === "hairType" && (val === "Queda Irregular" || val === "Queda Total")) { setPhase("abrupt-stop"); return; }
     if (hairStep < 4) setHairStep(p => p + 1);
     else { setPhase("health-intro"); setHealthStep(0); }
   }
