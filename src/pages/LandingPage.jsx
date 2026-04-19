@@ -179,7 +179,7 @@ export default function App() {
       <nav style={c.nav}>
         <a href="/"><FioLogo color="#1A3040" size={20} /></a>
         <div className="hide-mob" style={{ display: "flex", gap: 32 }}>
-          {[["/","Tratamento capilar masculino"],["#tratamento","Protocolo personalizado"]].map(([h,l]) => (
+          {[["/","Início"],["#tratamento","Protocolo"],["quemsomos","Quem Somos"],["comunidade","Comunidade"]].map(([h,l]) => (
             <a key={h} href={h} style={{ fontSize: 13, color: "#666", fontWeight: 500, transition: "color 0.2s" }}
               onMouseEnter={e=>e.target.style.color="#1A3040"} onMouseLeave={e=>e.target.style.color="#666"}>{l}</a>
           ))}
@@ -210,7 +210,7 @@ export default function App() {
         transition:"transform 0.3s cubic-bezier(0.4,0,0.2,1)",
         padding:"32px 28px", display:"flex", flexDirection:"column", gap:8,
       }}>
-        {[["/","Tratamento capilar masculino"],["#tratamento","Protocolo personalizado"]].map(([h,l]) => (
+        {[["/","Início"],["#tratamento","Protocolo"],["quemsomos","Quem Somos"],["comunidade","Comunidade"]].map(([h,l]) => (
           <a key={h} href={h} onClick={() => setMenuOpen(false)}
             style={{ fontSize:18, fontWeight:500, color:"#555", padding:"14px 0", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"block" }}>{l}</a>
         ))}
@@ -519,7 +519,7 @@ export default function App() {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:32 }}>
             <FioLogo color="#1A3040" size={20} />
             <div style={{ display:"flex", gap:28, flexWrap:"wrap" }}>
-              {[["/quemsomos","Quem somos"]].map(([h,l]) => (
+              {[["/quemsomos","Quem somos"],["/comunidade","Comunidade"]].map(([h,l]) => (
                 <a key={h} href={h} style={{ fontSize:12, color:"rgba(0,0,0,0.45)", fontWeight:500 }}>{l}</a>
               ))}
             </div>

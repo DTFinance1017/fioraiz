@@ -8,6 +8,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfUse from './pages/TermsOfUse'
 import Admin from './pages/Admin'
 import QuemSomos from './pages/QuemSomos'
+import Comunidade from './pages/Comunidade'
 import SiteGate from './pages/SiteGate'
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/termos-uso" element={<TermsOfUse />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/quemsomos" element={<QuemSomos />} />
+          <Route path="/comunidade" element={<Comunidade />} />
         </Routes>
       </BrowserRouter>
     </SiteGate>
