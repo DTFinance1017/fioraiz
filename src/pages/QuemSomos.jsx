@@ -164,7 +164,7 @@ export default function QuemSomos() {
           <p style={{ fontSize: 17, color: "#666", lineHeight: 1.85, maxWidth: 620, margin: "0 auto" }}>
             Um tratamento para calvície que funciona de verdade existe há décadas.
             O problema sempre foi o acesso — filas, consultas difíceis de marcar, constrangimento.
-            A gente resolveu isso.
+            Nós resolvemos isso.
           </p>
         </div>
       </section>
