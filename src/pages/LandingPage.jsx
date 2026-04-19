@@ -285,7 +285,7 @@ export default function App() {
           background: "#f7f7f5"
         }}>
           <img
-            src="/hero-inicial.jpg"
+            src="/hr-real.jpg"
             alt="Tratamento capilar masculino Fio Raiz"
             style={{ position: "absolute", top: 0, left: 0,
               width: "100%", height: "100%",

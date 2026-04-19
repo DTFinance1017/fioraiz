@@ -34,7 +34,7 @@ const VALORES = [
   {
     icon: "🤝",
     title: "Acompanhamento contínuo",
-    text: "Não entregamos caixa e sumimos. O protocolo evolui com você — na fase inicial, na de melhora e na de manutenção. Estamos do seu lado em todas.",
+    text: "Não acreditamos em soluções pontuais. Seu protocolo evolui com você — início, progresso e manutenção — com acompanhamento constante.",
   },
   {
     icon: "🔒",
