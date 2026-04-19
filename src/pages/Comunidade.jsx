@@ -11,16 +11,16 @@ function FioLogo({ color = "#021d34", size = 20 }) {
   );
 }
 
-// Paleta de cores para cards de imagem (gradientes)
+// Gradientes por artigo — paleta oficial Fio Raiz
 const GRADIENTS = {
-  calvicie:     "linear-gradient(135deg, #1A3040 0%, #004358 60%, #006680 100%)",
-  ciclo:        "linear-gradient(135deg, #2d4a1e 0%, #3d6b28 60%, #5a9e3a 100%)",
-  minoxidil:    "linear-gradient(135deg, #1a2a4a 0%, #203560 60%, #2e4d8c 100%)",
-  finasterida:  "linear-gradient(135deg, #3a1a1a 0%, #5c2121 60%, #8c3131 100%)",
-  dutasterida:  "linear-gradient(135deg, #2a1a40 0%, #3f2060 60%, #5e308a 100%)",
-  "saw-palmetto":"linear-gradient(135deg, #1a3a20 0%, #1f5028 60%, #2d7038 100%)",
-  biotina:      "linear-gradient(135deg, #3a2a0a 0%, #5a4210 60%, #8a651a 100%)",
-  cuidados:     "linear-gradient(135deg, #021d34 0%, #153f59 60%, #365b77 100%)",
+  calvicie:      "linear-gradient(150deg, #000a23 0%, #021d34 100%)",
+  ciclo:         "linear-gradient(150deg, #02152b 0%, #02253d 50%, #153f59 100%)",
+  minoxidil:     "linear-gradient(150deg, #021d34 0%, #012e46 100%)",
+  finasterida:   "linear-gradient(160deg, #02253d 0%, #153f59 60%, #365b77 100%)",
+  dutasterida:   "linear-gradient(140deg, #012e46 0%, #365b77 100%)",
+  "saw-palmetto":"linear-gradient(150deg, #153f59 0%, #557996 100%)",
+  biotina:       "linear-gradient(150deg, #02253d 0%, #557996 60%, #7498b6 100%)",
+  cuidados:      "linear-gradient(150deg, #021d34 0%, #153f59 50%, #94b8d7 100%)",
 };
 
 const CARD_IMAGES = {
