@@ -5,16 +5,8 @@ const STORAGE_KEY = "fioraiz_gate";
 
 function Logo() {
   return (
-    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-      <svg width={10} height={22} viewBox="0 0 16 35" fill="none">
-        <ellipse cx="8" cy="4" rx="4" ry="4" fill="#fff" opacity="0.9"/>
-        <path d="M8 8 C7 12 9 15 8 19 C7 23 9 27 8 31 C7.5 33 8 34 8 35"
-          stroke="#fff" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
-      </svg>
-      <span style={{ fontFamily:"'Outfit',sans-serif", fontSize:20, fontWeight:700,
-        color:"#fff", letterSpacing:"0.05em" }}>
-        fio<span style={{ opacity:0.4 }}>raiz</span>
-      </span>
+    <div style={{ display:"flex", alignItems:"center" }}>
+      <img src="/logo.png" alt="Fio Raiz" style={{ height: 40, width: "auto", display: "block", filter: "brightness(0) invert(1)" }} />
     </div>
   );
 }

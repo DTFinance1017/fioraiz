@@ -13,16 +13,10 @@ const IMGS = {
 
 // ── Logo ──────────────────────────────────────────────────────────────────────
 function FioLogo({ color = "#fff", size = 22 }) {
+  const isWhite = color === "#fff" || color === "white";
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <svg width={size * 0.5} height={size * 1.1} viewBox="0 0 16 35" fill="none">
-        <ellipse cx="8" cy="4" rx="4" ry="4" fill={color} opacity="0.9"/>
-        <path d="M8 8 C7 12 9 15 8 19 C7 23 9 27 8 31 C7.5 33 8 34 8 35"
-          stroke={color} strokeWidth="1.4" strokeLinecap="round" fill="none"/>
-      </svg>
-      <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: size, fontWeight: 700, color, letterSpacing: "0.05em" }}>
-        fio<span style={{ opacity: 0.45 }}>raiz</span>
-      </span>
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <img src="/logo.png" alt="Fio Raiz" style={{ height: size * 1.8, width: "auto", display: "block", filter: isWhite ? "brightness(0) invert(1)" : "none" }} />
     </div>
   );
 }
@@ -61,45 +55,59 @@ const TESTIMONIALS = [
 ];
 
 const BENEFITS = [
-  "Protocolo personalizado prescrito pelo médico",
-  "Finasterida, Dutasterida e Minoxidil disponíveis",
-  "Avaliação clínica assíncrona — sem videochamada",
-  "Farmácias de manipulação certificadas pela ANVISA",
-  "Entrega discreta em até 3 dias úteis",
-  "Ajuste de protocolo contínuo via WhatsApp",
+  "Protocolo personalizado ao seu perfil",
+  "Quatro rotas de tratamento: da fitoterapia à alta potência",
+  "Avaliação clínica online, sem sala de espera",
+  "Farmácias de manipulação homologadas e certificadas",
+  "Entrega rápida e com total discrição",
+  "Acompanhamento contínuo em todas as fases",
 ];
 
 const PROTOCOLS = [
   {
-    name: "Básico",
-    label: "Para queda leve a moderada",
-    ideal: "Ideal para início de tratamento ou queda incipiente. A combinação mais estudada da medicina capilar.",
+    name: "Fitoterápico",
+    label: "Rota natural, sem fármaco sintético",
+    ideal: "Para quem prefere começar com ativos naturais ou tem restrição ao uso de sintéticos. Uma alternativa sólida, respeitada pela ciência, para quem busca um caminho mais leve.",
     featured: false,
     items: [
-      { name: "Finasterida 1mg", detail: "Oral · 1×/dia · Bloqueia 70% do DHT" },
-      { name: "Minoxidil 5% tópico", detail: "Solução · 2×/dia · Estimula crescimento" },
-      { name: "Biotina + Zinco", detail: "Suplemento · Suporte nutricional ao fio" },
+      { name: "Ativo fitoterápico oral", detail: "Cápsula · uso diário · suporte à raiz" },
+      { name: "Suporte nutricional capilar", detail: "Vitaminas e minerais essenciais ao fio" },
+      { name: "Acompanhamento contínuo", detail: "Ajustes de rota sempre que necessário" },
     ],
   },
   {
-    name: "Avançado",
-    label: "Para queda agressiva ou hereditária",
-    ideal: "Indicado para casos que não responderam ao básico, histórico familiar forte ou queda acelerada.",
+    name: "Ação Local",
+    label: "Tratamento direto no couro cabeludo",
+    ideal: "Para quem quer evitar medicação oral. Aplicação tópica diária, discreta, direta na raiz — com resultado focado onde o fio nasce.",
+    featured: false,
+    items: [
+      { name: "Fórmula tópica exclusiva", detail: "Aplicação local · 1–2× ao dia" },
+      { name: "Suporte nutricional capilar", detail: "Complemento essencial à rotina" },
+      { name: "Acompanhamento contínuo", detail: "Ajustes de rota sempre que necessário" },
+    ],
+  },
+  {
+    name: "Equilibrado",
+    label: "Combinação completa e personalizada",
+    ideal: "O protocolo mais escolhido. Combina ação interna e externa para quem busca resultado sólido, seguro e consistente — sem extremos, no seu ritmo.",
     featured: true,
     items: [
-      { name: "Dutasterida 0,5mg", detail: "Oral · 1×/dia · Bloqueia 90% do DHT" },
-      { name: "Minoxidil oral 0,5–1mg", detail: "Comprimido · 1×/dia · Ação sistêmica" },
-      { name: "Minoxidil 5% tópico", detail: "Solução · 1×/dia · Estimula crescimento" },
+      { name: "Ação interna prescrita", detail: "Comprovada clinicamente · uso diário" },
+      { name: "Ação local complementar", detail: "Aplicação tópica todos os dias" },
+      { name: "Suporte nutricional capilar", detail: "Vitaminas e minerais para o fio" },
+      { name: "Acompanhamento contínuo", detail: "Ajustes de rota sempre que necessário" },
     ],
   },
   {
-    name: "Manutenção",
-    label: "Para consolidar e simplificar",
-    ideal: "Para quem já estabilizou a queda e busca praticidade no dia a dia com menos aplicações.",
+    name: "Alta Potência",
+    label: "Para casos mais desafiadores",
+    ideal: "Para quedas aceleradas, histórico familiar forte ou casos que não responderam a protocolos anteriores. A frente mais avançada que a medicina capilar oferece hoje.",
     featured: false,
     items: [
-      { name: "Spray combinado", detail: "Minoxidil + Finasterida tópica · 1×/dia" },
-      { name: "Biotina + Zinco + Vit. D", detail: "Suplemento · Suporte capilar completo" },
+      { name: "Ação interna reforçada", detail: "Protocolo de maior potência clínica" },
+      { name: "Ação local combinada", detail: "Aplicação diária no couro cabeludo" },
+      { name: "Suporte nutricional capilar", detail: "Vitaminas e minerais para o fio" },
+      { name: "Acompanhamento contínuo", detail: "Ajustes de rota sempre que necessário" },
     ],
   },
 ];
@@ -171,7 +179,7 @@ export default function App() {
       <nav style={c.nav}>
         <a href="/"><FioLogo color="#1A3040" size={20} /></a>
         <div className="hide-mob" style={{ display: "flex", gap: 32 }}>
-          {[["/","Tratamento capilar masculino"],["#como-funciona","Como funciona"],["#tratamento","Tudo incluso"]].map(([h,l]) => (
+          {[["/","Tratamento capilar masculino"],["#tratamento","Protocolo personalizado"]].map(([h,l]) => (
             <a key={h} href={h} style={{ fontSize: 13, color: "#666", fontWeight: 500, transition: "color 0.2s" }}
               onMouseEnter={e=>e.target.style.color="#1A3040"} onMouseLeave={e=>e.target.style.color="#666"}>{l}</a>
           ))}
@@ -202,7 +210,7 @@ export default function App() {
         transition:"transform 0.3s cubic-bezier(0.4,0,0.2,1)",
         padding:"32px 28px", display:"flex", flexDirection:"column", gap:8,
       }}>
-        {[["/","Tratamento capilar masculino"],["#como-funciona","Como funciona"],["#tratamento","Tudo incluso"]].map(([h,l]) => (
+        {[["/","Tratamento capilar masculino"],["#tratamento","Protocolo personalizado"]].map(([h,l]) => (
           <a key={h} href={h} onClick={() => setMenuOpen(false)}
             style={{ fontSize:18, fontWeight:500, color:"#555", padding:"14px 0", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"block" }}>{l}</a>
         ))}
@@ -238,14 +246,14 @@ export default function App() {
           </h1>
           <p style={{ fontSize: 16, color: "#666", lineHeight: 1.8, maxWidth: 480, marginBottom: 36,
             borderLeft: "2px solid #111", paddingLeft: 10 }}>
-            Os únicos ativos clinicamente comprovados para calvície masculina — formulados sob medida, com acompanhamento médico do início ao fim.
+            Os únicos ativos clinicamente comprovados para calvície masculina — formulados sob medida, com acompanhamento do início ao fim.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 40 }}>
             {[
-              "Avaliação online discreta",
-              "Fórmula sob prescrição",
-              "Entrega sem identificação",
-              "Acompanhamento completo",
+              "Avaliação online completa em minutos",
+              "Fórmula sob prescrição, feita sob medida",
+              "Entrega rápida e com total discrição",
+              "Suporte e acompanhamento contínuo",
             ].map((b, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <div style={{ width: 20, height: 20, borderRadius: "50%", background: "#004358", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -316,7 +324,7 @@ export default function App() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }} className="two-col">
 
             {/* Main dark card */}
-            <div className="dark-card" style={{ background:"#1e1e1e", borderRadius:24, border:"1px solid #2e2e2e", overflow:"hidden", position:"relative", minHeight:500, display:"flex", flexDirection:"column", padding:16 }}>
+            <div className="dark-card" style={{ background:"#00333D", borderRadius:24, border:"1px solid #00333D", overflow:"hidden", position:"relative", minHeight:500, display:"flex", flexDirection:"column", padding:16 }}>
               <Img src={IMGS.mirror2} alt="Tratamento capilar"
                 gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
                 style={{ width:"100%", height:340, flexShrink:0, objectPosition:"50% 10%" }} />
@@ -347,41 +355,15 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Trust cards */}
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-                {[
-                  { label:"Evidência científica",  sub:"Finasterida e Minoxidil são os únicos ativos aprovados pela FDA para calvície",  bg:"#1A3040", tc:"#fff", sc:"rgba(255,255,255,0.5)" },
-                  { label:"Prescrição médica", sub:"Tratamento avaliado e personalizado por profissional de saúde licenciado",            bg:"#EDF5F8", tc:"#1A3040", sc:"#666" },
-                ].map((s,i) => (
-                  <div key={i} style={{ background:s.bg, borderRadius:16, padding:"24px 20px" }}>
-                    <div style={{ fontSize:15, fontWeight:700, color:s.tc, letterSpacing:"-0.01em", lineHeight:1.2, marginBottom:8 }}>{s.label}</div>
-                    <div style={{ fontSize:12, color:s.sc, lineHeight:1.55 }}>{s.sub}</div>
-                  </div>
-                ))}
+              {/* Trust card */}
+              <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:16 }}>
+                <div style={{ background:"#EDF5F8", borderRadius:16, padding:"24px 20px" }}>
+                  <div style={{ fontSize:15, fontWeight:700, color:"#1A3040", letterSpacing:"-0.01em", lineHeight:1.2, marginBottom:8 }}>Prescrição médica</div>
+                  <div style={{ fontSize:12, color:"#666", lineHeight:1.55 }}>Tratamento avaliado e personalizado por profissional de saúde licenciado</div>
+                </div>
               </div>
 
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section id="como-funciona" style={{ padding:"80px 5%", background:"#F0F7FA" }}>
-        <div style={{ maxWidth:1100, margin:"0 auto" }}>
-          <div style={{ textAlign:"center", marginBottom:56 }}>
-            <div style={{ ...c.tag, marginBottom:12 }}>Como funciona</div>
-            <h2 style={{ fontSize:"clamp(28px,4vw,48px)", fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.1 }}>
-              Mais simples do que você imagina.
-            </h2>
-          </div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }} className="three-col">
-            {STEPS.map((s,i) => (
-              <div key={i} className="card-hover" style={{ background:"#EDF5F8", borderRadius:20, padding:"36px 28px", border:"1px solid rgba(0,0,0,0.06)", transition:"all 0.25s" }}>
-                <div style={{ fontSize:11, fontWeight:700, color:"#ddd", letterSpacing:"0.1em", marginBottom:20 }}>{s.n}</div>
-                <h3 style={{ fontSize:20, fontWeight:700, marginBottom:12, letterSpacing:"-0.01em" }}>{s.title}</h3>
-                <p style={{ fontSize:14, color:"#888", lineHeight:1.7 }}>{s.desc}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -392,17 +374,17 @@ export default function App() {
 
           {/* Header */}
           <div style={{ textAlign:"center", marginBottom:52 }}>
-            <div style={{ ...c.tag, marginBottom:12 }}>Tudo incluso</div>
+            <div style={{ ...c.tag, marginBottom:12 }}>Protocolo personalizado</div>
             <h2 style={{ fontSize:"clamp(28px,4vw,48px)", fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.1, marginBottom:16 }}>
-              Protocolo personalizado<br/>para cada fase.
+              Protocolo pensado<br/>para o seu momento.
             </h2>
-            <p style={{ fontSize:15, color:"#666", lineHeight:1.75, maxWidth:520, margin:"0 auto" }}>
-              Seu médico avalia seu perfil e prescreve o protocolo ideal — do básico ao avançado.
+            <p style={{ fontSize:15, color:"#666", lineHeight:1.75, maxWidth:560, margin:"0 auto" }}>
+              Do primeiro sinal de queda até a manutenção dos resultados — você é acompanhado em cada fase: no início, na melhora e na consolidação do que conquistou. Nada fica por conta. Nunca.
             </p>
           </div>
 
           {/* Protocol cards */}
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:64 }} className="proto-grid">
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:16, marginBottom:64 }} className="proto-grid">
             {PROTOCOLS.map((p,i) => (
               <div key={i} className={p.featured ? "proto-card-feat" : ""}
                 style={{ background: p.featured ? "#1A3040" : "#EDF5F8", borderRadius:20, padding:"28px 24px",
@@ -411,7 +393,7 @@ export default function App() {
                 {p.featured && (
                   <span style={{ position:"absolute", top:16, right:16, fontSize:9, fontWeight:800,
                     background:"#fff", color:"#1A3040", padding:"3px 10px", borderRadius:100, letterSpacing:"0.08em" }}>
-                    MAIS POTENTE
+                    MAIS ESCOLHIDO
                   </span>
                 )}
                 <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
@@ -449,10 +431,10 @@ export default function App() {
 
             <div>
               <h3 style={{ fontSize:"clamp(22px,2.8vw,32px)", fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.15, marginBottom:16 }}>
-                Tudo que você precisa,<br/>num só lugar.
+                Um protocolo vivo,<br/>ajustado com você.
               </h3>
               <p style={{ fontSize:15, color:"#666", lineHeight:1.8, marginBottom:28 }}>
-                Acompanhe seu progresso, fale com seu médico e ajuste o protocolo — tudo pelo WhatsApp.
+                Seu tratamento não é estático. A cada fase — do primeiro frasco ao platô de manutenção — o protocolo é revisado com você, pelo canal que você já usa todos os dias.
               </p>
               {BENEFITS.map((b,i) => (
                 <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
@@ -470,34 +452,40 @@ export default function App() {
             <div style={{ background:"#EDF5F8", borderRadius:24, padding:32, overflow:"hidden" }}>
               <div style={{ ...c.tag, marginBottom:16 }}>Resultado real</div>
               <div style={{ borderRadius:16, overflow:"hidden", height:260, marginBottom:20 }}>
-                <Img src={IMGS.carlos} alt="Paciente Fio Raiz"
-                  gradient="linear-gradient(135deg, #ddd, #ccc)"
-                  style={{ width:"100%", height:"100%", objectPosition:"50% 15%" }} />
+                <img src="/douglas.png" alt="Paciente Fio Raiz"
+                  style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"50% 20%", display:"block" }} />
               </div>
               <p style={{ fontSize:13, color:"#666", lineHeight:1.7, fontStyle:"italic" }}>
-                "Fiz tudo pelo celular. O tratamento chegou em 3 dias. No 5º mês minha namorada perguntou o que eu tinha feito no cabelo."
+                "Eu estava percebendo que as entradas estavam ficando cada vez mais acentuadas e isso me incomodava muito. Hoje, depois de alguns meses, olho no espelho e vejo meu cabelo voltando firme. Mudou meu humor, minha confiança, tudo."
               </p>
-              <p style={{ fontSize:11, color:"#aaa", marginTop:8 }}>— Rafael M., 34 anos · São Paulo</p>
+              <p style={{ fontSize:11, color:"#aaa", marginTop:8 }}>— DN, 37 · São Paulo</p>
             </div>
 
           </div>
         </div>
       </section>
 
-      {/* TRUST BADGES */}
-{/* TRUST BADGES */}
-      <section style={{ padding:"32px 5%", background:"#F0F7FA", borderTop:"1px solid rgba(0,0,0,0.06)", borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
-        <div style={{ maxWidth:1000, margin:"0 auto", display:"flex", justifyContent:"space-around", flexWrap:"wrap", gap:20 }}>
-          {[
-            { icon:"🚀", text:"Entrega rápida e discreta" },
-            { icon:"👨‍⚕️", text:"Acompanhamento médico" },
-            { icon:"🔬", text:"Ativos com evidência científica" },
-            { icon:"🏥", text:"Farmácias certificadas pela ANVISA" },
+      {/* TRUST BADGES - marquee */}
+      <section style={{ padding:"28px 0", background:"#F0F7FA", borderTop:"1px solid rgba(0,0,0,0.06)", borderBottom:"1px solid rgba(0,0,0,0.06)", overflow:"hidden" }}>
+        <style>{`
+          @keyframes marquee-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+          .marquee-track { display:flex; width:max-content; animation: marquee-x 38s linear infinite; }
+          .marquee-track:hover { animation-play-state: paused; }
+          .marquee-item { display:flex; align-items:center; gap:10px; padding:0 28px; font-size:13px; font-weight:500; color:#444; white-space:nowrap; }
+          .marquee-item .dot { width:5px; height:5px; border-radius:50%; background:#00333D; opacity:0.35; flex-shrink:0; }
+        `}</style>
+        <div className="marquee-track">
+          {Array.from({ length: 2 }).flatMap((_, rep) => [
+            { icon:"🏥", text:"Farmácias parceiras homologadas e certificadas" },
+            { icon:"🩺", text:"Prescrição médica — avaliação profissional" },
+            { icon:"📦", text:"Entrega discreta — rápida e com total discrição" },
+            { icon:"💬", text:"Suporte e atendimento — acompanhamento contínuo" },
           ].map((b,i) => (
-            <div key={i} style={{ display:"flex", alignItems:"center", gap:10, fontSize:13, fontWeight:500, color:"#444" }}>
+            <div key={`${rep}-${i}`} className="marquee-item">
               <span style={{ fontSize:18 }}>{b.icon}</span>{b.text}
+              <span className="dot" />
             </div>
-          ))}
+          )))}
         </div>
       </section>
 
@@ -506,14 +494,13 @@ export default function App() {
         <div style={{ maxWidth:580, margin:"0 auto" }}>
           <div style={{ ...c.tag, marginBottom:20 }}>Comece hoje</div>
           <h2 style={{ fontSize:"clamp(32px,5vw,60px)", fontWeight:800, letterSpacing:"-0.03em", lineHeight:1.05, marginBottom:20 }}>
-            Melhor é possível.<br/>
+            Melhorar é possível.<br/>
             <span style={{ color:"#bbb" }}>A gente construiu pra isso.</span>
           </h2>
           <p style={{ fontSize:16, color:"#888", lineHeight:1.75, marginBottom:40 }}>
-            A avaliação é gratuita e leva 3 minutos. O único arrependimento de quem começa é não ter começado antes.<br/><br/><em style={{ fontSize:14, color:"#bbb", fontStyle:"italic" }}>Não é cura. É controle baseado em ciência.</em>
+            Avaliação rápida e gratuita. O único arrependimento de quem começa é não ter começado antes.<br/><br/><em style={{ fontSize:14, color:"#bbb", fontStyle:"italic" }}>Não é cura. É controle baseado em ciência.</em>
           </p>
-          <button className="btn" onClick={() => navigate("/avaliacao")} style={c.ctaLg}>Fazer avaliação gratuita</button>
-          <p style={{ fontSize:12, color:"#ccc", marginTop:16 }}>Sem compromisso. Sem cartão agora.</p>
+          <button className="btn" onClick={() => navigate("/avaliacao")} style={c.ctaLg}>Avaliação rápida e gratuita</button>
         </div>
       </section>
 
@@ -523,24 +510,12 @@ export default function App() {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:32, marginBottom:40 }}>
             <FioLogo color="#fff" size={20} />
             <div style={{ display:"flex", gap:28, flexWrap:"wrap" }}>
-              {[["#como-funciona","Como funciona"],["#tratamento","Tudo incluso"],["#quiz","Avaliação"]].map(([h,l]) => (
+              {[["#tratamento","Protocolo personalizado"],["#quiz","Avaliação"]].map(([h,l]) => (
                 <a key={h} href={h} style={{ fontSize:12, color:"rgba(255,255,255,0.3)" }}>{l}</a>
               ))}
             </div>
           </div>
-          <div style={{ borderTop:"1px solid rgba(255,255,255,0.07)", paddingTop:28 }}>
-            <p style={{ fontSize:11, color:"rgba(255,255,255,0.2)", lineHeight:1.85, marginBottom:16, maxWidth:820 }}>
-              A avaliação disponível no site da Fio Raiz não cria uma relação médico-paciente entre o indivíduo e a Fio Raiz. Médicos parceiros credenciados avaliam as respostas e determinam a elegibilidade para prescrição. A prescrição está sujeita à avaliação clínica individual. Os resultados podem variar. Farmácias de manipulação parceiras são certificadas pela ANVISA. Fio Raiz não é uma farmácia e não interfere nos serviços farmacêuticos. Certos materiais neste site, incluindo textos e imagens, podem ser gerados ou aprimorados com tecnologias de inteligência artificial.
-            </p>
-            <div style={{ display:"flex", justifyContent:"space-between", flexWrap:"wrap", gap:12, alignItems:"center" }}>
-              <span style={{ fontSize:11, color:"rgba(255,255,255,0.15)" }}>© 2026 Fio Raiz. Todos os direitos reservados.</span>
-              <div style={{ display:"flex", gap:20 }}>
-                {[["Privacidade","#"],["Termos","#"],["Reembolso","#"],["Consentimento médico","/termo-consentimento"]].map(([l,href]) => (
-                  <a key={l} href={href} style={{ fontSize:11, color:"rgba(255,255,255,0.2)" }}>{l}</a>
-                ))}
-              </div>
-            </div>
-          </div>
+
         </div>
       </footer>
     </div>

@@ -3,16 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 function FioRaizLogo({ color = "#1A3040", size = 18 }) {
   const navigate = useNavigate();
+  const isWhite = color !== "#1A3040";
   return (
-    <div onClick={() => navigate("/")} style={{ display: "flex", alignItems: "center", gap: 7, cursor: "pointer", userSelect: "none", WebkitTapHighlightColor: "transparent" }} role="link" aria-label="Voltar para a home">
-      <svg width={size * 0.5} height={size * 1.1} viewBox="0 0 16 35" fill="none">
-        <ellipse cx="8" cy="4" rx="4" ry="4" fill={color} opacity="0.9"/>
-        <path d="M8 8 C7 12 9 15 8 19 C7 23 9 27 8 31 C7.5 33 8 34 8 35"
-          stroke={color} strokeWidth="1.4" strokeLinecap="round" fill="none"/>
-      </svg>
-      <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: size, fontWeight: 700, color, letterSpacing: "0.05em" }}>
-        fio<span style={{ opacity: 0.4 }}>raiz</span>
-      </span>
+    <div onClick={() => navigate("/")} style={{ display: "flex", alignItems: "center", cursor: "pointer", userSelect: "none", WebkitTapHighlightColor: "transparent" }} role="link" aria-label="Voltar para a home">
+      <img src="/logo.png" alt="Fio Raiz" style={{ height: size * 1.8, width: "auto", display: "block", filter: isWhite ? "brightness(0) invert(1)" : "none" }} />
     </div>
   );
 }

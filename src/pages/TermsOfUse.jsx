@@ -3,15 +3,8 @@ import { useNavigate } from "react-router-dom";
 function FioLogo() {
   const navigate = useNavigate();
   return (
-    <div onClick={() => navigate("/")} style={{ display:"flex", alignItems:"center", gap:7, cursor:"pointer", userSelect:"none", WebkitTapHighlightColor:"transparent" }} role="link" aria-label="Voltar para a home">
-      <svg width={10} height={22} viewBox="0 0 16 35" fill="none">
-        <ellipse cx="8" cy="4" rx="4" ry="4" fill="#1A3040" opacity="0.9"/>
-        <path d="M8 8 C7 12 9 15 8 19 C7 23 9 27 8 31 C7.5 33 8 34 8 35"
-          stroke="#1A3040" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
-      </svg>
-      <span style={{ fontFamily:"'Outfit',sans-serif", fontSize:18, fontWeight:700, color:"#1A3040", letterSpacing:"0.05em" }}>
-        fio<span style={{ opacity:0.4 }}>raiz</span>
-      </span>
+    <div onClick={() => navigate("/")} style={{ display:"flex", alignItems:"center", cursor:"pointer", userSelect:"none", WebkitTapHighlightColor:"transparent" }} role="link" aria-label="Voltar para a home">
+      <img src="/logo.png" alt="Fio Raiz" style={{ height:34, width:"auto", display:"block" }} />
     </div>
   );
 }
