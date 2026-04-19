@@ -285,7 +285,7 @@ export default function App() {
           background: "#f7f7f5"
         }}>
           <video
-            src="/hero1.mp4"
+            src="/new-hero-inicial.mp4"
             autoPlay muted loop playsInline
             style={{ position: "absolute", top: 0, left: 0,
               width: "100%", height: "100%",
@@ -295,26 +295,35 @@ export default function App() {
         </div>
       </section>
 
-      {/* TRUST SEALS */}
-      <div style={{ background: "#1A3040", padding: "28px 6%" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px 32px" }} className="seals-grid">
-          {[
-            { icon: "ANVISA",   label: "ANVISA",           sub: "Farmácias certificadas" },
-            { icon: "RX",       label: "Prescrição Médica",sub: "Avaliação por profissional" },
-            { icon: "PKG",      label: "Entrega Discreta", sub: "Embalagem sem identificação" },
-            { icon: "CHAT",     label: "Suporte Direto",   sub: "Acompanhamento contínuo" },
+      {/* TRUST SEALS - marquee horizontal afinado */}
+      <div style={{ background: "#1A3040", padding: "14px 0", overflow: "hidden" }}>
+        <style>{`
+          @keyframes seals-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+          .seals-track { display:flex; width:max-content; animation: seals-x 42s linear infinite; }
+          .seals-track:hover { animation-play-state: paused; }
+          .seals-item { display:flex; align-items:center; gap:10px; padding:0 28px; white-space:nowrap; flex-shrink:0; }
+          .seals-item .badge { width:30px; height:30px; border-radius:6px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+          .seals-item .badge span { font-size:8px; font-weight:800; color:#fff; letterSpacing:0.04em; }
+          .seals-item .label { font-size:12px; font-weight:700; color:#fff; letter-spacing:-0.01em; }
+          .seals-item .sub { font-size:11px; color:rgba(255,255,255,0.45); margin-left:6px; }
+          .seals-item .dot { width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,0.25); margin-left:18px; flex-shrink:0; }
+        `}</style>
+        <div className="seals-track">
+          {Array.from({ length: 2 }).flatMap((_, rep) => [
+            { icon: "ANVISA", label: "ANVISA",            sub: "Farmácias certificadas" },
+            { icon: "RX",     label: "Prescrição Médica", sub: "Avaliação por profissional" },
+            { icon: "PKG",    label: "Entrega Discreta",  sub: "Embalagem sem identificação" },
+            { icon: "CHAT",   label: "Suporte Direto",    sub: "Acompanhamento contínuo" },
           ].map((s,i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(255,255,255,0.08)",
-                border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <span style={{ fontSize: 9, fontWeight: 800, color: "#fff", letterSpacing: "0.04em" }}>{s.icon}</span>
+            <div key={`${rep}-${i}`} className="seals-item">
+              <div className="badge"><span>{s.icon}</span></div>
+              <div style={{ display:"flex", alignItems:"baseline" }}>
+                <span className="label">{s.label}</span>
+                <span className="sub">{s.sub}</span>
               </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", letterSpacing: "-0.01em" }}>{s.label}</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 1 }}>{s.sub}</div>
-              </div>
+              <span className="dot" />
             </div>
-          ))}
+          )))}
         </div>
       </div>
 
@@ -451,14 +460,14 @@ export default function App() {
 
             <div style={{ background:"#EDF5F8", borderRadius:24, padding:32, overflow:"hidden" }}>
               <div style={{ ...c.tag, marginBottom:16 }}>Resultado real</div>
-              <div style={{ borderRadius:16, overflow:"hidden", height:260, marginBottom:20 }}>
+              <div style={{ borderRadius:16, overflow:"hidden", height:320, marginBottom:20 }}>
                 <img src="/douglas.png" alt="Paciente Fio Raiz"
-                  style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"50% 20%", display:"block" }} />
+                  style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"50% 30%", display:"block" }} />
               </div>
               <p style={{ fontSize:13, color:"#666", lineHeight:1.7, fontStyle:"italic" }}>
-                "Eu estava percebendo que as entradas estavam ficando cada vez mais acentuadas e isso me incomodava muito. Hoje, depois de alguns meses, olho no espelho e vejo meu cabelo voltando firme. Mudou meu humor, minha confiança, tudo."
+                "Eu estava percebendo que as entradas estavam ficando cada vez mais acentuadas e os fios mais ralos. Após 5 meses de tratamento, notei que os fios engrossaram, as falhas começaram a sumir e novos fios começaram a crescer. Autoestima melhorou, a líbido também 😂"
               </p>
-              <p style={{ fontSize:11, color:"#aaa", marginTop:8 }}>— DN, 37 · São Paulo</p>
+              <p style={{ fontSize:11, color:"#aaa", marginTop:8 }}>— DN, 37 — São Paulo</p>
             </div>
 
           </div>
@@ -505,17 +514,16 @@ export default function App() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background:"#1A3040", padding:"48px 5% 32px" }}>
+      <footer style={{ background:"#fff", padding:"40px 5% 32px", borderTop:"1px solid rgba(0,0,0,0.06)" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:32, marginBottom:40 }}>
-            <FioLogo color="#fff" size={20} />
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:32 }}>
+            <FioLogo color="#1A3040" size={20} />
             <div style={{ display:"flex", gap:28, flexWrap:"wrap" }}>
               {[["#tratamento","Protocolo personalizado"],["#quiz","Avaliação"]].map(([h,l]) => (
-                <a key={h} href={h} style={{ fontSize:12, color:"rgba(255,255,255,0.3)" }}>{l}</a>
+                <a key={h} href={h} style={{ fontSize:12, color:"rgba(0,0,0,0.45)", fontWeight:500 }}>{l}</a>
               ))}
             </div>
           </div>
-
         </div>
       </footer>
     </div>
