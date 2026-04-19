@@ -501,6 +501,8 @@ export default function Comunidade() {
           .cards-grid{grid-template-columns:1fr!important;}
           .show-mob{display:flex!important;}
           .hide-mob{display:none!important;}
+          .pad-section{padding:40px 5% 60px!important;}
+          .gap-lg{gap:20px!important;}
         }
       `}</style>
 

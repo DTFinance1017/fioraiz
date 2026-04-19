@@ -91,6 +91,9 @@ export default function QuemSomos() {
           .hero-h{font-size:clamp(32px,9vw,48px)!important;}
           .hide-mob{display:none!important;}
           .show-mob{display:flex!important;}
+          .gap-lg{gap:24px!important;}
+          .pad-hero{padding:72px 5% 48px!important;}
+          .pad-section{padding:48px 5%!important;}
         }
       `}</style>
 
@@ -138,7 +141,7 @@ export default function QuemSomos() {
       </div>
 
       {/* HERO */}
-      <section style={{
+      <section className="pad-hero" style={{
         minHeight: "70vh", display: "flex", alignItems: "center",
         padding: "120px 5% 80px",
         background: "linear-gradient(160deg, #f7f7f5 0%, #fff 70%)",
@@ -199,9 +202,9 @@ export default function QuemSomos() {
       </section>
 
       {/* NOSSA HISTÓRIA */}
-      <section style={{ padding: "80px 5%", background: "#F0F7FA" }}>
+      <section className="pad-section" style={{ padding: "80px 5%", background: "#F0F7FA" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid",
-          gridTemplateColumns: "1fr 1fr", gap: 72, alignItems: "center" }} className="two-col">
+          gridTemplateColumns: "1fr 1fr", gap: 72, alignItems: "center" }} className="two-col gap-lg">
           <div>
             <div style={{ ...c.tag, marginBottom: 16 }}>Por que criamos a Fio Raiz</div>
             <h2 style={{ fontSize: "clamp(26px,3vw,40px)", fontWeight: 800, letterSpacing: "-0.02em",
@@ -244,7 +247,7 @@ export default function QuemSomos() {
       </section>
 
       {/* FOCO EXCLUSIVO */}
-      <section style={{ padding: "80px 5%", background: "#fff" }}>
+      <section className="pad-section" style={{ padding: "80px 5%", background: "#fff" }}>
         <div style={{ maxWidth: 860, margin: "0 auto", textAlign: "center" }}>
           <div style={{ ...c.tag, marginBottom: 16 }}>Nosso foco</div>
           <h2 style={{ fontSize: "clamp(26px,3.5vw,44px)", fontWeight: 800, letterSpacing: "-0.02em",
@@ -272,7 +275,7 @@ export default function QuemSomos() {
       </section>
 
       {/* CTA FINAL */}
-      <section style={{ padding: "80px 5%", background: "#021d34", textAlign: "center" }}>
+      <section className="pad-section" style={{ padding: "80px 5%", background: "#021d34", textAlign: "center" }}>
         <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <h2 style={{ fontSize: "clamp(28px,4vw,48px)", fontWeight: 800, color: "#fff",
             letterSpacing: "-0.02em", lineHeight: 1.1, marginBottom: 20 }}>

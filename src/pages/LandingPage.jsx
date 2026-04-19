@@ -172,6 +172,10 @@ export default function App() {
           .proto-grid{grid-template-columns:1fr!important;}
           .proto-card-feat{order:-1;}
           .dark-card{margin:0 16px!important;}
+          .gap-lg{gap:24px!important;}
+          .pad-hero{padding:80px 5% 40px!important;}
+          .pad-section{padding:48px 5%!important;}
+          .pad-section-sm{padding:40px 5%!important;}
         }
       `}</style>
 
@@ -226,7 +230,7 @@ export default function App() {
         gridTemplateColumns: "1fr 1fr",
         alignItems: "center", padding: "100px 5% 60px", gap: 60,
         background: "linear-gradient(160deg, #f7f7f5 0%, #fff 60%)"
-      }} className="two-col">
+      }} className="two-col pad-hero gap-lg">
 
         {/* Left */}
         <div style={{ opacity: loaded?1:0, transform: loaded?"translateY(0)":"translateY(20px)", transition: "all 0.7s ease 0.1s" }}>
@@ -436,7 +440,7 @@ export default function App() {
           </div>
 
           {/* Bottom: benefits + photo */}
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:72, alignItems:"center" }} className="two-col">
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:72, alignItems:"center" }} className="two-col gap-lg">
 
             <div>
               <h3 style={{ fontSize:"clamp(22px,2.8vw,32px)", fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.15, marginBottom:16 }}>
