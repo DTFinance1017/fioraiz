@@ -302,6 +302,7 @@ function ConsentModal({ onClose, onAccept }) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function Quiz() {
   const [phase, setPhase] = useState("intro");
+  const [patternConfirmed, setPatternConfirmed] = useState(false);
   const [showConsent, setShowConsent] = useState(false);
   const [consentDone, setConsentDone] = useState(false);
   const [hairStep, setHairStep] = useState(0);
@@ -366,7 +367,7 @@ export default function Quiz() {
     const updated = { ...answers, [key]: val };
     setAnswers(updated);
     if (key === "gradual" && val === "Repentina") { setPhase("abrupt-stop"); return; }
-    if (key === "hairType" && (val === "Queda Irregular" || val === "Queda Total")) { setPhase("abrupt-stop"); return; }
+    if (key === "hairType" && (val === "Queda Irregular" || val === "Queda Total")) { setPhase("pattern-stop"); return; }
     if (hairStep < 4) setHairStep(p => p + 1);
     else { setPhase("health-intro"); setHealthStep(0); }
   }
@@ -725,6 +726,91 @@ export default function Quiz() {
       </div>
     );
   }
+
+  // ── PARADA PADRAO ATIPICO ────────────────────────────────────────────
+  if (phase === "pattern-stop") return (
+    <div style={s.wrap}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}`}</style>
+      <div style={s.nav}><Logo /></div>
+      <div style={s.progressBg}><div style={{ ...s.progressBar, width:"8%" }}/></div>
+      <div style={s.body}>
+        <div style={{ textAlign:"center", padding:"32px 0 24px" }}>
+          <div style={{ width:64, height:64, borderRadius:20, background:"#EDF5F8",
+            border:"1px solid rgba(1,46,70,0.12)", display:"flex", alignItems:"center",
+            justifyContent:"center", margin:"0 auto 22px", fontSize:26 }}>🔍</div>
+          <div style={{ fontSize:10, fontWeight:800, letterSpacing:"0.14em",
+            textTransform:"uppercase", color:"#012e46", background:"#EDF5F8",
+            padding:"5px 14px", borderRadius:100, display:"inline-block", marginBottom:16 }}>Fio Raiz</div>
+          <h2 style={{ fontSize:"clamp(22px,5vw,28px)", fontWeight:800,
+            letterSpacing:"-0.02em", lineHeight:1.2, color:"#021d34", marginBottom:14 }}>
+            Este perfil pede um<br/>olhar especializado.
+          </h2>
+          <p style={{ fontSize:14, color:"#666", lineHeight:1.75, maxWidth:400, margin:"0 auto" }}>
+            Queda em múltiplos pontos irregulares ou queda total não seguem o padrão
+            da alopecia androgenética — que é a única condição que tratamos.
+          </p>
+        </div>
+
+        <div style={{ background:"#021d34", borderRadius:16, padding:"22px 20px", marginBottom:14 }}>
+          <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
+            color:"rgba(255,255,255,0.45)", marginBottom:10 }}>O que pode estar acontecendo</div>
+          <ul style={{ listStyle:"none", padding:0, display:"flex", flexDirection:"column", gap:8 }}>
+            {["Alopecia areata (queda em placas)", "Eflúvio telógeno (queda difusa por estresse ou deficiência)", "Alopecia totalis ou universalis", "Condições autoimunes ou hormonais"].map((item, i) => (
+              <li key={i} style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
+                <span style={{ color:"#94b8d7", fontSize:14, marginTop:1, flexShrink:0 }}>›</span>
+                <span style={{ fontSize:13, color:"rgba(255,255,255,0.75)", lineHeight:1.6 }}>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div style={{ background:"#fff", border:"1px solid rgba(0,0,0,0.07)", borderRadius:14,
+          padding:"18px 20px", marginBottom:24 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:"#021d34", marginBottom:8 }}>
+            Nossa recomendação
+          </div>
+          <p style={{ fontSize:13, color:"#666", lineHeight:1.75 }}>
+            Consulte um dermatologista ou tricologista presencialmente para um diagnóstico preciso.
+            Após a avaliação, se o diagnóstico for alopecia androgenética, a Fio Raiz terá o protocolo certo para você.
+          </p>
+        </div>
+
+        <label style={{ display:"flex", alignItems:"flex-start", gap:12, padding:"16px 18px",
+          background:"#F8FBFD", border:"1px solid rgba(1,46,70,0.12)", borderRadius:12,
+          cursor:"pointer", marginBottom:20, userSelect:"none" }}>
+          <div onClick={() => setPatternConfirmed(v => !v)} style={{
+            width:20, height:20, borderRadius:5, flexShrink:0, marginTop:1,
+            background: patternConfirmed ? "#012e46" : "#fff",
+            border: `2px solid ${patternConfirmed ? "#012e46" : "#c8d8e4"}`,
+            display:"flex", alignItems:"center", justifyContent:"center",
+            transition:"all 0.15s",
+          }}>
+            {patternConfirmed && <span style={{ color:"#fff", fontSize:12, lineHeight:1, fontWeight:800 }}>✓</span>}
+          </div>
+          <span style={{ fontSize:13, color:"#444", lineHeight:1.65 }}>
+            Entendi — quero revisar minhas respostas ou retornar ao início.
+          </span>
+        </label>
+
+        <button
+          disabled={!patternConfirmed}
+          style={{ ...s.ctaBtn,
+            background: patternConfirmed ? "#012e46" : "#dde8ee",
+            color: patternConfirmed ? "#fff" : "#a0b8c4",
+            cursor: patternConfirmed ? "pointer" : "not-allowed",
+            marginBottom:12, transition:"all 0.2s",
+          }}
+          onClick={() => { if(patternConfirmed){ setPatternConfirmed(false); setHairStep(0); setPhase("quiz-hair"); } }}>
+          Revisar minhas respostas
+        </button>
+
+        <a href="/" style={{ display:"block", textAlign:"center", fontSize:13, color:"#888",
+          textDecoration:"underline", padding:"10px 0", fontFamily:"'Outfit',sans-serif" }}>
+          Voltar à página inicial
+        </a>
+      </div>
+    </div>
+  );
 
   // ── PARADA ABRUPTA ────────────────────────────────────────────────────────
   if (phase === "abrupt-stop") return (
