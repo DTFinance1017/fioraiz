@@ -519,7 +519,7 @@ export default function App() {
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:32 }}>
             <FioLogo color="#1A3040" size={20} />
             <div style={{ display:"flex", gap:28, flexWrap:"wrap" }}>
-              {[["#tratamento","Protocolo personalizado"],["#quiz","Avaliação"]].map(([h,l]) => (
+              {[["/quemsomos","Quem somos"]].map(([h,l]) => (
                 <a key={h} href={h} style={{ fontSize:12, color:"rgba(0,0,0,0.45)", fontWeight:500 }}>{l}</a>
               ))}
             </div>

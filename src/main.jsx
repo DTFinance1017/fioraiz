@@ -7,6 +7,7 @@ import ConsentForm from './pages/ConsentForm'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfUse from './pages/TermsOfUse'
 import Admin from './pages/Admin'
+import QuemSomos from './pages/QuemSomos'
 import SiteGate from './pages/SiteGate'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/politica-privacidade" element={<PrivacyPolicy />} />
           <Route path="/termos-uso" element={<TermsOfUse />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/quemsomos" element={<QuemSomos />} />
         </Routes>
       </BrowserRouter>
     </SiteGate>
