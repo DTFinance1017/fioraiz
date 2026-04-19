@@ -284,13 +284,13 @@ export default function App() {
           overflow: "hidden", opacity: loaded?1:0, transition: "opacity 0.9s ease 0.3s",
           background: "#f7f7f5"
         }}>
-          <video
-            src="/new-hero-inicial.mp4"
-            autoPlay muted loop playsInline
+          <img
+            src="/hero-inicial.jpg"
+            alt="Tratamento capilar masculino Fio Raiz"
             style={{ position: "absolute", top: 0, left: 0,
               width: "100%", height: "100%",
               objectFit: "cover", objectPosition: "center 20%",
-              background: "transparent" }}
+              background: "transparent", display: "block" }}
           />
         </div>
       </section>
