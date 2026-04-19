@@ -90,7 +90,7 @@ export default function TermsOfUse() {
   const font = `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Outfit',sans-serif;}`;
 
   return (
-    <div style={{ minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif", color:"#1A3040", width:"100%", maxWidth:"100vw", overflowX:"hidden" }}>
+    <div style={{ minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif", color:"#021d34", width:"100%", maxWidth:"100vw", overflowX:"hidden" }}>
       <style>{font}</style>
 
       {/* Header */}

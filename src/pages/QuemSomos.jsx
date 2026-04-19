@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function FioLogo({ color = "#1A3040", size = 20 }) {
+function FioLogo({ color = "#021d34", size = 20 }) {
   const navigate = useNavigate();
   const isWhite = color === "#fff" || color === "white";
   return (
@@ -62,7 +62,7 @@ export default function QuemSomos() {
   }, [menuOpen]);
 
   const c = {
-    page: { fontFamily: "'Outfit',sans-serif", background: "#F0F7FA", color: "#1A3040", overflowX: "hidden" },
+    page: { fontFamily: "'Outfit',sans-serif", background: "#F0F7FA", color: "#021d34", overflowX: "hidden" },
     nav: {
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 200,
       padding: "0 5%", height: 64,
@@ -73,7 +73,7 @@ export default function QuemSomos() {
       transition: "all 0.3s",
     },
     tag: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#888" },
-    cta: { background: "#004358", color: "#fff", padding: "15px 36px", borderRadius: 6, fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer", fontFamily: "'Outfit',sans-serif", transition: "all 0.2s" },
+    cta: { background: "#012e46", color: "#fff", padding: "15px 36px", borderRadius: 6, fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer", fontFamily: "'Outfit',sans-serif", transition: "all 0.2s" },
   };
 
   return (
@@ -96,7 +96,7 @@ export default function QuemSomos() {
 
       {/* NAV */}
       <nav style={c.nav}>
-        <FioLogo color="#1A3040" size={20} />
+        <FioLogo color="#021d34" size={20} />
         <div className="hide-mob" style={{ display:"flex", gap:32, alignItems:"center" }}>
           {[["/","Início"],["quemsomos","Quem Somos"],["comunidade","Comunidade"]].map(([h,l]) => (
             <a key={h} href={h} style={{ fontSize:13, color:"#666", fontWeight:500 }}>{l}</a>
@@ -107,9 +107,9 @@ export default function QuemSomos() {
           <button onClick={() => setMenuOpen(o => !o)}
             style={{ display:"none", background:"none", border:"none", cursor:"pointer", padding:8, flexDirection:"column", gap:5 }}
             className="show-mob">
-            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
-            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
-            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
           </button>
         </div>
       </nav>
@@ -132,7 +132,7 @@ export default function QuemSomos() {
             style={{ fontSize:18, fontWeight:500, color:"#555", padding:"14px 0", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"block" }}>{l}</a>
         ))}
         <button className="btn" onClick={() => { setMenuOpen(false); navigate("/avaliacao"); }}
-          style={{ background:"#004358", color:"#fff", padding:"16px 32px", borderRadius:6, fontSize:14, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginTop:24, textAlign:"center", width:"100%" }}>
+          style={{ background:"#012e46", color:"#fff", padding:"16px 32px", borderRadius:6, fontSize:14, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginTop:24, textAlign:"center", width:"100%" }}>
           Avaliação gratuita
         </button>
       </div>
@@ -156,7 +156,7 @@ export default function QuemSomos() {
           </div>
           <h1 className="hero-h" style={{
             fontSize: "clamp(36px,4.5vw,60px)", fontWeight: 800, lineHeight: 1.1,
-            letterSpacing: "-0.03em", marginBottom: 24, color: "#1A3040",
+            letterSpacing: "-0.03em", marginBottom: 24, color: "#021d34",
           }}>
             Criamos a Fio Raiz<br/>
             <span style={{ color: "#aaa" }}>para quem não quer esperar.</span>
@@ -170,7 +170,7 @@ export default function QuemSomos() {
       </section>
 
       {/* DADOS / ESTATÍSTICAS */}
-      <section style={{ background: "#1A3040", padding: "64px 5%" }}>
+      <section style={{ background: "#021d34", padding: "64px 5%" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <div style={{ ...c.tag, color: "rgba(255,255,255,0.4)", marginBottom: 12 }}>O que os estudos dizem</div>
@@ -218,7 +218,7 @@ export default function QuemSomos() {
                 O motivo é simples: a jornada é burocrática, cara ou constrangedora. Consulta presencial,
                 espera, repetição, farmácia — e no meio disso tudo, desistência.
               </p>
-              <p style={{ fontWeight: 600, color: "#1A3040" }}>
+              <p style={{ fontWeight: 600, color: "#021d34" }}>
                 Criamos a Fio Raiz para resolver exatamente isso. Uma plataforma onde o homem faz
                 a avaliação do próprio celular, recebe o protocolo em casa, e é acompanhado
                 em cada fase — sem fila, sem constrangimento, sem complicação.
@@ -235,7 +235,7 @@ export default function QuemSomos() {
               <div key={i} style={{ background: "#fff", borderRadius: 16, padding: "24px 24px",
                 border: "1px solid rgba(0,0,0,0.07)" }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#ddd", letterSpacing: "0.1em", marginBottom: 8 }}>{item.n}</div>
-                <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: "#1A3040" }}>{item.title}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: "#021d34" }}>{item.title}</div>
                 <div style={{ fontSize: 13, color: "#888", lineHeight: 1.7 }}>{item.text}</div>
               </div>
             ))}
@@ -263,7 +263,7 @@ export default function QuemSomos() {
               <div key={i} style={{ background: "#F0F7FA", borderRadius: 20, padding: "28px 24px",
                 border: "1px solid rgba(0,0,0,0.05)" }}>
                 <div style={{ fontSize: 28, marginBottom: 12 }}>{v.icon}</div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#1A3040", marginBottom: 8 }}>{v.title}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#021d34", marginBottom: 8 }}>{v.title}</div>
                 <div style={{ fontSize: 13, color: "#666", lineHeight: 1.7 }}>{v.text}</div>
               </div>
             ))}
@@ -272,7 +272,7 @@ export default function QuemSomos() {
       </section>
 
       {/* CTA FINAL */}
-      <section style={{ padding: "80px 5%", background: "#1A3040", textAlign: "center" }}>
+      <section style={{ padding: "80px 5%", background: "#021d34", textAlign: "center" }}>
         <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <h2 style={{ fontSize: "clamp(28px,4vw,48px)", fontWeight: 800, color: "#fff",
             letterSpacing: "-0.02em", lineHeight: 1.1, marginBottom: 20 }}>
@@ -282,7 +282,7 @@ export default function QuemSomos() {
             Avaliação rápida e gratuita. Sem compromisso. O protocolo chega em casa.
           </p>
           <button className="btn" onClick={() => navigate("/avaliacao")}
-            style={{ ...c.cta, background: "#fff", color: "#1A3040", padding: "17px 48px", fontSize: 15 }}>
+            style={{ ...c.cta, background: "#fff", color: "#021d34", padding: "17px 48px", fontSize: 15 }}>
             Fazer avaliação gratuita
           </button>
         </div>
@@ -292,7 +292,7 @@ export default function QuemSomos() {
       <footer style={{ background: "#fff", padding: "32px 5%", borderTop: "1px solid rgba(0,0,0,0.06)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex",
           justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-          <FioLogo color="#1A3040" size={18} />
+          <FioLogo color="#021d34" size={18} />
           <p style={{ fontSize: 12, color: "rgba(0,0,0,0.4)", lineHeight: 1.6, maxWidth: 600 }}>
             A Fio Raiz não é uma farmácia. Todos os produtos adquiridos são manipulados pelas farmácias credenciadas, de acordo com as normas da Anvisa.
           </p>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function FioLogo({ color = "#1A3040", size = 20 }) {
+function FioLogo({ color = "#021d34", size = 20 }) {
   const navigate = useNavigate();
   const isWhite = color === "#fff";
   return (
@@ -20,7 +20,7 @@ const GRADIENTS = {
   dutasterida:  "linear-gradient(135deg, #2a1a40 0%, #3f2060 60%, #5e308a 100%)",
   "saw-palmetto":"linear-gradient(135deg, #1a3a20 0%, #1f5028 60%, #2d7038 100%)",
   biotina:      "linear-gradient(135deg, #3a2a0a 0%, #5a4210 60%, #8a651a 100%)",
-  cuidados:     "linear-gradient(135deg, #1a3040 0%, #234056 60%, #2e5570 100%)",
+  cuidados:     "linear-gradient(135deg, #021d34 0%, #153f59 60%, #365b77 100%)",
 };
 
 const CARD_ICONS = {
@@ -40,7 +40,7 @@ const ARTICLES = [
     icon: "🧬",
     label: "Calvície Masculina",
     tag: "Essencial",
-    tagColor: "#004358",
+    tagColor: "#012e46",
     title: "Calvície Masculina: o guia completo",
     subtitle: "O que é, como detectar cedo, e como agir antes que piore",
     readTime: "8 min",
@@ -240,7 +240,7 @@ const ARTICLES = [
     icon: "🧴",
     label: "Guia de Cuidados",
     tag: "Rotina",
-    tagColor: "#2e5570",
+    tagColor: "#365b77",
     title: "Guia completo de cuidados pessoais",
     subtitle: "Rotina diária, o que evitar e como maximizar os resultados do tratamento",
     readTime: "6 min",
@@ -295,7 +295,7 @@ export default function Comunidade() {
   };
 
   const c = {
-    page: { fontFamily:"'Outfit',sans-serif", background:"#F0F7FA", color:"#1A3040", overflowX:"hidden", minHeight:"100vh" },
+    page: { fontFamily:"'Outfit',sans-serif", background:"#F0F7FA", color:"#021d34", overflowX:"hidden", minHeight:"100vh" },
     nav: {
       position:"fixed", top:0, left:0, right:0, zIndex:200,
       padding:"0 5%", height:64,
@@ -304,7 +304,7 @@ export default function Comunidade() {
       borderBottom:"1px solid rgba(0,0,0,0.07)",
       boxSizing:"border-box", width:"100%",
     },
-    cta: { background:"#004358", color:"#fff", padding:"11px 22px", borderRadius:6, fontSize:13, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", whiteSpace:"nowrap" },
+    cta: { background:"#012e46", color:"#fff", padding:"11px 22px", borderRadius:6, fontSize:13, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", whiteSpace:"nowrap" },
   };
 
   // ── Article view ─────────────────────────────────────────────────────────
@@ -323,16 +323,16 @@ export default function Comunidade() {
           @media(max-width:600px){.show-mob{display:flex!important;}.hide-mob{display:none!important;}}
         `}</style>
         <nav style={c.nav}>
-          <FioLogo color="#1A3040" size={20} />
+          <FioLogo color="#021d34" size={20} />
           <div style={{ display:"flex", gap:12, alignItems:"center" }}>
             <button onClick={() => setActiveId(null)} style={{ background:"none", border:"none", fontSize:13, color:"#666", fontWeight:500, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }} className="hide-mob">← Comunidade</button>
             <button className="btn hide-mob" onClick={() => navigate("/avaliacao")} style={c.cta}>Avaliação</button>
             <button onClick={() => setMenuOpen(o => !o)}
               style={{ display:"none", background:"none", border:"none", cursor:"pointer", padding:8, flexDirection:"column", gap:5 }}
               className="show-mob">
-              <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
-              <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
-              <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
+              <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
+              <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
+              <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
             </button>
           </div>
         </nav>
@@ -359,7 +359,7 @@ export default function Comunidade() {
               style={{ fontSize:18, fontWeight:500, color:"#555", padding:"14px 0", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"block" }}>{l}</a>
           ))}
           <button className="btn" onClick={() => { setMenuOpen(false); navigate("/avaliacao"); }}
-            style={{ background:"#004358", color:"#fff", padding:"16px 32px", borderRadius:6, fontSize:14, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginTop:24, textAlign:"center", width:"100%" }}>
+            style={{ background:"#012e46", color:"#fff", padding:"16px 32px", borderRadius:6, fontSize:14, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginTop:24, textAlign:"center", width:"100%" }}>
             Avaliação gratuita
           </button>
         </div>
@@ -396,7 +396,7 @@ export default function Comunidade() {
                 <div key={i} style={{ background:"#fff", borderRadius:16, border:"1px solid rgba(0,0,0,0.07)", overflow:"hidden" }}>
                   <div className="sec-toggle" onClick={() => toggleSection(key)}
                     style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"18px 20px", background: open ? "#EDF5F8" : "#fff" }}>
-                    <h3 style={{ fontSize:14, fontWeight:700, color:"#1A3040", lineHeight:1.3 }}>{s.heading}</h3>
+                    <h3 style={{ fontSize:14, fontWeight:700, color:"#021d34", lineHeight:1.3 }}>{s.heading}</h3>
                     <span style={{ fontSize:20, color:"#aaa", flexShrink:0, marginLeft:12, display:"inline-block", transform: open?"rotate(45deg)":"none", transition:"transform 0.2s" }}>+</span>
                   </div>
                   {open && (
@@ -406,7 +406,7 @@ export default function Comunidade() {
                         return (
                           <p key={j} style={{ fontSize:14, color:"#555", lineHeight:1.85, marginBottom: j < s.body.split("\n\n").length-1 ? 12 : 0 }}>
                             {parts.map((pt, k) => pt.startsWith("**") && pt.endsWith("**")
-                              ? <strong key={k} style={{ color:"#1A3040" }}>{pt.slice(2,-2)}</strong>
+                              ? <strong key={k} style={{ color:"#021d34" }}>{pt.slice(2,-2)}</strong>
                               : pt
                             )}
                           </p>
@@ -421,7 +421,7 @@ export default function Comunidade() {
 
           {/* Callout Fio Raiz */}
           <div style={{ marginTop:28, background:"#EDF5F8", borderRadius:16, padding:"24px 22px", border:"1px solid rgba(0,67,88,0.12)" }}>
-            <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:"#004358", marginBottom:10 }}>
+            <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:"#012e46", marginBottom:10 }}>
               Por que tratar com a Fio Raiz?
             </div>
             <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
@@ -440,7 +440,7 @@ export default function Comunidade() {
           </div>
 
           {/* CTA */}
-          <div style={{ marginTop:16, background:"#004358", borderRadius:20, padding:"28px 24px", textAlign:"center" }}>
+          <div style={{ marginTop:16, background:"#012e46", borderRadius:20, padding:"28px 24px", textAlign:"center" }}>
             <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"rgba(255,255,255,0.45)", marginBottom:10 }}>Fio Raiz</div>
             <h3 style={{ fontSize:"clamp(16px,2.5vw,22px)", fontWeight:800, color:"#fff", letterSpacing:"-0.02em", marginBottom:10 }}>
               Comece o seu protocolo hoje.
@@ -449,7 +449,7 @@ export default function Comunidade() {
               Avaliação rápida, gratuita e 100% online. Sem sala de espera, sem constrangimento — o protocolo certo chega na sua porta.
             </p>
             <button className="btn" onClick={() => navigate("/avaliacao")}
-              style={{ background:"#fff", color:"#004358", padding:"14px 36px", borderRadius:6, fontSize:13, fontWeight:800, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", letterSpacing:"-0.01em" }}>
+              style={{ background:"#fff", color:"#012e46", padding:"14px 36px", borderRadius:6, fontSize:13, fontWeight:800, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", letterSpacing:"-0.01em" }}>
               Fazer avaliação gratuita na Fio Raiz →
             </button>
           </div>
@@ -464,7 +464,7 @@ export default function Comunidade() {
 
         <footer style={{ background:"#fff", padding:"28px 5%", borderTop:"1px solid rgba(0,0,0,0.06)" }}>
           <div style={{ maxWidth:760, margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
-            <FioLogo color="#1A3040" size={18} />
+            <FioLogo color="#021d34" size={18} />
             <p style={{ fontSize:11, color:"rgba(0,0,0,0.35)", lineHeight:1.6, maxWidth:500 }}>
               A Fio Raiz não é uma farmácia. Todos os produtos são manipulados pelas farmácias credenciadas conforme normas da Anvisa.
             </p>
@@ -494,7 +494,7 @@ export default function Comunidade() {
       `}</style>
 
       <nav style={c.nav}>
-        <FioLogo color="#1A3040" size={20} />
+        <FioLogo color="#021d34" size={20} />
         <div className="hide-mob" style={{ display:"flex", gap:28, alignItems:"center" }}>
           {[["/","Início"],["quemsomos","Quem Somos"],["comunidade","Comunidade"]].map(([h,l]) => (
             <a key={h} href={h} style={{ fontSize:13, color:"#666", fontWeight:500 }}>{l}</a>
@@ -505,9 +505,9 @@ export default function Comunidade() {
           <button onClick={() => setMenuOpen(o => !o)}
             style={{ display:"none", background:"none", border:"none", cursor:"pointer", padding:8, flexDirection:"column", gap:5 }}
             className="show-mob">
-            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
-            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
-            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
           </button>
         </div>
       </nav>
@@ -530,13 +530,13 @@ export default function Comunidade() {
             style={{ fontSize:18, fontWeight:500, color:"#555", padding:"14px 0", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"block" }}>{l}</a>
         ))}
         <button className="btn" onClick={() => { setMenuOpen(false); navigate("/avaliacao"); }}
-          style={{ background:"#004358", color:"#fff", padding:"16px 32px", borderRadius:6, fontSize:14, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginTop:24, textAlign:"center", width:"100%" }}>
+          style={{ background:"#012e46", color:"#fff", padding:"16px 32px", borderRadius:6, fontSize:14, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginTop:24, textAlign:"center", width:"100%" }}>
           Avaliação gratuita
         </button>
       </div>
 
       {/* Hero */}
-      <div style={{ background:"#1A3040", paddingTop:64 }}>
+      <div style={{ background:"#021d34", paddingTop:64 }}>
         <div style={{ maxWidth:1100, margin:"0 auto", padding:"48px 5% 40px" }}>
           <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"rgba(255,255,255,0.4)", marginBottom:12 }}>
             Comunidade Fio Raiz
@@ -548,7 +548,7 @@ export default function Comunidade() {
             Tudo sobre calvície, ciclo capilar e os ativos com evidência científica. Baseado em estudos, sem promessas sem fundamento.
           </p>
           <button className="btn" onClick={() => navigate("/avaliacao")}
-            style={{ background:"#fff", color:"#1A3040", padding:"13px 28px", borderRadius:6, fontSize:13, fontWeight:800, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+            style={{ background:"#fff", color:"#021d34", padding:"13px 28px", borderRadius:6, fontSize:13, fontWeight:800, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
             Fazer avaliação gratuita na Fio Raiz →
           </button>
         </div>
@@ -576,10 +576,10 @@ export default function Comunidade() {
                     <span style={{ fontSize:11, fontWeight:600, color:"#888" }}>{a.readTime} de leitura</span>
                     <span style={{ fontSize:11, fontWeight:700, color:a.tagColor, background:`${a.tagColor}15`, padding:"3px 10px", borderRadius:100 }}>{a.tag}</span>
                   </div>
-                  <h3 style={{ fontSize:"clamp(14px,2vw,17px)", fontWeight:700, color:"#1A3040", lineHeight:1.3, marginBottom:8 }}>{a.title}</h3>
+                  <h3 style={{ fontSize:"clamp(14px,2vw,17px)", fontWeight:700, color:"#021d34", lineHeight:1.3, marginBottom:8 }}>{a.title}</h3>
                   <p style={{ fontSize:12, color:"#888", lineHeight:1.65, marginBottom:16 }}>{a.subtitle}</p>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                    <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:12, fontWeight:700, color:"#004358" }}>
+                    <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:12, fontWeight:700, color:"#012e46" }}>
                       Ler artigo <span style={{ fontSize:14 }}>→</span>
                     </div>
                     <span style={{ fontSize:10, fontWeight:700, color:"rgba(0,67,88,0.4)", letterSpacing:"0.06em", textTransform:"uppercase" }}>Fio Raiz</span>
@@ -593,7 +593,7 @@ export default function Comunidade() {
 
       <footer style={{ background:"#fff", padding:"32px 5%", borderTop:"1px solid rgba(0,0,0,0.06)" }}>
         <div style={{ maxWidth:1100, margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:16 }}>
-          <FioLogo color="#1A3040" size={18} />
+          <FioLogo color="#021d34" size={18} />
           <p style={{ fontSize:12, color:"rgba(0,0,0,0.4)", lineHeight:1.6, maxWidth:600 }}>
             A Fio Raiz não é uma farmácia. Todos os produtos adquiridos são manipulados pelas farmácias credenciadas, de acordo com as normas da Anvisa.
           </p>

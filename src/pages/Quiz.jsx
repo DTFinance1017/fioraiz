@@ -95,18 +95,18 @@ function Countdown({ onClose, onApply }) {
         <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: 20 }}>
           {[[pad(time.h), "Horas"], [pad(time.m), "Minutos"], [pad(time.s), "Segundos"]].map(([v, l], i) => (
             <div key={i} style={{ flex: 1, background: "#F0F7FA", borderRadius: 10, padding: "14px 8px", textAlign: "center" }}>
-              <div style={{ fontSize: 28, fontWeight: 800, color: "#1A3040", fontFamily: "'Outfit',sans-serif" }}>{v}</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: "#021d34", fontFamily: "'Outfit',sans-serif" }}>{v}</div>
               <div style={{ fontSize: 10, color: "#aaa", marginTop: 2 }}>{l}</div>
             </div>
           ))}
         </div>
-        <h2 style={{ textAlign: "center", fontSize: 26, fontWeight: 800, color: "#1A3040", marginBottom: 8, letterSpacing: "-0.02em" }}>
+        <h2 style={{ textAlign: "center", fontSize: 26, fontWeight: 800, color: "#021d34", marginBottom: 8, letterSpacing: "-0.02em" }}>
           30% OFF Primeiro Pedido
         </h2>
         <p style={{ textAlign: "center", fontSize: 14, color: "#888", marginBottom: 20 }}>
           Seu desconto está reservado. Finalize agora!
         </p>
-        <button onClick={onApply} style={{ width: "100%", background: "#004358", color: "#fff", border: "none", borderRadius: 100, padding: "17px", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "'Outfit',sans-serif", letterSpacing: "0.04em" }}>
+        <button onClick={onApply} style={{ width: "100%", background: "#012e46", color: "#fff", border: "none", borderRadius: 100, padding: "17px", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "'Outfit',sans-serif", letterSpacing: "0.04em" }}>
           QUERO O DESCONTO
         </button>
       </div>
@@ -277,7 +277,7 @@ function ConsentModal({ onClose, onAccept }) {
       {/* Footer com aceite */}
       <div style={{ background: "#fff", borderTop: "1px solid rgba(0,0,0,0.07)", padding: "16px 20px", flexShrink: 0 }}>
         <div onClick={() => setAccepted(!accepted)} style={{ display: "flex", gap: 12, alignItems: "flex-start", cursor: "pointer", marginBottom: 14 }}>
-          <div style={{ width: 22, height: 22, borderRadius: 6, border: `2px solid ${accepted ? "#1A3040" : "rgba(0,0,0,0.2)"}`, background: accepted ? "#1A3040" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
+          <div style={{ width: 22, height: 22, borderRadius: 6, border: `2px solid ${accepted ? "#021d34" : "rgba(0,0,0,0.2)"}`, background: accepted ? "#021d34" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.2s" }}>
             {accepted && <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>✓</span>}
           </div>
           <p style={{ fontSize: 13, color: "#333", lineHeight: 1.6 }}>
@@ -286,7 +286,7 @@ function ConsentModal({ onClose, onAccept }) {
         </div>
         <button
           onClick={() => { if (accepted) { onAccept(); onClose(); } }}
-          style={{ width: "100%", background: accepted ? "#1A3040" : "rgba(0,0,0,0.15)", color: "#fff", border: "none", borderRadius: 100, padding: "16px", fontSize: 14, fontWeight: 700, cursor: accepted ? "pointer" : "not-allowed", fontFamily: "'Outfit',sans-serif", transition: "all 0.2s" }}>
+          style={{ width: "100%", background: accepted ? "#021d34" : "rgba(0,0,0,0.15)", color: "#fff", border: "none", borderRadius: 100, padding: "16px", fontSize: 14, fontWeight: 700, cursor: accepted ? "pointer" : "not-allowed", fontFamily: "'Outfit',sans-serif", transition: "all 0.2s" }}>
           {accepted ? "Aceitar e fechar →" : "Role até o final para aceitar"}
         </button>
         <button onClick={onClose}
@@ -339,9 +339,9 @@ export default function Quiz() {
 
   // ── Styles ─────────────────────────────────────────────────────────────────
   const s = {
-    wrap: { minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif", color:"#1A3040", display:"flex", flexDirection:"column", width:"100%", maxWidth:"100vw", overflowX:"hidden" },
+    wrap: { minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif", color:"#021d34", display:"flex", flexDirection:"column", width:"100%", maxWidth:"100vw", overflowX:"hidden" },
     nav: { background:"#fff", padding:"14px 16px", display:"flex", justifyContent:"space-between", alignItems:"center", borderBottom:"1px solid rgba(0,0,0,0.07)", position:"sticky", top:0, zIndex:100, width:"100%", maxWidth:"100vw", boxSizing:"border-box", gap:10 },
-    progressBar: { height:3, background:"#004358", transition:"width 0.4s ease" },
+    progressBar: { height:3, background:"#012e46", transition:"width 0.4s ease" },
     progressBg: { height:3, background:"rgba(0,0,0,0.08)" },
     body: { flex:1, padding:"28px clamp(14px, 4vw, 20px) 100px", maxWidth:520, margin:"0 auto", width:"100%", boxSizing:"border-box" },
     tag: { fontSize:10, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:"#888", marginBottom:12 },
@@ -349,16 +349,16 @@ export default function Quiz() {
     sub: { fontSize:14, color:"#888", lineHeight:1.65, marginBottom:24, fontWeight:400 },
     option: (active) => ({
       width:"100%", textAlign:"left", padding:"16px 18px",
-      background: active ? "#1A3040" : "#fff",
-      color: active ? "#fff" : "#1A3040",
-      border: `1.5px solid ${active ? "#1A3040" : "rgba(0,0,0,0.1)"}`,
+      background: active ? "#021d34" : "#fff",
+      color: active ? "#fff" : "#021d34",
+      border: `1.5px solid ${active ? "#021d34" : "rgba(0,0,0,0.1)"}`,
       borderRadius:12, cursor:"pointer", marginBottom:10,
       fontFamily:"'Outfit',sans-serif", fontSize:15, fontWeight: active ? 600 : 400,
       display:"flex", alignItems:"center", gap:12, transition:"all 0.15s"
     }),
     why: { background:"#EDF5F8", borderRadius:10, padding:"14px 16px", marginTop:4, marginBottom:20 },
     cta: { position:"fixed", bottom:0, left:0, right:0, padding:"16px 20px", background:"#fff", borderTop:"1px solid rgba(0,0,0,0.07)", zIndex:90 },
-    ctaBtn: { width:"100%", background:"#004358", color:"#fff", border:"none", borderRadius:100, padding:"17px", fontSize:15, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" },
+    ctaBtn: { width:"100%", background:"#012e46", color:"#fff", border:"none", borderRadius:100, padding:"17px", fontSize:15, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" },
   };
 
   // ── Navigation helpers ──────────────────────────────────────────────────────
@@ -465,14 +465,14 @@ export default function Quiz() {
               borderBottom: i < arr.length-1 ? "1px solid rgba(0,0,0,0.06)" : "none",
               background: item.active ? "#fafaf8" : "#fff" }}>
               <div style={{ width:30, height:30, borderRadius:"50%", flexShrink:0,
-                background: item.active ? "#1A3040" : "#ececea",
+                background: item.active ? "#021d34" : "#ececea",
                 display:"flex", alignItems:"center", justifyContent:"center" }}>
                 <span style={{ fontSize:13, fontWeight:700,
                   color: item.active ? "#fff" : "#aaa" }}>{item.n}</span>
               </div>
               <span style={{ flex:1, fontSize:14,
                 fontWeight: item.active ? 700 : 400,
-                color: item.active ? "#1A3040" : "#aaa" }}>{item.label}</span>
+                color: item.active ? "#021d34" : "#aaa" }}>{item.label}</span>
             </div>
           ))}
         </div>
@@ -494,7 +494,7 @@ export default function Quiz() {
             <p style={{ fontSize:12, color: consentDone ? "#15803d" : "#666", lineHeight:1.75, flex:1 }}>
               Li e compreendi o{" "}
               <a href="#" onClick={e => { e.preventDefault(); e.stopPropagation(); setShowConsent(true); }}
-                style={{ color: consentDone ? "#15803d" : "#1A3040", fontWeight:700, textDecoration:"underline" }}>
+                style={{ color: consentDone ? "#15803d" : "#021d34", fontWeight:700, textDecoration:"underline" }}>
                 Termo de Consentimento Livre e Esclarecido
               </a>{" "}e autorizo o início da análise clínica especializada.{" "}
               <a href="/politica-privacidade" target="_blank" onClick={e => e.stopPropagation()}
@@ -564,7 +564,7 @@ export default function Quiz() {
                     background: "#fff",
                     borderRadius: 16,
                     cursor: "pointer",
-                    border: `2px solid ${active ? "#004358" : "#E3EEF3"}`,
+                    border: `2px solid ${active ? "#012e46" : "#E3EEF3"}`,
                     boxShadow: active
                       ? "0 8px 20px rgba(0,67,88,0.18), 0 0 0 4px rgba(0,67,88,0.08)"
                       : "0 1px 3px rgba(0,0,0,0.04)",
@@ -576,7 +576,7 @@ export default function Quiz() {
                   {active && (
                     <div style={{
                       position:"absolute", top:10, right:10, width:24, height:24, borderRadius:"50%",
-                      background:"#004358", display:"flex", alignItems:"center", justifyContent:"center",
+                      background:"#012e46", display:"flex", alignItems:"center", justifyContent:"center",
                       zIndex:2, boxShadow:"0 2px 6px rgba(0,67,88,0.25)"
                     }}>
                       <span style={{ fontSize:13, fontWeight:800, color:"#fff", lineHeight:1 }}>✓</span>
@@ -739,7 +739,7 @@ export default function Quiz() {
           <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.14em",
             textTransform:"uppercase", color:"#aaa", marginBottom:12 }}>Atenção</div>
           <h2 style={{ fontSize:"clamp(22px,5vw,30px)", fontWeight:800,
-            letterSpacing:"-0.02em", lineHeight:1.2, color:"#1A3040", marginBottom:16 }}>
+            letterSpacing:"-0.02em", lineHeight:1.2, color:"#021d34", marginBottom:16 }}>
             Vamos pausar aqui.
           </h2>
           <p style={{ fontSize:15, color:"#555", lineHeight:1.75, maxWidth:420, margin:"0 auto 28px" }}>
@@ -748,7 +748,7 @@ export default function Quiz() {
         </div>
         <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:14,
           padding:"24px 20px", marginBottom:20 }}>
-          <div style={{ fontSize:13, fontWeight:700, color:"#1A3040", marginBottom:10 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:"#021d34", marginBottom:10 }}>
             Por que isso importa?
           </div>
           <p style={{ fontSize:14, color:"#555", lineHeight:1.75 }}>
@@ -761,14 +761,14 @@ export default function Quiz() {
         </div>
         <div style={{ background:"#fff", border:"1px solid rgba(0,0,0,0.08)", borderRadius:14,
           padding:"20px", marginBottom:24 }}>
-          <div style={{ fontSize:13, fontWeight:700, color:"#1A3040", marginBottom:8 }}>O que recomendamos:</div>
+          <div style={{ fontSize:13, fontWeight:700, color:"#021d34", marginBottom:8 }}>O que recomendamos:</div>
           <ul style={{ paddingLeft:18, fontSize:14, color:"#555", lineHeight:1.85 }}>
             <li>Consulte um dermatologista ou tricologista presencialmente</li>
             <li>Realize exames de sangue básicos (ferritina, TSH, zinco, vitamina D)</li>
             <li>Depois da avaliação, volte à Fio Raiz — teremos prazer em ajudar</li>
           </ul>
         </div>
-        <button style={{ ...s.ctaBtn, background:"#1A3040", marginBottom:12 }}
+        <button style={{ ...s.ctaBtn, background:"#021d34", marginBottom:12 }}
           onClick={() => { setHairStep(1); setPhase("quiz-hair"); }}>
           Entendido — quero continuar mesmo assim
         </button>
@@ -835,7 +835,7 @@ export default function Quiz() {
           <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.14em",
             textTransform:"uppercase", color:"#aaa", marginBottom:12 }}>Avaliação necessária</div>
           <h2 style={{ fontSize:"clamp(22px,5vw,30px)", fontWeight:800,
-            letterSpacing:"-0.02em", lineHeight:1.2, color:"#1A3040", marginBottom:16 }}>
+            letterSpacing:"-0.02em", lineHeight:1.2, color:"#021d34", marginBottom:16 }}>
             Recomendamos uma consulta presencial.
           </h2>
           <p style={{ fontSize:15, color:"#555", lineHeight:1.75, maxWidth:420, margin:"0 auto 28px" }}>
@@ -844,7 +844,7 @@ export default function Quiz() {
         </div>
         <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:14,
           padding:"24px 20px", marginBottom:20 }}>
-          <div style={{ fontSize:13, fontWeight:700, color:"#1A3040", marginBottom:10 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:"#021d34", marginBottom:10 }}>
             Por que uma consulta presencial?
           </div>
           <p style={{ fontSize:14, color:"#555", lineHeight:1.75 }}>
@@ -854,14 +854,14 @@ export default function Quiz() {
         </div>
         <div style={{ background:"#fff", border:"1px solid rgba(0,0,0,0.08)", borderRadius:14,
           padding:"20px", marginBottom:24 }}>
-          <div style={{ fontSize:13, fontWeight:700, color:"#1A3040", marginBottom:8 }}>Próximos passos:</div>
+          <div style={{ fontSize:13, fontWeight:700, color:"#021d34", marginBottom:8 }}>Próximos passos:</div>
           <ul style={{ paddingLeft:18, fontSize:14, color:"#555", lineHeight:1.85 }}>
             <li>Procure um dermatologista especialista em cabelo e pelos</li>
             <li>Mencione todos os locais onde percebeu a queda</li>
             <li>Após diagnóstico, a Fio Raiz pode complementar o seu tratamento</li>
           </ul>
         </div>
-        <button style={{ background:"none", border:"1px solid #c8dde6", color:"#1A3040",
+        <button style={{ background:"none", border:"1px solid #c8dde6", color:"#021d34",
           borderRadius:100, padding:"14px 0", fontSize:14, fontWeight:600,
           cursor:"pointer", width:"100%", fontFamily:"'Outfit',sans-serif", marginBottom:12 }}
           onClick={() => { setHealthStep(0); setPhase("quiz-health"); }}>
@@ -896,7 +896,7 @@ export default function Quiz() {
                   <span style={{ fontSize:10, color:"#aaa" }}>Antes</span>
                 </div>
                 <div style={{ flex:1, background:"#d0e0d0", display:"flex", alignItems:"center", justifyContent:"center", position:"relative" }}>
-                  <div style={{ position:"absolute", bottom:6, right:6, background:"#004358", color:"#fff", fontSize:9, padding:"2px 6px", borderRadius:100 }}>{t.months}</div>
+                  <div style={{ position:"absolute", bottom:6, right:6, background:"#012e46", color:"#fff", fontSize:9, padding:"2px 6px", borderRadius:100 }}>{t.months}</div>
                 </div>
               </div>
               <div style={{ padding:"10px 12px" }}>
@@ -933,13 +933,13 @@ export default function Quiz() {
               borderBottom: i < arr.length-1 ? "1px solid rgba(0,0,0,0.06)" : "none",
               background: item.active ? "#fafaf8" : "#fff" }}>
               <div style={{ width:30, height:30, borderRadius:"50%", flexShrink:0,
-                background: item.done ? "#16a34a" : item.active ? "#1A3040" : "#ececea",
+                background: item.done ? "#16a34a" : item.active ? "#021d34" : "#ececea",
                 display:"flex", alignItems:"center", justifyContent:"center" }}>
                 <span style={{ fontSize:13, fontWeight:700, color: (item.done || item.active) ? "#fff" : "#aaa" }}>{item.n}</span>
               </div>
               <span style={{ flex:1, fontSize:14,
                 fontWeight: item.active ? 700 : 400,
-                color: item.active ? "#1A3040" : item.done ? "#555" : "#aaa" }}>{item.label}</span>
+                color: item.active ? "#021d34" : item.done ? "#555" : "#aaa" }}>{item.label}</span>
             </div>
           ))}
         </div>
@@ -1031,7 +1031,7 @@ export default function Quiz() {
                   border:`2px solid ${sel0.includes(opt) ? "#fff" : "#ddd"}`,
                   background: sel0.includes(opt) ? "#fff" : "transparent",
                   display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  {sel0.includes(opt) && <span style={{ color:"#1A3040", fontSize:11, fontWeight:700 }}>✓</span>}
+                  {sel0.includes(opt) && <span style={{ color:"#021d34", fontSize:11, fontWeight:700 }}>✓</span>}
                 </div>
                 <span style={{ fontSize:14 }}>{opt}</span>
               </button>
@@ -1081,7 +1081,7 @@ export default function Quiz() {
                   border:`2px solid ${sel.includes(opt.id) ? "#fff" : "#ddd"}`,
                   background: sel.includes(opt.id) ? "#fff" : "transparent",
                   display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  {sel.includes(opt.id) && <span style={{ color:"#1A3040", fontSize:11, fontWeight:700 }}>✓</span>}
+                  {sel.includes(opt.id) && <span style={{ color:"#021d34", fontSize:11, fontWeight:700 }}>✓</span>}
                 </div>
                 <span style={{ fontSize:14 }}>{opt.label}</span>
               </button>
@@ -1113,14 +1113,14 @@ export default function Quiz() {
                     return (
                       <button key={opt.val} onClick={() => setPerf(t.id, opt.val)}
                         style={{ display:"flex", alignItems:"center", gap:10,
-                          background: active ? "#004358" : "#F6FAFC",
+                          background: active ? "#012e46" : "#F6FAFC",
                           color: active ? "#fff" : "#1A1A1A",
-                          border: `1.5px solid ${active ? "#004358" : "#E3EEF3"}`,
+                          border: `1.5px solid ${active ? "#012e46" : "#E3EEF3"}`,
                           borderRadius:10, padding:"10px 14px", cursor:"pointer",
                           fontFamily:"'Outfit',sans-serif", fontSize:13, fontWeight:500,
                           textAlign:"left", transition:"all 0.15s" }}>
                         <div style={{ width:16, height:16, borderRadius:"50%",
-                          border:`2px solid ${active ? "#fff" : "#c8dde6"}`,
+                          border:`2px solid ${active ? "#fff" : "#94b8d7"}`,
                           display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                           {active && <div style={{ width:8, height:8, borderRadius:"50%", background:"#fff" }}/>}
                         </div>
@@ -1162,7 +1162,7 @@ export default function Quiz() {
                   border:`2px solid ${sel.includes(opt) ? "#fff" : "#ddd"}`,
                   background: sel.includes(opt) ? "#fff" : "transparent",
                   display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  {sel.includes(opt) && <span style={{ color:"#1A3040", fontSize:11, fontWeight:700 }}>✓</span>}
+                  {sel.includes(opt) && <span style={{ color:"#021d34", fontSize:11, fontWeight:700 }}>✓</span>}
                 </div>
                 <span style={{ fontSize:13 }}>{opt}</span>
               </button>
@@ -1199,7 +1199,7 @@ export default function Quiz() {
               </div>
             )}
             {suggestDut && (
-              <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:8, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#1A3040", lineHeight:1.6 }}>
+              <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:8, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#021d34", lineHeight:1.6 }}>
                 <strong>Sugestão do motor:</strong> você reportou ausência de evolução com Finasterida 1mg — o Protocolo de Alta Potência (Dutasterida) pode trazer ganho clínico.
               </div>
             )}
@@ -1317,13 +1317,13 @@ export default function Quiz() {
               borderBottom: i < arr.length-1 ? "1px solid rgba(0,0,0,0.06)" : "none",
               background: item.active ? "#fafaf8" : "#fff" }}>
               <div style={{ width:30, height:30, borderRadius:"50%", flexShrink:0,
-                background: item.done ? "#16a34a" : "#1A3040",
+                background: item.done ? "#16a34a" : "#021d34",
                 display:"flex", alignItems:"center", justifyContent:"center" }}>
                 <span style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{item.n}</span>
               </div>
               <span style={{ flex:1, fontSize:14,
                 fontWeight: item.active ? 700 : 400,
-                color: item.active ? "#1A3040" : "#555" }}>{item.label}</span>
+                color: item.active ? "#021d34" : "#555" }}>{item.label}</span>
             </div>
           ))}
         </div>
@@ -1377,7 +1377,7 @@ export default function Quiz() {
                     {done ? "✓" : m.icon}
                   </div>
                   <span style={{ fontSize:14, fontWeight: done ? 600 : 400,
-                    color: done ? "#1A3040" : "#888" }}>{m.text}</span>
+                    color: done ? "#021d34" : "#888" }}>{m.text}</span>
                 </div>
               );
             })}
@@ -1422,7 +1422,7 @@ export default function Quiz() {
               <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:4, marginTop:8 }}>
                 {[1,2,3,4,5,6,7].map(n => (
                   <div key={n} style={{ width:10, height:10, borderRadius:"50%",
-                    background: n <= stage ? "#1A3040" : "#e0e0e0" }}/>
+                    background: n <= stage ? "#021d34" : "#e0e0e0" }}/>
                 ))}
               </div>
               <div style={{ fontSize:11, color:"#aaa", marginTop:4 }}>Escala de Hamilton-Norwood · Estágio {stage}</div>
@@ -1450,7 +1450,7 @@ export default function Quiz() {
           </div>
 
           {/* Indicação do protocolo */}
-          <div style={{ background:"#004358", borderRadius:16, padding:"20px 18px", color:"#fff", marginBottom:20 }}>
+          <div style={{ background:"#012e46", borderRadius:16, padding:"20px 18px", color:"#fff", marginBottom:20 }}>
             <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
               color:"rgba(255,255,255,0.5)", marginBottom:8 }}>Protocolo indicado</div>
             <div style={{ fontSize:17, fontWeight:700, marginBottom:4 }}>
@@ -1496,7 +1496,7 @@ export default function Quiz() {
                 onChange={e => setContactInfo(p => ({ ...p, [f.key]: e.target.value }))}
                 style={{ width:"100%", padding:"14px 16px", border:"1.5px solid rgba(0,0,0,0.12)",
                   borderRadius:12, fontSize:15, fontFamily:"'Outfit',sans-serif", outline:"none" }}
-                onFocus={e => e.target.style.borderColor="#1A3040"}
+                onFocus={e => e.target.style.borderColor="#021d34"}
                 onBlur={e => e.target.style.borderColor="rgba(0,0,0,0.12)"}
               />
             </div>
@@ -1550,7 +1550,7 @@ export default function Quiz() {
             <div style={{ background:"#EDF5F8", border:"1px solid #c8dde6", borderRadius:12,
               padding:"16px 18px", marginBottom:20 }}>
               <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.12em",
-                color:"#004358", textTransform:"uppercase", marginBottom:8 }}>
+                color:"#012e46", textTransform:"uppercase", marginBottom:8 }}>
                 🛡️ Blindagem clínica aplicada
               </div>
               <ul style={{ paddingLeft:18, fontSize:13, color:"#1A1A1A", lineHeight:1.7 }}>
@@ -1614,7 +1614,7 @@ export default function Quiz() {
           <div style={{ marginBottom:20 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
               <h3 style={{ fontSize:16, fontWeight:700 }}>Recomendado para você</h3>
-              <span style={{ background:"#004358", color:"#fff", fontSize:9, fontWeight:700,
+              <span style={{ background:"#012e46", color:"#fff", fontSize:9, fontWeight:700,
                 padding:"2px 8px", borderRadius:100, letterSpacing:"0.08em" }}>ITEM ESSENCIAL</span>
             </div>
             <div style={{ background:"#fff", borderRadius:14, padding:"18px 16px",
@@ -1625,7 +1625,7 @@ export default function Quiz() {
                   <p style={{ fontSize:13, color:"#888", lineHeight:1.6 }}>
                     A sua leitura indicou sinais no couro cabeludo. O Shampoo Clínico equilibra a microbiota, controla a oleosidade e prepara o terreno folicular para o Protocolo de Alta Performance.
                   </p>
-                  <div style={{ fontSize:12, color:"#004358", fontWeight:700, marginTop:8 }}>+ R$ 20/mês</div>
+                  <div style={{ fontSize:12, color:"#012e46", fontWeight:700, marginTop:8 }}>+ R$ 20/mês</div>
                 </div>
                 <div style={{ width:48, height:48, background:"#EDF5F8", borderRadius:10,
                   display:"flex", alignItems:"center", justifyContent:"center",
@@ -1664,7 +1664,7 @@ export default function Quiz() {
           {Object.entries(prices).map(([key, p]) => (
             <div key={key} onClick={() => setPlanPeriod(key)}
               style={{ background:"#fff", borderRadius:14, padding:"18px 14px",
-                border:`1.5px solid ${planPeriod===key ? "#1A3040" : "rgba(0,0,0,0.1)"}`,
+                border:`1.5px solid ${planPeriod===key ? "#021d34" : "rgba(0,0,0,0.1)"}`,
                 cursor:"pointer", position:"relative", transition:"all 0.2s",
                 boxSizing:"border-box", maxWidth:"100%", overflow:"hidden" }}>
               {p.badge && <span style={{ position:"absolute", top:-8, left:14, background:"#16a34a",
@@ -1672,9 +1672,9 @@ export default function Quiz() {
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:10, minWidth:0 }}>
                 <div style={{ display:"flex", gap:10, alignItems:"center", minWidth:0, flexShrink:1 }}>
                   <div style={{ width:20, height:20, borderRadius:"50%", flexShrink:0,
-                    border:`2px solid ${planPeriod===key ? "#1A3040" : "#ddd"}`,
+                    border:`2px solid ${planPeriod===key ? "#021d34" : "#ddd"}`,
                     display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    {planPeriod===key && <div style={{ width:10, height:10, borderRadius:"50%", background:"#004358" }}/>}
+                    {planPeriod===key && <div style={{ width:10, height:10, borderRadius:"50%", background:"#012e46" }}/>}
                   </div>
                   <span style={{ fontSize:"clamp(13px, 3.6vw, 15px)", fontWeight:600 }}>{p.label}</span>
                 </div>
@@ -1717,7 +1717,7 @@ export default function Quiz() {
             <div style={{ fontSize:10, color:"#aaa", whiteSpace:"nowrap" }}>pelos {activePrice.label} primeiros</div>
           </div>
           <button onClick={() => setPhase("done")}
-            style={{ flex:1, minWidth:0, background:"#004358", color:"#fff", border:"none", borderRadius:100,
+            style={{ flex:1, minWidth:0, background:"#012e46", color:"#fff", border:"none", borderRadius:100,
               padding:"14px 16px", fontSize:"clamp(12px, 3.4vw, 14px)", fontWeight:700, cursor:"pointer",
               fontFamily:"'Outfit',sans-serif", whiteSpace:"nowrap" }}>
             Continuar →
@@ -1733,7 +1733,7 @@ export default function Quiz() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}`}</style>
       <div style={s.nav}><Logo /></div>
       <div style={{ ...s.body, textAlign:"center", paddingTop:60 }}>
-        <div style={{ width:64, height:64, borderRadius:"50%", background:"#004358",
+        <div style={{ width:64, height:64, borderRadius:"50%", background:"#012e46",
           display:"flex", alignItems:"center", justifyContent:"center",
           margin:"0 auto 24px", fontSize:28 }}>✓</div>
         <h2 style={{ ...s.heading, textAlign:"center" }}>Pedido recebido.</h2>

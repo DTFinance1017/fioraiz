@@ -131,7 +131,7 @@ export default function App() {
   }, [menuOpen]);
 
   const c = {
-    page: { fontFamily: "'Outfit',sans-serif", background: "#F0F7FA", color: "#1A3040", overflowX: "hidden" },
+    page: { fontFamily: "'Outfit',sans-serif", background: "#F0F7FA", color: "#021d34", overflowX: "hidden" },
     nav: {
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 200,
       padding: "0 5%", height: 64,
@@ -141,9 +141,9 @@ export default function App() {
       borderBottom: scrolled ? "1px solid rgba(0,0,0,0.07)" : "none",
       transition: "all 0.3s"
     },
-    cta: { background: "#004358", color: "#fff", padding: "13px 28px", borderRadius: 6, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
-    ctaLg: { background: "#004358", color: "#fff", padding: "18px 48px", borderRadius: 6, fontSize: 15, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
-    ctaW: { background: "#fff", color: "#1A3040", padding: "18px 48px", borderRadius: 6, fontSize: 15, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
+    cta: { background: "#012e46", color: "#fff", padding: "13px 28px", borderRadius: 6, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
+    ctaLg: { background: "#012e46", color: "#fff", padding: "18px 48px", borderRadius: 6, fontSize: 15, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
+    ctaW: { background: "#fff", color: "#021d34", padding: "18px 48px", borderRadius: 6, fontSize: 15, fontWeight: 600, border: "none", cursor: "pointer", textDecoration: "none", display: "inline-block", transition: "all 0.2s" },
     tag: { fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#888" },
   };
 
@@ -177,11 +177,11 @@ export default function App() {
 
       {/* NAV */}
       <nav style={c.nav}>
-        <a href="/"><FioLogo color="#1A3040" size={20} /></a>
+        <a href="/"><FioLogo color="#021d34" size={20} /></a>
         <div className="hide-mob" style={{ display: "flex", gap: 32 }}>
           {[["/","Início"],["#tratamento","Protocolo"],["quemsomos","Quem Somos"],["comunidade","Comunidade"]].map(([h,l]) => (
             <a key={h} href={h} style={{ fontSize: 13, color: "#666", fontWeight: 500, transition: "color 0.2s" }}
-              onMouseEnter={e=>e.target.style.color="#1A3040"} onMouseLeave={e=>e.target.style.color="#666"}>{l}</a>
+              onMouseEnter={e=>e.target.style.color="#021d34"} onMouseLeave={e=>e.target.style.color="#666"}>{l}</a>
           ))}
         </div>
         <div style={{ display:"flex", gap:12, alignItems:"center" }}>
@@ -190,9 +190,9 @@ export default function App() {
           <button onClick={() => setMenuOpen(o => !o)}
             style={{ display:"none", background:"none", border:"none", cursor:"pointer", padding:8, flexDirection:"column", gap:5 }}
             className="show-mob">
-            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
-            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
-            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#021d34", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
           </button>
         </div>
       </nav>
@@ -238,7 +238,7 @@ export default function App() {
           </div>
           <h1 className="hero-h" style={{
             fontSize: "clamp(36px,4.5vw,64px)", fontWeight: 800, lineHeight: 1.08,
-            letterSpacing: "-0.03em", marginBottom: 20, color: "#1A3040"
+            letterSpacing: "-0.03em", marginBottom: 20, color: "#021d34"
           }}>
             Calvície masculina<br/>
             <span style={{ color: "#aaa" }}>tem solução comprovada</span><br/>
@@ -256,7 +256,7 @@ export default function App() {
               "Suporte e acompanhamento contínuo",
             ].map((b, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 20, height: 20, borderRadius: "50%", background: "#004358", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <div style={{ width: 20, height: 20, borderRadius: "50%", background: "#012e46", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <span style={{ color: "#fff", fontSize: 9, fontWeight: 700 }}>✓</span>
                 </div>
                 <span style={{ fontSize: 14, color: "#333", fontWeight: 500 }}>{b}</span>
@@ -265,12 +265,12 @@ export default function App() {
           </div>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <button className="btn" onClick={() => navigate("/avaliacao")}
-              style={{ background: "#004358", color: "#fff", padding: "17px 36px", borderRadius: 6,
+              style={{ background: "#012e46", color: "#fff", padding: "17px 36px", borderRadius: 6,
                 fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer", transition: "all 0.2s" }}>
               Iniciar avaliação online agora
             </button>
             <a href="#tratamento"
-              style={{ background: "transparent", color: "#1A3040", padding: "16px 32px", borderRadius: 6,
+              style={{ background: "transparent", color: "#021d34", padding: "16px 32px", borderRadius: 6,
                 fontSize: 14, fontWeight: 600, border: "1.5px solid rgba(0,0,0,0.15)",
                 cursor: "pointer", transition: "all 0.2s", display: "inline-block" }}>
               Conhecer os tratamentos
@@ -296,7 +296,7 @@ export default function App() {
       </section>
 
       {/* TRUST SEALS - marquee horizontal afinado */}
-      <div style={{ background: "#1A3040", padding: "14px 0", overflow: "hidden" }}>
+      <div style={{ background: "#021d34", padding: "14px 0", overflow: "hidden" }}>
         <style>{`
           @keyframes seals-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
           .seals-track { display:flex; width:max-content; animation: seals-x 42s linear infinite; }
@@ -333,7 +333,7 @@ export default function App() {
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }} className="two-col">
 
             {/* Main dark card */}
-            <div className="dark-card" style={{ background:"#00333D", borderRadius:24, border:"1px solid #00333D", overflow:"hidden", position:"relative", minHeight:500, display:"flex", flexDirection:"column", padding:16 }}>
+            <div className="dark-card" style={{ background:"#012e46", borderRadius:24, border:"1px solid #00333D", overflow:"hidden", position:"relative", minHeight:500, display:"flex", flexDirection:"column", padding:16 }}>
               <Img src={IMGS.mirror2} alt="Tratamento capilar"
                 gradient="linear-gradient(135deg, #1a1a1a, #2a2a2a)"
                 style={{ width:"100%", height:340, flexShrink:0, objectPosition:"50% 10%" }} />
@@ -367,7 +367,7 @@ export default function App() {
               {/* Trust card */}
               <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:16 }}>
                 <div style={{ background:"#EDF5F8", borderRadius:16, padding:"24px 20px" }}>
-                  <div style={{ fontSize:15, fontWeight:700, color:"#1A3040", letterSpacing:"-0.01em", lineHeight:1.2, marginBottom:8 }}>Prescrição médica</div>
+                  <div style={{ fontSize:15, fontWeight:700, color:"#021d34", letterSpacing:"-0.01em", lineHeight:1.2, marginBottom:8 }}>Prescrição médica</div>
                   <div style={{ fontSize:12, color:"#666", lineHeight:1.55 }}>Tratamento avaliado e personalizado por profissional de saúde licenciado</div>
                 </div>
               </div>
@@ -396,19 +396,19 @@ export default function App() {
           <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:16, marginBottom:64 }} className="proto-grid">
             {PROTOCOLS.map((p,i) => (
               <div key={i} className={p.featured ? "proto-card-feat" : ""}
-                style={{ background: p.featured ? "#1A3040" : "#EDF5F8", borderRadius:20, padding:"28px 24px",
+                style={{ background: p.featured ? "#021d34" : "#EDF5F8", borderRadius:20, padding:"28px 24px",
                   border: p.featured ? "none" : "1px solid rgba(0,0,0,0.06)", position:"relative",
                   boxShadow: p.featured ? "0 20px 60px rgba(0,0,0,0.18)" : "none" }}>
                 {p.featured && (
                   <span style={{ position:"absolute", top:16, right:16, fontSize:9, fontWeight:800,
-                    background:"#fff", color:"#1A3040", padding:"3px 10px", borderRadius:100, letterSpacing:"0.08em" }}>
+                    background:"#fff", color:"#021d34", padding:"3px 10px", borderRadius:100, letterSpacing:"0.08em" }}>
                     MAIS ESCOLHIDO
                   </span>
                 )}
                 <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
                   color: p.featured ? "rgba(255,255,255,0.3)" : "#bbb", marginBottom:6 }}>Protocolo</div>
                 <h3 style={{ fontSize:24, fontWeight:800, letterSpacing:"-0.02em",
-                  color: p.featured ? "#fff" : "#1A3040", marginBottom:4 }}>{p.name}</h3>
+                  color: p.featured ? "#fff" : "#021d34", marginBottom:4 }}>{p.name}</h3>
                 <div style={{ fontSize:11, fontWeight:600, color: p.featured ? "rgba(255,255,255,0.5)" : "#888",
                   marginBottom:8, lineHeight:1.4 }}>{p.label}</div>
                 <p style={{ fontSize:12, color: p.featured ? "rgba(255,255,255,0.38)" : "#aaa",
@@ -420,12 +420,12 @@ export default function App() {
                   {p.items.map((item,j) => (
                     <div key={j} style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
                       <div style={{ width:16, height:16, borderRadius:"50%", flexShrink:0, marginTop:2,
-                        background: p.featured ? "rgba(255,255,255,0.15)" : "#004358",
+                        background: p.featured ? "rgba(255,255,255,0.15)" : "#012e46",
                         display:"flex", alignItems:"center", justifyContent:"center" }}>
                         <span style={{ color:"#fff", fontSize:8, fontWeight:700 }}>✓</span>
                       </div>
                       <div>
-                        <div style={{ fontSize:13, fontWeight:700, color: p.featured ? "#fff" : "#1A3040", lineHeight:1.3 }}>{item.name}</div>
+                        <div style={{ fontSize:13, fontWeight:700, color: p.featured ? "#fff" : "#021d34", lineHeight:1.3 }}>{item.name}</div>
                         <div style={{ fontSize:11, color: p.featured ? "rgba(255,255,255,0.38)" : "#aaa", marginTop:1 }}>{item.detail}</div>
                       </div>
                     </div>
@@ -447,7 +447,7 @@ export default function App() {
               </p>
               {BENEFITS.map((b,i) => (
                 <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 0", borderBottom:"1px solid rgba(0,0,0,0.06)" }}>
-                  <div style={{ width:20, height:20, borderRadius:"50%", background:"#004358", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                  <div style={{ width:20, height:20, borderRadius:"50%", background:"#012e46", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                     <span style={{ color:"#fff", fontSize:9, fontWeight:700 }}>✓</span>
                   </div>
                   <span style={{ fontSize:14, color:"#333", fontWeight:500 }}>{b}</span>
@@ -481,7 +481,7 @@ export default function App() {
           .marquee-track { display:flex; width:max-content; animation: marquee-x 38s linear infinite; }
           .marquee-track:hover { animation-play-state: paused; }
           .marquee-item { display:flex; align-items:center; gap:10px; padding:0 28px; font-size:13px; font-weight:500; color:#444; white-space:nowrap; }
-          .marquee-item .dot { width:5px; height:5px; border-radius:50%; background:#00333D; opacity:0.35; flex-shrink:0; }
+          .marquee-item .dot { width:5px; height:5px; border-radius:50%; background:#012e46; opacity:0.35; flex-shrink:0; }
         `}</style>
         <div className="marquee-track">
           {Array.from({ length: 2 }).flatMap((_, rep) => [
@@ -517,7 +517,7 @@ export default function App() {
       <footer style={{ background:"#fff", padding:"40px 5% 32px", borderTop:"1px solid rgba(0,0,0,0.06)" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:32 }}>
-            <FioLogo color="#1A3040" size={20} />
+            <FioLogo color="#021d34" size={20} />
             <div style={{ display:"flex", gap:28, flexWrap:"wrap" }}>
               {[["/quemsomos","Quem somos"],["/comunidade","Comunidade"]].map(([h,l]) => (
                 <a key={h} href={h} style={{ fontSize:12, color:"rgba(0,0,0,0.45)", fontWeight:500 }}>{l}</a>

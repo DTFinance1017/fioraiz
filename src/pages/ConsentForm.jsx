@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function FioRaizLogo({ color = "#1A3040", size = 18 }) {
+function FioRaizLogo({ color = "#021d34", size = 18 }) {
   const navigate = useNavigate();
-  const isWhite = color !== "#1A3040";
+  const isWhite = color !== "#021d34";
   return (
     <div onClick={() => navigate("/")} style={{ display: "flex", alignItems: "center", cursor: "pointer", userSelect: "none", WebkitTapHighlightColor: "transparent" }} role="link" aria-label="Voltar para a home">
       <img src="/logo-v2.png" alt="Fio Raiz" style={{ height: size * 2.8, width: "auto", display: "block", filter: isWhite ? "brightness(0) invert(1)" : "none" }} />
@@ -85,10 +85,10 @@ export default function ConsentForm() {
     body: { maxWidth: 720, margin: "0 auto", padding: "32px 20px 60px" },
     card: { background: "#fff", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 8, padding: "24px 20px", marginBottom: 12 },
     section: { marginBottom: 28 },
-    sectionTitle: { fontSize: 13, fontWeight: 700, color: "#1A3040", marginBottom: 10, letterSpacing: "-0.01em" },
+    sectionTitle: { fontSize: 13, fontWeight: 700, color: "#021d34", marginBottom: 10, letterSpacing: "-0.01em" },
     sectionText: { fontSize: 13, color: "#555", lineHeight: 1.85, whiteSpace: "pre-wrap" },
-    checkbox: { width: 20, height: 20, borderRadius: 4, border: `2px solid ${accepted ? "#1A3040" : "rgba(0,0,0,0.2)"}`, background: accepted ? "#1A3040" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, transition: "all 0.2s" },
-    btn: { background: accepted ? "#1A3040" : "rgba(0,0,0,0.15)", color: "#fff", border: "none", padding: "17px 0", borderRadius: 100, fontSize: 14, fontWeight: 600, cursor: accepted ? "pointer" : "not-allowed", fontFamily: "'Outfit',sans-serif", width: "100%", transition: "all 0.2s", letterSpacing: "0.02em" },
+    checkbox: { width: 20, height: 20, borderRadius: 4, border: `2px solid ${accepted ? "#021d34" : "rgba(0,0,0,0.2)"}`, background: accepted ? "#021d34" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, transition: "all 0.2s" },
+    btn: { background: accepted ? "#021d34" : "rgba(0,0,0,0.15)", color: "#fff", border: "none", padding: "17px 0", borderRadius: 100, fontSize: 14, fontWeight: 600, cursor: accepted ? "pointer" : "not-allowed", fontFamily: "'Outfit',sans-serif", width: "100%", transition: "all 0.2s", letterSpacing: "0.02em" },
   };
 
   if (confirmed) {
@@ -99,7 +99,7 @@ export default function ConsentForm() {
           <FioRaizLogo />
         </div>
         <div style={{ ...s.body, textAlign: "center", paddingTop: 80 }}>
-          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#004358", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#012e46", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
             <span style={{ color: "#fff", fontSize: 28 }}>✓</span>
           </div>
           <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 12 }}>
