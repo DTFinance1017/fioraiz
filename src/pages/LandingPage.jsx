@@ -524,6 +524,12 @@ export default function App() {
               ))}
             </div>
           </div>
+          <p style={{
+            marginTop:28, paddingTop:20, borderTop:"1px solid rgba(0,0,0,0.06)",
+            fontSize:12, color:"rgba(0,0,0,0.45)", lineHeight:1.7, maxWidth:780
+          }}>
+            A Fio Raiz não é uma farmácia. Todos os produtos adquiridos são manipulados pelas farmácias credenciadas, de acordo com as normas da Anvisa.
+          </p>
         </div>
       </footer>
     </div>
