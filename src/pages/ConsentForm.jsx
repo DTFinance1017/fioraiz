@@ -6,7 +6,7 @@ function FioRaizLogo({ color = "#1A3040", size = 18 }) {
   const isWhite = color !== "#1A3040";
   return (
     <div onClick={() => navigate("/")} style={{ display: "flex", alignItems: "center", cursor: "pointer", userSelect: "none", WebkitTapHighlightColor: "transparent" }} role="link" aria-label="Voltar para a home">
-      <img src="/logo.png" alt="Fio Raiz" style={{ height: size * 1.8, width: "auto", display: "block", filter: isWhite ? "brightness(0) invert(1)" : "none" }} />
+      <img src="/logo-v2.png" alt="Fio Raiz" style={{ height: size * 2.8, width: "auto", display: "block", filter: isWhite ? "brightness(0) invert(1)" : "none" }} />
     </div>
   );
 }

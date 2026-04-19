@@ -8,7 +8,7 @@ function Logo({ dark = true }) {
     <div onClick={() => navigate("/")}
       style={{ display: "flex", alignItems: "center", cursor: "pointer", userSelect: "none", WebkitTapHighlightColor: "transparent" }}
       role="link" aria-label="Voltar para a página inicial">
-      <img src="/logo.png" alt="Fio Raiz" style={{ height: 34, width: "auto", display: "block", filter: dark ? "none" : "brightness(0) invert(1)" }} />
+      <img src="/logo-v2.png" alt="Fio Raiz" style={{ height: 52, width: "auto", display: "block", filter: dark ? "none" : "brightness(0) invert(1)" }} />
     </div>
   );
 }

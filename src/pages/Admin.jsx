@@ -16,7 +16,7 @@ function FioLogo({ clickable = true }) {
         WebkitTapHighlightColor: "transparent" }}
       role={clickable ? "link" : undefined}
       aria-label={clickable ? "Voltar para a home" : undefined}>
-      <img src="/logo.png" alt="Fio Raiz" style={{ height: 34, width: "auto", display: "block" }} />
+      <img src="/logo-v2.png" alt="Fio Raiz" style={{ height: 52, width: "auto", display: "block" }} />
     </div>
   );
 }

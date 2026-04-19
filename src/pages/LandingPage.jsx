@@ -16,7 +16,7 @@ function FioLogo({ color = "#fff", size = 22 }) {
   const isWhite = color === "#fff" || color === "white";
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      <img src="/logo.png" alt="Fio Raiz" style={{ height: size * 1.8, width: "auto", display: "block", filter: isWhite ? "brightness(0) invert(1)" : "none" }} />
+      <img src="/logo-v2.png" alt="Fio Raiz" style={{ height: size * 2.8, width: "auto", display: "block", filter: isWhite ? "brightness(0) invert(1)" : "none" }} />
     </div>
   );
 }

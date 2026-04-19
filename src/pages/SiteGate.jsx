@@ -6,7 +6,7 @@ const STORAGE_KEY = "fioraiz_gate";
 function Logo() {
   return (
     <div style={{ display:"flex", alignItems:"center" }}>
-      <img src="/logo.png" alt="Fio Raiz" style={{ height: 40, width: "auto", display: "block", filter: "brightness(0) invert(1)" }} />
+      <img src="/logo-v2.png" alt="Fio Raiz" style={{ height: 60, width: "auto", display: "block", filter: "brightness(0) invert(1)" }} />
     </div>
   );
 }
