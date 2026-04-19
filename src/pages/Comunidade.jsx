@@ -269,6 +269,7 @@ export default function Comunidade() {
   const navigate = useNavigate();
   const [activeId, setActiveId] = useState(null);
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [openSections, setOpenSections] = useState({});
 
   const active = ARTICLES.find(a => a.id === activeId);
@@ -278,6 +279,11 @@ export default function Comunidade() {
     window.addEventListener("scroll", fn);
     return () => window.removeEventListener("scroll", fn);
   }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
 
   useEffect(() => {
     setOpenSections({});
@@ -313,14 +319,50 @@ export default function Comunidade() {
           .btn:hover{opacity:0.88!important;}
           .sec-toggle{cursor:pointer;user-select:none;transition:background 0.2s;}
           .sec-toggle:hover{background:#e8f2f6!important;}
+          .show-mob{display:none;}
+          @media(max-width:600px){.show-mob{display:flex!important;}.hide-mob{display:none!important;}}
         `}</style>
         <nav style={c.nav}>
           <FioLogo color="#1A3040" size={20} />
           <div style={{ display:"flex", gap:12, alignItems:"center" }}>
-            <button onClick={() => setActiveId(null)} style={{ background:"none", border:"none", fontSize:13, color:"#666", fontWeight:500, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>← Comunidade</button>
-            <button className="btn" onClick={() => navigate("/avaliacao")} style={c.cta}>Avaliação</button>
+            <button onClick={() => setActiveId(null)} style={{ background:"none", border:"none", fontSize:13, color:"#666", fontWeight:500, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }} className="hide-mob">← Comunidade</button>
+            <button className="btn hide-mob" onClick={() => navigate("/avaliacao")} style={c.cta}>Avaliação</button>
+            <button onClick={() => setMenuOpen(o => !o)}
+              style={{ display:"none", background:"none", border:"none", cursor:"pointer", padding:8, flexDirection:"column", gap:5 }}
+              className="show-mob">
+              <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
+              <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
+              <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
+            </button>
           </div>
         </nav>
+
+        {/* Mobile drawer — artigo */}
+        {menuOpen && (
+          <div style={{ position:"fixed", inset:0, zIndex:199, background:"rgba(0,0,0,0.3)", backdropFilter:"blur(4px)" }}
+            onClick={() => setMenuOpen(false)} />
+        )}
+        <div style={{
+          position:"fixed", top:64, right:0, bottom:0, zIndex:200,
+          width:"75vw", maxWidth:300, background:"#fff",
+          boxShadow:"-8px 0 40px rgba(0,0,0,0.12)",
+          transform: menuOpen?"translateX(0)":"translateX(100%)",
+          transition:"transform 0.3s cubic-bezier(0.4,0,0.2,1)",
+          padding:"32px 28px", display:"flex", flexDirection:"column", gap:8,
+        }}>
+          <button onClick={() => { setMenuOpen(false); setActiveId(null); }}
+            style={{ fontSize:18, fontWeight:500, color:"#555", padding:"14px 0", borderBottom:"1px solid rgba(0,0,0,0.06)", background:"none", border:"none", borderBottom:"1px solid rgba(0,0,0,0.06)", textAlign:"left", cursor:"pointer", fontFamily:"'Outfit',sans-serif", width:"100%" }}>
+            ← Comunidade
+          </button>
+          {[["/","Início"],["quemsomos","Quem Somos"]].map(([h,l]) => (
+            <a key={h} href={h} onClick={() => setMenuOpen(false)}
+              style={{ fontSize:18, fontWeight:500, color:"#555", padding:"14px 0", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"block" }}>{l}</a>
+          ))}
+          <button className="btn" onClick={() => { setMenuOpen(false); navigate("/avaliacao"); }}
+            style={{ background:"#004358", color:"#fff", padding:"16px 32px", borderRadius:6, fontSize:14, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginTop:24, textAlign:"center", width:"100%" }}>
+            Avaliação gratuita
+          </button>
+        </div>
 
         {/* Card hero do artigo */}
         <div style={{ paddingTop:64, background: grad }}>
@@ -443,19 +485,55 @@ export default function Comunidade() {
         .btn:hover{opacity:0.88!important;}
         .art-card{cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;border-radius:20px;overflow:hidden;background:#fff;border:1px solid rgba(0,0,0,0.07);}
         .art-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.12);}
+        .show-mob{display:none;}
         @media(max-width:600px){
           .cards-grid{grid-template-columns:1fr!important;}
+          .show-mob{display:flex!important;}
+          .hide-mob{display:none!important;}
         }
       `}</style>
 
       <nav style={c.nav}>
         <FioLogo color="#1A3040" size={20} />
+        <div className="hide-mob" style={{ display:"flex", gap:28, alignItems:"center" }}>
+          {[["/","Início"],["quemsomos","Quem Somos"],["comunidade","Comunidade"]].map(([h,l]) => (
+            <a key={h} href={h} style={{ fontSize:13, color:"#666", fontWeight:500 }}>{l}</a>
+          ))}
+        </div>
         <div style={{ display:"flex", gap:12, alignItems:"center" }}>
-          <a href="/" style={{ fontSize:13, color:"#666", fontWeight:500 }}>Início</a>
-          <a href="/quemsomos" style={{ fontSize:13, color:"#666", fontWeight:500, display:"none" }} className="hide-mob">Quem Somos</a>
-          <button className="btn" onClick={() => navigate("/avaliacao")} style={c.cta}>Avaliação</button>
+          <button className="btn hide-mob" onClick={() => navigate("/avaliacao")} style={c.cta}>Avaliação</button>
+          <button onClick={() => setMenuOpen(o => !o)}
+            style={{ display:"none", background:"none", border:"none", cursor:"pointer", padding:8, flexDirection:"column", gap:5 }}
+            className="show-mob">
+            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(45deg) translate(5px,5px)":"none" }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", opacity: menuOpen?0:1 }}/>
+            <span style={{ display:"block", width:22, height:2, background:"#1A3040", borderRadius:2, transition:"all 0.25s", transform: menuOpen?"rotate(-45deg) translate(5px,-5px)":"none" }}/>
+          </button>
         </div>
       </nav>
+
+      {/* Mobile drawer — grid */}
+      {menuOpen && (
+        <div style={{ position:"fixed", inset:0, zIndex:199, background:"rgba(0,0,0,0.3)", backdropFilter:"blur(4px)" }}
+          onClick={() => setMenuOpen(false)} />
+      )}
+      <div style={{
+        position:"fixed", top:64, right:0, bottom:0, zIndex:200,
+        width:"75vw", maxWidth:300, background:"#fff",
+        boxShadow:"-8px 0 40px rgba(0,0,0,0.12)",
+        transform: menuOpen?"translateX(0)":"translateX(100%)",
+        transition:"transform 0.3s cubic-bezier(0.4,0,0.2,1)",
+        padding:"32px 28px", display:"flex", flexDirection:"column", gap:8,
+      }}>
+        {[["/","Início"],["quemsomos","Quem Somos"],["comunidade","Comunidade"]].map(([h,l]) => (
+          <a key={h} href={h} onClick={() => setMenuOpen(false)}
+            style={{ fontSize:18, fontWeight:500, color:"#555", padding:"14px 0", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"block" }}>{l}</a>
+        ))}
+        <button className="btn" onClick={() => { setMenuOpen(false); navigate("/avaliacao"); }}
+          style={{ background:"#004358", color:"#fff", padding:"16px 32px", borderRadius:6, fontSize:14, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", marginTop:24, textAlign:"center", width:"100%" }}>
+          Avaliação gratuita
+        </button>
+      </div>
 
       {/* Hero */}
       <div style={{ background:"#1A3040", paddingTop:64 }}>
