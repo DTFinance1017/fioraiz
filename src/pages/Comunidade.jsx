@@ -376,8 +376,7 @@ export default function Comunidade() {
         </div>
 
         {/* Card hero do artigo */}
-        <div style={{ paddingTop:64, background: grad, position:"relative", backgroundImage:`url(${CARD_IMAGES[active.id]})`, backgroundSize:"cover", backgroundPosition:"center" }}>
-          <div style={{ position:"absolute", inset:0, background:"rgba(1,46,70,0.82)" }} />
+        <div style={{ paddingTop:64, background: grad }}>
           <div style={{ maxWidth:760, margin:"0 auto", padding:"48px 5% 40px" }}>
             <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:20, flexWrap:"wrap" }}>
               <span style={{ fontSize:10, fontWeight:800, letterSpacing:"0.12em", textTransform:"uppercase",
