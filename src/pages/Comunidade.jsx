@@ -325,12 +325,16 @@ export default function Comunidade() {
         {/* Card hero do artigo */}
         <div style={{ paddingTop:64, background: grad }}>
           <div style={{ maxWidth:760, margin:"0 auto", padding:"48px 5% 40px" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:20 }}>
-              <span style={{ fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase",
-                color:"rgba(255,255,255,0.55)", background:"rgba(255,255,255,0.12)", padding:"4px 12px", borderRadius:100 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:20, flexWrap:"wrap" }}>
+              <span style={{ fontSize:10, fontWeight:800, letterSpacing:"0.12em", textTransform:"uppercase",
+                color:"rgba(255,255,255,0.9)", background:"rgba(255,255,255,0.18)", padding:"4px 12px", borderRadius:100, border:"1px solid rgba(255,255,255,0.2)" }}>
+                Fio Raiz
+              </span>
+              <span style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase",
+                color:"rgba(255,255,255,0.5)", background:"rgba(255,255,255,0.08)", padding:"4px 12px", borderRadius:100 }}>
                 {active.tag}
               </span>
-              <span style={{ fontSize:11, color:"rgba(255,255,255,0.35)", fontWeight:500 }}>{active.readTime} de leitura</span>
+              <span style={{ fontSize:11, color:"rgba(255,255,255,0.3)", fontWeight:500 }}>{active.readTime} de leitura</span>
             </div>
             <div style={{ fontSize:48, marginBottom:16 }}>{active.icon}</div>
             <h1 style={{ fontSize:"clamp(22px,4vw,38px)", fontWeight:800, color:"#fff", letterSpacing:"-0.02em", lineHeight:1.15, marginBottom:12 }}>
@@ -373,17 +377,38 @@ export default function Comunidade() {
             })}
           </div>
 
+          {/* Callout Fio Raiz */}
+          <div style={{ marginTop:28, background:"#EDF5F8", borderRadius:16, padding:"24px 22px", border:"1px solid rgba(0,67,88,0.12)" }}>
+            <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:"#004358", marginBottom:10 }}>
+              Por que tratar com a Fio Raiz?
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+              {[
+                { icon:"⚡", text:"Do questionário ao protocolo em minutos — 100% online, sem fila" },
+                { icon:"🔬", text:"Apenas ativos com evidência clínica comprovada. Sem modismos" },
+                { icon:"📦", text:"Farmácias homologadas pela Anvisa. Entrega rápida e discreta" },
+                { icon:"🤝", text:"Acompanhamento contínuo em todas as fases — início, progresso e manutenção" },
+              ].map((item, i) => (
+                <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:10 }}>
+                  <span style={{ fontSize:16, flexShrink:0, marginTop:1 }}>{item.icon}</span>
+                  <span style={{ fontSize:13, color:"#445", lineHeight:1.65 }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* CTA */}
-          <div style={{ marginTop:36, background:"#1A3040", borderRadius:20, padding:"28px 24px", textAlign:"center" }}>
+          <div style={{ marginTop:16, background:"#004358", borderRadius:20, padding:"28px 24px", textAlign:"center" }}>
+            <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"rgba(255,255,255,0.45)", marginBottom:10 }}>Fio Raiz</div>
             <h3 style={{ fontSize:"clamp(16px,2.5vw,22px)", fontWeight:800, color:"#fff", letterSpacing:"-0.02em", marginBottom:10 }}>
-              Pronto para começar o tratamento certo?
+              Comece o seu protocolo hoje.
             </h3>
-            <p style={{ fontSize:13, color:"rgba(255,255,255,0.5)", lineHeight:1.7, marginBottom:20 }}>
-              Avaliação rápida e gratuita. Protocolo personalizado entregue em casa.
+            <p style={{ fontSize:13, color:"rgba(255,255,255,0.55)", lineHeight:1.75, marginBottom:20, maxWidth:420, margin:"0 auto 20px" }}>
+              Avaliação rápida, gratuita e 100% online. Sem sala de espera, sem constrangimento — o protocolo certo chega na sua porta.
             </p>
             <button className="btn" onClick={() => navigate("/avaliacao")}
-              style={{ background:"#fff", color:"#1A3040", padding:"13px 32px", borderRadius:6, fontSize:13, fontWeight:700, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
-              Fazer avaliação gratuita
+              style={{ background:"#fff", color:"#004358", padding:"14px 36px", borderRadius:6, fontSize:13, fontWeight:800, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", letterSpacing:"-0.01em" }}>
+              Fazer avaliação gratuita na Fio Raiz →
             </button>
           </div>
 
@@ -441,9 +466,13 @@ export default function Comunidade() {
           <h1 style={{ fontSize:"clamp(26px,4vw,44px)", fontWeight:800, color:"#fff", letterSpacing:"-0.02em", lineHeight:1.15, marginBottom:12 }}>
             Guia completo sobre queda capilar
           </h1>
-          <p style={{ fontSize:15, color:"rgba(255,255,255,0.45)", lineHeight:1.7, maxWidth:480 }}>
+          <p style={{ fontSize:15, color:"rgba(255,255,255,0.45)", lineHeight:1.7, maxWidth:480, marginBottom:28 }}>
             Tudo sobre calvície, ciclo capilar e os ativos com evidência científica. Baseado em estudos, sem promessas sem fundamento.
           </p>
+          <button className="btn" onClick={() => navigate("/avaliacao")}
+            style={{ background:"#fff", color:"#1A3040", padding:"13px 28px", borderRadius:6, fontSize:13, fontWeight:800, border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+            Fazer avaliação gratuita na Fio Raiz →
+          </button>
         </div>
       </div>
 
@@ -471,8 +500,11 @@ export default function Comunidade() {
                   </div>
                   <h3 style={{ fontSize:"clamp(14px,2vw,17px)", fontWeight:700, color:"#1A3040", lineHeight:1.3, marginBottom:8 }}>{a.title}</h3>
                   <p style={{ fontSize:12, color:"#888", lineHeight:1.65, marginBottom:16 }}>{a.subtitle}</p>
-                  <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:12, fontWeight:700, color:"#004358" }}>
-                    Ler artigo <span style={{ fontSize:14 }}>→</span>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:12, fontWeight:700, color:"#004358" }}>
+                      Ler artigo <span style={{ fontSize:14 }}>→</span>
+                    </div>
+                    <span style={{ fontSize:10, fontWeight:700, color:"rgba(0,67,88,0.4)", letterSpacing:"0.06em", textTransform:"uppercase" }}>Fio Raiz</span>
                   </div>
                 </div>
               </div>
