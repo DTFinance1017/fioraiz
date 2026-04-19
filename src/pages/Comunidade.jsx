@@ -23,6 +23,17 @@ const GRADIENTS = {
   cuidados:     "linear-gradient(135deg, #021d34 0%, #153f59 60%, #365b77 100%)",
 };
 
+const CARD_IMAGES = {
+  calvicie:      "/alopecia.jpg",
+  ciclo:         "/fases.jpg",
+  minoxidil:     "/minoxidil.jpg",
+  finasterida:   "/finasterida.jpg",
+  dutasterida:   "/dutasterida.jpg",
+  "saw-palmetto": "/saw-palmetto.jpg",
+  biotina:       "/biotina.jpg",
+  cuidados:      "/kit.jpg",
+};
+
 const CARD_ICONS = {
   calvicie:     { emoji: "🧬", label: "Calvície", sublabel: "Alopecia Androgenética" },
   ciclo:        { emoji: "🔄", label: "Ciclo Capilar", sublabel: "Anágena · Catágena · Telógena" },
@@ -365,7 +376,8 @@ export default function Comunidade() {
         </div>
 
         {/* Card hero do artigo */}
-        <div style={{ paddingTop:64, background: grad }}>
+        <div style={{ paddingTop:64, background: grad, position:"relative", backgroundImage:`url(${CARD_IMAGES[active.id]})`, backgroundSize:"cover", backgroundPosition:"center" }}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(1,46,70,0.82)" }} />
           <div style={{ maxWidth:760, margin:"0 auto", padding:"48px 5% 40px" }}>
             <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:20, flexWrap:"wrap" }}>
               <span style={{ fontSize:10, fontWeight:800, letterSpacing:"0.12em", textTransform:"uppercase",
@@ -562,13 +574,13 @@ export default function Comunidade() {
             const ci = CARD_ICONS[a.id];
             return (
               <div key={a.id} className="art-card" onClick={() => setActiveId(a.id)}>
-                {/* Image area — gradient com ícone */}
-                <div style={{ height:180, background:grad, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", position:"relative", padding:"24px" }}>
-                  <span style={{ fontSize:52, lineHeight:1 }}>{a.icon}</span>
-                  <span style={{ fontSize:10, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"rgba(255,255,255,0.45)", marginTop:10 }}>{ci.sublabel}</span>
-                  {/* Tag */}
+                {/* Image area */}
+                <div style={{ height:180, position:"relative", overflow:"hidden" }}>
+                  <img src={CARD_IMAGES[a.id]} alt={a.title}
+                    style={{ width:"100%", height:"100%", objectFit:"cover", objectPosition:"center", display:"block" }} />
+                  <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.38) 100%)" }} />
                   <span style={{ position:"absolute", top:14, right:14, fontSize:9, fontWeight:800, letterSpacing:"0.08em", textTransform:"uppercase",
-                    background:"rgba(255,255,255,0.15)", color:"#fff", padding:"4px 10px", borderRadius:100 }}>{a.tag}</span>
+                    background:"rgba(0,0,0,0.35)", backdropFilter:"blur(6px)", color:"#fff", padding:"4px 10px", borderRadius:100 }}>{a.tag}</span>
                 </div>
                 {/* Card body */}
                 <div style={{ padding:"20px 20px 24px" }}>
