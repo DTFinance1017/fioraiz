@@ -24,7 +24,7 @@ export default function LoginMedico() {
         .eq("id", data.user.id)
         .single();
 
-      if (perfilError || perfil?.role !== "medico") {
+      if (perfilError || !["medico","admin"].includes(perfil?.role)) {
         await supabase.auth.signOut();
         throw new Error("Acesso restrito a médicos.");
       }

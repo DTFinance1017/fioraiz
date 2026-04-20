@@ -12,7 +12,7 @@ export default function RotaMedico({ children }) {
       if (!user) { navigate("/medico/login"); return; }
       const { data: perfil } = await supabase
         .from("perfis").select("role").eq("id", user.id).single();
-      if (!perfil || perfil.role !== "medico") { navigate("/medico/login"); return; }
+      if (!perfil || ["medico","admin"].includes(perfil.role) === false) { navigate("/medico/login"); return; }
       setOk(true);
     }
     check();

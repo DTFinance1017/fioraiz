@@ -27,7 +27,7 @@ export default function DashboardMedico() {
     if (!user) { navigate("/medico/login"); return; }
     const { data: perfil } = await supabase
       .from("perfis").select("*").eq("id", user.id).single();
-    if (!perfil || perfil.role !== "medico") { navigate("/medico/login"); return; }
+    if (!perfil || ["medico","admin"].includes(perfil.role) === false) { navigate("/medico/login"); return; }
     setMedico({ ...user, ...perfil });
   }
 
