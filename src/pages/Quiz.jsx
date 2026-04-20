@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
 // ── Logo ──────────────────────────────────────────────────────────────────────
 function Logo({ dark = true }) {
@@ -406,7 +407,8 @@ export default function Quiz() {
     }
   }
 
-  function saveLead() {
+  async function saveLead() {
+    // Backup local
     const lead = {
       id: Date.now(),
       timestamp: new Date().toLocaleString("pt-BR"),
@@ -420,13 +422,43 @@ export default function Quiz() {
       existing.push(lead);
       localStorage.setItem("fioraiz_leads", JSON.stringify(existing));
     } catch {}
+
+    // Salva no Supabase
+    try {
+      const { data: paciente, error: pacError } = await supabase
+        .from("pacientes")
+        .insert({ nome: contactInfo.nome, email: contactInfo.email, telefone: contactInfo.whatsapp })
+        .select("id")
+        .single();
+      if (pacError || !paciente) { console.error("Paciente insert:", pacError); return; }
+
+      const { data: pedido, error: pedError } = await supabase
+        .from("pedidos")
+        .insert({
+          paciente_id: paciente.id,
+          status: "aguardando_avaliacao",
+          protocolo: `FR-${Date.now()}`,
+        })
+        .select("id")
+        .single();
+      if (pedError || !pedido) { console.error("Pedido insert:", pedError); return; }
+
+      await supabase.from("avaliacoes").insert({
+        pedido_id: pedido.id,
+        respostas: answers,
+        grau_calvicie: answers.hairType || null,
+        condicoes_medicas: answers.conditions || null,
+      });
+    } catch (err) {
+      console.error("Supabase save error:", err);
+    }
   }
 
-  function continueFromContact() {
+  async function continueFromContact() {
     if (!contactInfo.nome.trim()) { setContactError("Por favor, informe seu nome."); return; }
     if (!contactInfo.whatsapp.trim()) { setContactError("Por favor, informe seu WhatsApp."); return; }
     setContactError("");
-    saveLead();
+    await saveLead();
     setPhase("plan");
     setTimeout(() => setShowDiscount(true), 800);
   }
