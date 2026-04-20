@@ -423,32 +423,25 @@ export default function Quiz() {
       localStorage.setItem("fioraiz_leads", JSON.stringify(existing));
     } catch {}
 
-    // Salva no Supabase
+    // Salva no Supabase (UUIDs gerados no cliente para evitar SELECT pós-insert)
     try {
-      const { data: paciente, error: pacError } = await supabase
+      const pacienteId = crypto.randomUUID();
+      const pedidoId   = crypto.randomUUID();
+
+      const { error: pacError } = await supabase
         .from("pacientes")
-        .insert({ nome: contactInfo.nome, email: contactInfo.email, telefone: contactInfo.whatsapp })
-        .select("id")
-        .single();
-      if (pacError || !paciente) { console.error("Paciente insert:", pacError); return; }
+        .insert({ id: pacienteId, nome: contactInfo.nome, email: contactInfo.email, telefone: contactInfo.whatsapp });
+      if (pacError) { console.error("Paciente insert:", pacError); return; }
 
-      const { data: pedido, error: pedError } = await supabase
+      const { error: pedError } = await supabase
         .from("pedidos")
-        .insert({
-          paciente_id: paciente.id,
-          status: "aguardando_avaliacao",
-          protocolo: `FR-${Date.now()}`,
-        })
-        .select("id")
-        .single();
-      if (pedError || !pedido) { console.error("Pedido insert:", pedError); return; }
+        .insert({ id: pedidoId, paciente_id: pacienteId, status: "aguardando_avaliacao", protocolo: `FR-${Date.now()}` });
+      if (pedError) { console.error("Pedido insert:", pedError); return; }
 
-      await supabase.from("avaliacoes").insert({
-        pedido_id: pedido.id,
-        respostas: answers,
-        grau_calvicie: answers.hairType || null,
-        condicoes_medicas: answers.conditions || null,
-      });
+      const { error: avalError } = await supabase
+        .from("avaliacoes")
+        .insert({ pedido_id: pedidoId, respostas: answers, grau_calvicie: answers.hairType || null, condicoes_medicas: answers.conditions || null });
+      if (avalError) { console.error("Avaliacao insert:", avalError); }
     } catch (err) {
       console.error("Supabase save error:", err);
     }
