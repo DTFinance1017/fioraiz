@@ -10,6 +10,9 @@ import Admin from './pages/Admin'
 import QuemSomos from './pages/QuemSomos'
 import Comunidade from './pages/Comunidade'
 import SiteGate from './pages/SiteGate'
+import LoginMedico from './pages/medico/LoginMedico'
+import DashboardMedico from './pages/medico/DashboardMedico'
+import RotaMedico from './pages/medico/RotaMedico'
 
 function App() {
   return (
@@ -24,6 +27,8 @@ function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/quemsomos" element={<QuemSomos />} />
           <Route path="/comunidade" element={<Comunidade />} />
+          <Route path="/medico/login" element={<LoginMedico />} />
+          <Route path="/medico/dashboard" element={<RotaMedico><DashboardMedico /></RotaMedico>} />
         </Routes>
       </BrowserRouter>
     </SiteGate>
