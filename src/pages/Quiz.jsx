@@ -483,7 +483,10 @@ export default function Quiz() {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: contactInfo.email,
         password: contactInfo.senha,
-        options: { data: { nome: contactInfo.nome, telefone: contactInfo.whatsapp } },
+        options: {
+          data: { nome: contactInfo.nome, telefone: contactInfo.whatsapp },
+          emailRedirectTo: "https://www.fioraiz.com.br/minha-conta",
+        },
       });
       if (authError) { setContactError(authError.message); return; }
       const userId = authData.user?.id || null;
@@ -1676,17 +1679,22 @@ export default function Quiz() {
           {contactInfo.rua && (
             <div style={{ display:"flex", flexDirection:"column", gap:10, padding:"14px", background:"#F0F7FA", borderRadius:10, border:"1px solid #dde8ee" }}>
               <div style={{ fontSize:11, color:"#94b8d7", fontWeight:700, letterSpacing:"0.08em" }}>ENDEREÇO ENCONTRADO</div>
-              <div style={{ display:"grid", gridTemplateColumns:"1fr auto", gap:10 }}>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 80px", gap:10 }}>
                 <div>
                   <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:4 }}>Rua</label>
                   <input className="contact-input" value={contactInfo.rua} onChange={e => setContactInfo(p => ({ ...p, rua: e.target.value }))}
                     style={{ width:"100%", padding:"10px 12px", border:"1.5px solid rgba(0,0,0,0.1)", borderRadius:8, fontSize:13, fontFamily:"'Outfit',sans-serif", outline:"none", background:"#fff" }} />
                 </div>
-                <div style={{ width:80 }}>
+                <div>
                   <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:4 }}>Nº</label>
                   <input className="contact-input" placeholder="000" value={contactInfo.numero} onChange={e => setContactInfo(p => ({ ...p, numero: e.target.value }))}
                     style={{ width:"100%", padding:"10px 12px", border:"1.5px solid rgba(0,0,0,0.1)", borderRadius:8, fontSize:13, fontFamily:"'Outfit',sans-serif", outline:"none", background:"#fff" }} />
                 </div>
+              </div>
+              <div>
+                <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:4 }}>Complemento</label>
+                <input className="contact-input" placeholder="Apto, bloco, sala… (opcional)" value={contactInfo.complemento || ""} onChange={e => setContactInfo(p => ({ ...p, complemento: e.target.value }))}
+                  style={{ width:"100%", padding:"10px 12px", border:"1.5px solid rgba(0,0,0,0.1)", borderRadius:8, fontSize:13, fontFamily:"'Outfit',sans-serif", outline:"none", background:"#fff" }} />
               </div>
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
                 {[
