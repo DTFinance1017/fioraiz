@@ -375,6 +375,7 @@ export default function Quiz() {
   const [protocoloSel, setProtocoloSel] = useState({ bloqueador: null, minoxidil: null, addons: [] });
   const [produtoInfo, setProdutoInfo] = useState(null);
   const [pagLoading, setPagLoading] = useState(false);
+  const [metodo, setMetodo] = useState("cartao");
 
   // ── Loading animation ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -2311,8 +2312,6 @@ export default function Quiz() {
     const total = (protocoloSel.bloqueador?.preco || 0) + (protocoloSel.minoxidil?.preco || 0) +
       protocoloSel.addons.reduce((acc, a) => acc + a.preco, 0);
     const itens = [protocoloSel.bloqueador, protocoloSel.minoxidil, ...protocoloSel.addons].filter(Boolean);
-    const [metodo, setMetodo] = useState("cartao");
-
     async function finalizarPagamento() {
       setPagLoading(true);
       await new Promise(r => setTimeout(r, 2200));
