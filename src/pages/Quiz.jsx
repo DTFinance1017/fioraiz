@@ -552,8 +552,18 @@ export default function Quiz() {
       });
       if (authError) { setContactError(authError.message); return; }
       const userId = authData.user?.id || null;
+
+      // Upload das fotos (política pública — funciona mesmo sem sessão ativa pós-signUp)
       const fotosUrls = userId ? await uploadFotos(userId) : {};
-      saveLead();
+
+      // Salva lead local como backup
+      try {
+        const existing = JSON.parse(localStorage.getItem("fioraiz_leads") || "[]");
+        existing.push({ id: Date.now(), timestamp: new Date().toLocaleString("pt-BR"), nome: contactInfo.nome, email: contactInfo.email, whatsapp: contactInfo.whatsapp, answers });
+        localStorage.setItem("fioraiz_leads", JSON.stringify(existing));
+      } catch {}
+
+      // Salva tudo no Supabase (única chamada, com fotos)
       const { error } = await supabase.rpc("submit_avaliacao", {
         p_user_id: userId,
         p_nome: contactInfo.nome, p_email: contactInfo.email, p_telefone: contactInfo.whatsapp,
