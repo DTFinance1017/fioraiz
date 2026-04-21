@@ -314,8 +314,11 @@ export default function Quiz() {
   const [discountApplied, setDiscountApplied] = useState(false);
   const [format, setFormat] = useState("unicas");
   const [planPeriod, setPlanPeriod] = useState("semestral");
-  const [contactInfo, setContactInfo] = useState({ nome:"", email:"", whatsapp:"", cep:"" });
+  const [contactInfo, setContactInfo] = useState({ nome:"", email:"", whatsapp:"", cep:"", rua:"", bairro:"", cidade:"", estado:"", numero:"", senha:"", confirmarSenha:"" });
   const [contactError, setContactError] = useState("");
+  const [contactLoading, setContactLoading] = useState(false);
+  const [cepLoading, setCepLoading] = useState(false);
+  const [fotos, setFotos] = useState({ entradas: null, perfil: null, coroa: null });
   const [showConsentTooltip, setShowConsentTooltip] = useState(false);
 
   // ── Loading animation ──────────────────────────────────────────────────────
@@ -407,6 +410,34 @@ export default function Quiz() {
     }
   }
 
+  async function buscarCep(cep) {
+    const digits = cep.replace(/\D/g, "");
+    if (digits.length !== 8) return;
+    setCepLoading(true);
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+      const data = await res.json();
+      if (!data.erro) {
+        setContactInfo(p => ({ ...p, rua: data.logradouro || "", bairro: data.bairro || "", cidade: data.localidade || "", estado: data.uf || "" }));
+      }
+    } catch {} finally { setCepLoading(false); }
+  }
+
+  async function uploadFotos(userId) {
+    const urls = {};
+    for (const [key, file] of Object.entries(fotos)) {
+      if (!file) continue;
+      const ext = file.name.split(".").pop();
+      const path = `${userId}/${Date.now()}_${key}.${ext}`;
+      const { error } = await supabase.storage.from("avaliacoes-fotos").upload(path, file);
+      if (!error) {
+        const { data } = supabase.storage.from("avaliacoes-fotos").getPublicUrl(path);
+        urls[key] = data.publicUrl;
+      }
+    }
+    return urls;
+  }
+
   async function saveLead() {
     // Backup local
     const lead = {
@@ -442,11 +473,34 @@ export default function Quiz() {
 
   async function continueFromContact() {
     if (!contactInfo.nome.trim()) { setContactError("Por favor, informe seu nome."); return; }
+    if (!contactInfo.email.trim()) { setContactError("Por favor, informe seu e-mail."); return; }
     if (!contactInfo.whatsapp.trim()) { setContactError("Por favor, informe seu WhatsApp."); return; }
+    if (!contactInfo.senha || contactInfo.senha.length < 6) { setContactError("A senha deve ter ao menos 6 caracteres."); return; }
+    if (contactInfo.senha !== contactInfo.confirmarSenha) { setContactError("As senhas não coincidem."); return; }
     setContactError("");
-    await saveLead();
-    setPhase("plan");
-    setTimeout(() => setShowDiscount(true), 800);
+    setContactLoading(true);
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: contactInfo.email,
+        password: contactInfo.senha,
+        options: { data: { nome: contactInfo.nome, telefone: contactInfo.whatsapp } },
+      });
+      if (authError) { setContactError(authError.message); return; }
+      const userId = authData.user?.id || null;
+      const fotosUrls = userId ? await uploadFotos(userId) : {};
+      saveLead();
+      const { error } = await supabase.rpc("submit_avaliacao", {
+        p_user_id: userId,
+        p_nome: contactInfo.nome, p_email: contactInfo.email, p_telefone: contactInfo.whatsapp,
+        p_cep: contactInfo.cep || "",
+        p_endereco: { rua: contactInfo.rua, numero: contactInfo.numero, bairro: contactInfo.bairro, cidade: contactInfo.cidade, estado: contactInfo.estado },
+        p_respostas: answers, p_grau_calvicie: answers.hairType || null, p_condicoes: answers.conditions || null,
+        p_fotos: fotosUrls,
+      });
+      if (error) console.error("submit_avaliacao error:", error);
+      setPhase("plan");
+      setTimeout(() => setShowDiscount(true), 800);
+    } finally { setContactLoading(false); }
   }
 
   function continueFromPlan() { setPhase("checkout"); }
@@ -1579,48 +1633,132 @@ export default function Quiz() {
   // ── CONTATO ────────────────────────────────────────────────────────────────
   if (phase === "contact") return (
     <div style={s.wrap}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}.contact-input:focus{border-color:#021d34!important;}.foto-box:hover{border-color:#021d34!important;background:#EDF5F8!important;}`}</style>
       <div style={s.nav}><Logo /></div>
       <div style={s.body}>
         <div style={s.tag}>Quase lá</div>
-        <h2 style={s.heading}>Para onde enviamos o seu plano?</h2>
-        <p style={s.sub}>Um médico vai analisar suas respostas e enviar a avaliação. Precisamos dos seus dados para isso.</p>
+        <h2 style={s.heading}>Crie sua conta</h2>
+        <p style={s.sub}>Um médico vai analisar suas respostas. Crie sua conta para acompanhar o resultado.</p>
 
-        <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+        {/* Dados pessoais */}
+        <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>👤 Dados pessoais</div>
+        <div style={{ display:"flex", flexDirection:"column", gap:12, marginBottom:20 }}>
           {[
-            { key:"nome",     label:"Nome completo",   placeholder:"Seu nome",        type:"text"  },
-            { key:"email",    label:"E-mail",           placeholder:"seu@email.com",   type:"email" },
-            { key:"whatsapp", label:"WhatsApp",         placeholder:"(11) 99999-9999", type:"tel"   },
-            { key:"cep",      label:"CEP",              placeholder:"00000-000",       type:"text"  },
+            { key:"nome", label:"Nome completo", placeholder:"Seu nome completo", type:"text" },
+            { key:"email", label:"E-mail", placeholder:"seu@email.com", type:"email" },
+            { key:"whatsapp", label:"WhatsApp", placeholder:"(11) 99999-9999", type:"tel" },
           ].map(f => (
             <div key={f.key}>
-              <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:6 }}>{f.label}</label>
-              <input
-                type={f.type}
-                placeholder={f.placeholder}
-                value={contactInfo[f.key]}
+              <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:5 }}>{f.label}</label>
+              <input className="contact-input" type={f.type} placeholder={f.placeholder} value={contactInfo[f.key]}
                 onChange={e => setContactInfo(p => ({ ...p, [f.key]: e.target.value }))}
-                style={{ width:"100%", padding:"14px 16px", border:"1.5px solid rgba(0,0,0,0.12)",
-                  borderRadius:12, fontSize:15, fontFamily:"'Outfit',sans-serif", outline:"none" }}
-                onFocus={e => e.target.style.borderColor="#021d34"}
-                onBlur={e => e.target.style.borderColor="rgba(0,0,0,0.12)"}
-              />
+                style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s" }} />
             </div>
+          ))}
+
+          {/* CEP com auto-fill */}
+          <div>
+            <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:5 }}>CEP</label>
+            <div style={{ position:"relative" }}>
+              <input className="contact-input" type="text" placeholder="00000-000" value={contactInfo.cep}
+                onChange={e => {
+                  const v = e.target.value;
+                  setContactInfo(p => ({ ...p, cep: v }));
+                  if (v.replace(/\D/g,"").length === 8) buscarCep(v);
+                }}
+                maxLength={9}
+                style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s" }} />
+              {cepLoading && <div style={{ position:"absolute", right:14, top:"50%", transform:"translateY(-50%)", fontSize:11, color:"#888" }}>buscando…</div>}
+            </div>
+          </div>
+
+          {/* Endereço auto-preenchido */}
+          {contactInfo.rua && (
+            <div style={{ display:"flex", flexDirection:"column", gap:10, padding:"14px", background:"#F0F7FA", borderRadius:10, border:"1px solid #dde8ee" }}>
+              <div style={{ fontSize:11, color:"#94b8d7", fontWeight:700, letterSpacing:"0.08em" }}>ENDEREÇO ENCONTRADO</div>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr auto", gap:10 }}>
+                <div>
+                  <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:4 }}>Rua</label>
+                  <input className="contact-input" value={contactInfo.rua} onChange={e => setContactInfo(p => ({ ...p, rua: e.target.value }))}
+                    style={{ width:"100%", padding:"10px 12px", border:"1.5px solid rgba(0,0,0,0.1)", borderRadius:8, fontSize:13, fontFamily:"'Outfit',sans-serif", outline:"none", background:"#fff" }} />
+                </div>
+                <div style={{ width:80 }}>
+                  <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:4 }}>Nº</label>
+                  <input className="contact-input" placeholder="000" value={contactInfo.numero} onChange={e => setContactInfo(p => ({ ...p, numero: e.target.value }))}
+                    style={{ width:"100%", padding:"10px 12px", border:"1.5px solid rgba(0,0,0,0.1)", borderRadius:8, fontSize:13, fontFamily:"'Outfit',sans-serif", outline:"none", background:"#fff" }} />
+                </div>
+              </div>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                {[
+                  { key:"bairro", label:"Bairro" },
+                  { key:"cidade", label:"Cidade" },
+                ].map(f => (
+                  <div key={f.key}>
+                    <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:4 }}>{f.label}</label>
+                    <input className="contact-input" value={contactInfo[f.key]} onChange={e => setContactInfo(p => ({ ...p, [f.key]: e.target.value }))}
+                      style={{ width:"100%", padding:"10px 12px", border:"1.5px solid rgba(0,0,0,0.1)", borderRadius:8, fontSize:13, fontFamily:"'Outfit',sans-serif", outline:"none", background:"#fff" }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Senha */}
+        <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>🔒 Crie sua senha de acesso</div>
+        <div style={{ display:"flex", flexDirection:"column", gap:12, marginBottom:20 }}>
+          {[
+            { key:"senha", label:"Senha", placeholder:"Mínimo 6 caracteres", type:"password" },
+            { key:"confirmarSenha", label:"Confirmar senha", placeholder:"Repita a senha", type:"password" },
+          ].map(f => (
+            <div key={f.key}>
+              <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:5 }}>{f.label}</label>
+              <input className="contact-input" type={f.type} placeholder={f.placeholder} value={contactInfo[f.key]}
+                onChange={e => setContactInfo(p => ({ ...p, [f.key]: e.target.value }))}
+                style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s" }} />
+            </div>
+          ))}
+          <div style={{ fontSize:11, color:"#888", lineHeight:1.6 }}>
+            Você usará essa senha para acessar seus resultados e protocolo em <strong>fioraiz.com.br/minha-conta</strong>
+          </div>
+        </div>
+
+        {/* Fotos */}
+        <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>📸 Fotos do couro cabeludo <span style={{ fontWeight:400, textTransform:"none", fontSize:10 }}>(opcional)</span></div>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:20 }}>
+          {[
+            { key:"entradas", label:"Entradas frontais", emoji:"👆" },
+            { key:"perfil",   label:"Perfil lateral",   emoji:"👤" },
+            { key:"coroa",    label:"Vista superior",   emoji:"⬆️" },
+          ].map(f => (
+            <label key={f.key} className="foto-box" style={{
+              display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+              gap:6, padding:"16px 8px", borderRadius:12, border:"1.5px dashed",
+              borderColor: fotos[f.key] ? "#16a34a" : "rgba(0,0,0,0.15)",
+              background: fotos[f.key] ? "#F0FDF4" : "#F8FBFD",
+              cursor:"pointer", textAlign:"center", transition:"all 0.15s",
+            }}>
+              <input type="file" accept="image/*" style={{ display:"none" }}
+                onChange={e => { const file = e.target.files?.[0]; if (file) setFotos(p => ({ ...p, [f.key]: file })); }} />
+              <span style={{ fontSize:22 }}>{fotos[f.key] ? "✅" : f.emoji}</span>
+              <span style={{ fontSize:10, fontWeight:600, color: fotos[f.key] ? "#16a34a" : "#888", lineHeight:1.3 }}>
+                {fotos[f.key] ? fotos[f.key].name.slice(0,12)+"…" : f.label}
+              </span>
+            </label>
           ))}
         </div>
 
         {contactError && (
-          <div style={{ marginTop:12, fontSize:13, color:"#e53e3e", fontWeight:500 }}>{contactError}</div>
+          <div style={{ marginTop:4, marginBottom:12, fontSize:13, color:"#e53e3e", fontWeight:500, background:"#FFF1F1", padding:"10px 14px", borderRadius:8, border:"1px solid #fca5a5" }}>{contactError}</div>
         )}
 
-        <div style={{ marginTop:20, background:"#F0F7FA", borderRadius:12, padding:"12px 16px",
-          fontSize:12, color:"#888", lineHeight:1.6 }}>
-          🔒 Seus dados são confidenciais e usados exclusivamente para envio da sua análise clínica especializada.
+        <div style={{ background:"#F0F7FA", borderRadius:12, padding:"12px 16px", fontSize:12, color:"#888", lineHeight:1.6 }}>
+          🔒 Dados confidenciais. Você receberá um e-mail para confirmar seu cadastro.
         </div>
       </div>
       <div style={s.cta}>
-        <button style={s.ctaBtn} onClick={continueFromContact}>
-          Ver meu plano personalizado →
+        <button style={{ ...s.ctaBtn, opacity: contactLoading ? 0.7 : 1 }} onClick={continueFromContact} disabled={contactLoading}>
+          {contactLoading ? "Criando sua conta…" : "Ver meu plano personalizado →"}
         </button>
       </div>
     </div>
