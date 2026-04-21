@@ -423,25 +423,17 @@ export default function Quiz() {
       localStorage.setItem("fioraiz_leads", JSON.stringify(existing));
     } catch {}
 
-    // Salva no Supabase (UUIDs gerados no cliente para evitar SELECT pós-insert)
+    // Salva no Supabase via função RPC (bypassa RLS)
     try {
-      const pacienteId = crypto.randomUUID();
-      const pedidoId   = crypto.randomUUID();
-
-      const { error: pacError } = await supabase
-        .from("pacientes")
-        .insert({ id: pacienteId, nome: contactInfo.nome, email: contactInfo.email, telefone: contactInfo.whatsapp });
-      if (pacError) { console.error("Paciente insert:", pacError); return; }
-
-      const { error: pedError } = await supabase
-        .from("pedidos")
-        .insert({ id: pedidoId, paciente_id: pacienteId, status: "aguardando_avaliacao", protocolo: `FR-${Date.now()}` });
-      if (pedError) { console.error("Pedido insert:", pedError); return; }
-
-      const { error: avalError } = await supabase
-        .from("avaliacoes")
-        .insert({ pedido_id: pedidoId, respostas: answers, grau_calvicie: answers.hairType || null, condicoes_medicas: answers.conditions || null });
-      if (avalError) { console.error("Avaliacao insert:", avalError); }
+      const { error } = await supabase.rpc("submit_avaliacao", {
+        p_nome:          contactInfo.nome,
+        p_email:         contactInfo.email,
+        p_telefone:      contactInfo.whatsapp,
+        p_respostas:     answers,
+        p_grau_calvicie: answers.hairType || null,
+        p_condicoes:     answers.conditions || null,
+      });
+      if (error) console.error("submit_avaliacao error:", error);
     } catch (err) {
       console.error("Supabase save error:", err);
     }
