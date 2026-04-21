@@ -131,19 +131,19 @@ const HAIR_TYPES = [
 const PROTOCOLOS = {
   bloqueador: [
     {
-      id:"dut", nome:"Dutasterida", sub:"Mais potente", preco:80, tag:"Mais potente",
+      id:"dut", nome:"Dutasterida", sub:"Mais potente", preco:80, precoTrimestral:88, tag:"Mais potente",
       desc:"Inibidor duplo de DHT de alta eficácia. Para casos moderados a avançados.",
       detalhes:"A Dutasterida inibe as enzimas 5-alfa-redutase tipo 1 e tipo 2, responsáveis pela conversão de testosterona em DHT — chegando a reduzir 93% dos níveis hormonais. Indicada para casos que não responderam adequadamente à Finasterida.",
       beneficios:["Redução de até 93% do DHT","Inibe as duas isoformas da enzima","Resultados visíveis em 3–6 meses"],
     },
     {
-      id:"fin", nome:"Finasterida", sub:"Mais prescrito", preco:70, tag:"Mais prescrito",
+      id:"fin", nome:"Finasterida", sub:"Mais prescrito", preco:70, precoTrimestral:77, tag:"Mais prescrito",
       desc:"Inibidor seletivo DHT tipo 2. O mais estudado e prescrito mundialmente.",
       detalhes:"A Finasterida reduz em ~70% os níveis de DHT no couro cabeludo, interrompendo a miniaturização folicular. Com mais de 20 anos de estudos, é o padrão-ouro no tratamento da alopecia androgenética.",
       beneficios:["~70% de redução do DHT","Padrão ouro global","Mantém e recupera o cabelo"],
     },
     {
-      id:"saw", nome:"Saw Palmetto", sub:"Natural · menor eficácia", preco:60, tag:"Natural",
+      id:"saw", nome:"Saw Palmetto", sub:"Natural · menor eficácia", preco:60, precoTrimestral:66, tag:"Natural",
       desc:"Extrato vegetal com ação antiandrogênica. Opção para quem prefere via natural.",
       detalhes:"O Saw Palmetto (Serenoa repens) atua como inibidor natural da 5-alfa-redutase com eficácia menor que a Finasterida, porém com perfil de efeitos colaterais favorável. Indicado para casos iniciais ou em complemento.",
       beneficios:["Origem natural","Boa tolerância","Pode ser combinado com outros ativos"],
@@ -151,13 +151,13 @@ const PROTOCOLOS = {
   ],
   minoxidil: [
     {
-      id:"mnx_oral", nome:"Minoxidil Comprimido", sub:"Mais eficaz · oral", preco:30, tag:"Mais eficaz",
+      id:"mnx_oral", nome:"Minoxidil Comprimido", sub:"Mais eficaz · oral", preco:30, precoTrimestral:33, tag:"Mais eficaz",
       desc:"Via sistêmica com maior biodisponibilidade. Atua uniformemente no couro cabeludo.",
       detalhes:"O Minoxidil oral em baixa dose apresenta maior absorção e cobertura uniforme em relação ao tópico. Indicado para casos moderados a avançados, com dose personalizada pelo médico.",
       beneficios:["Ação em todo o couro cabeludo","Maior biodisponibilidade","Dose controlada pelo médico"],
     },
     {
-      id:"mnx_topico", nome:"Minoxidil Spray", sub:"Uso tópico", preco:20, tag:"Tópico",
+      id:"mnx_topico", nome:"Minoxidil Spray", sub:"Uso tópico", preco:20, precoTrimestral:25, tag:"Tópico",
       desc:"Aplicação diária localizada no couro cabeludo. Boa tolerância e sem absorção sistêmica.",
       detalhes:"O Minoxidil tópico 5% estimula a circulação nos folículos pilosos quando aplicado diretamente na área afetada. Indicado para casos iniciais ou como complemento ao oral.",
       beneficios:["Ação direta no foco","Boa tolerância","Sem absorção sistêmica relevante"],
@@ -178,6 +178,12 @@ const PROTOCOLOS = {
     },
   ],
 };
+
+// Retorna o preço correto do produto conforme período escolhido
+function getPreco(prod, period) {
+  if (!prod) return 0;
+  return period === "semestral" ? prod.preco : (prod.precoTrimestral ?? prod.preco);
+}
 
 const CONDITIONS = [
   "Queda de libido ou disfunção erétil recorrente",
@@ -1708,12 +1714,14 @@ export default function Quiz() {
   if (phase === "protocolo") {
     const bl  = protocoloSel.bloqueador;
     const mnx = protocoloSel.minoxidil;
-    const mensalBase  = (bl?.preco || 0) + (mnx?.preco || 0);
-    const descPct     = planPeriod === "semestral" ? 0.10 : 0;
-    const mensalFinal = Math.round(mensalBase * (1 - descPct));
-    const meses       = planPeriod === "semestral" ? 6 : 3;
-    const totalMens   = mensalFinal * meses;
-    const totalAddons = protocoloSel.addons.reduce((a, x) => a + x.preco, 0);
+    const meses        = planPeriod === "semestral" ? 6 : 3;
+    const blPreco      = getPreco(bl, planPeriod);
+    const mnxPreco     = getPreco(mnx, planPeriod);
+    const totalAddons  = protocoloSel.addons.reduce((a, x) => a + x.preco, 0);
+    // Addons são somados e divididos pelos meses junto com a assinatura
+    const totalGeral   = (blPreco + mnxPreco) * meses + totalAddons;
+    const mensalFinal  = totalGeral / meses; // blPreco + mnxPreco + totalAddons/meses
+    const mensalBase   = blPreco + mnxPreco; // exibido por produto (sem addons)
 
     return (
       <div style={{ ...s.wrap, background:"#F0F7FA" }}>
@@ -1756,7 +1764,7 @@ export default function Quiz() {
                     <button onClick={() => setProdutoInfo(bl)} style={{ fontSize:11, color:"#94b8d7", background:"none", border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", textDecoration:"underline", marginLeft:28, marginTop:6, padding:0 }}>saiba mais</button>
                   </div>
                   <div style={{ textAlign:"right", flexShrink:0, marginLeft:12 }}>
-                    <div style={{ fontSize:17, fontWeight:800, color:"#021d34" }}>R$ {bl.preco}</div>
+                    <div style={{ fontSize:17, fontWeight:800, color:"#021d34" }}>R$ {blPreco}</div>
                     <div style={{ fontSize:10, color:"#aaa" }}>/mês</div>
                   </div>
                 </div>
@@ -1788,7 +1796,7 @@ export default function Quiz() {
                           <div style={{ fontSize:11, color:"#888" }}>{prod.sub}</div>
                         </div>
                         <div style={{ textAlign:"right" }}>
-                          <div style={{ fontSize:15, fontWeight:800, color:"#021d34" }}>R$ {prod.preco}</div>
+                          <div style={{ fontSize:15, fontWeight:800, color:"#021d34" }}>R$ {getPreco(prod, planPeriod)}</div>
                           <div style={{ fontSize:9, color:"#aaa" }}>/mês</div>
                         </div>
                       </div>
@@ -1841,8 +1849,10 @@ export default function Quiz() {
             <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>📅 Período do plano</div>
             <div style={{ display:"flex", gap:10 }}>
               {[
-                { val:"trimestral", label:"3 meses", desc:"Plano trimestral", badge:null, preco:mensalBase },
-                { val:"semestral",  label:"6 meses", desc:"10% de desconto",  badge:"Mais econômico", preco:mensalFinal },
+                { val:"trimestral", label:"3 meses", desc:"Preço cheio", badge:null,
+                  preco: (getPreco(bl,"trimestral") + getPreco(mnx,"trimestral")) },
+                { val:"semestral",  label:"6 meses", desc:"Melhor preço", badge:"Mais econômico",
+                  preco: (getPreco(bl,"semestral") + getPreco(mnx,"semestral")) },
               ].map(({ val, label, desc, badge, preco }) => (
                 <div key={val} onClick={() => setPlanPeriod(val)} style={{
                   flex:1, background:"#fff", borderRadius:14, padding:"14px",
@@ -1864,16 +1874,15 @@ export default function Quiz() {
           <div style={{ background:"#fff", borderRadius:14, padding:"18px", border:"1px solid rgba(0,0,0,0.07)" }}>
             <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:12 }}>Resumo</div>
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-              {bl&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>{bl.nome}</span><span style={{fontWeight:600}}>R$ {bl.preco}/mês</span></div>}
-              {mnx&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>{mnx.nome}</span><span style={{fontWeight:600}}>R$ {mnx.preco}/mês</span></div>}
-              {descPct>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"#16a34a"}}><span>Desconto plano {meses} meses</span><span style={{fontWeight:700}}>-{descPct*100}%</span></div>}
+              {bl&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>{bl.nome}</span><span style={{fontWeight:600}}>R$ {blPreco}/mês</span></div>}
+              {mnx&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>{mnx.nome}</span><span style={{fontWeight:600}}>R$ {mnxPreco}/mês</span></div>}
+              {totalAddons>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>Potencializadores (÷{meses} meses)</span><span style={{fontWeight:600}}>+ R$ {(totalAddons/meses).toFixed(2).replace(".",",")}/mês</span></div>}
               <div style={{height:1,background:"rgba(0,0,0,0.07)",margin:"4px 0"}}/>
-              <div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>Mensalidade ({meses}× R$ {mensalFinal})</span><span style={{fontWeight:700}}>R$ {totalMens}</span></div>
-              {protocoloSel.addons.length>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>Potencializadores (compra única)</span><span style={{fontWeight:700}}>R$ {totalAddons}</span></div>}
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>Mensalidade (R$ {mensalFinal.toFixed(2).replace(".",",")} × {meses})</span><span style={{fontWeight:700}}>R$ {totalGeral.toFixed(2).replace(".",",")}</span></div>
               <div style={{height:1,background:"rgba(0,0,0,0.07)",margin:"4px 0"}}/>
               <div style={{display:"flex",justifyContent:"space-between"}}>
-                <span style={{fontSize:14,fontWeight:700,color:"#021d34"}}>Total hoje</span>
-                <span style={{fontSize:17,fontWeight:800,color:"#021d34"}}>R$ {totalMens+totalAddons}</span>
+                <span style={{fontSize:14,fontWeight:700,color:"#021d34"}}>Total do plano</span>
+                <span style={{fontSize:17,fontWeight:800,color:"#021d34"}}>R$ {totalGeral.toFixed(2).replace(".",",")}</span>
               </div>
             </div>
           </div>
@@ -1883,8 +1892,8 @@ export default function Quiz() {
         <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"#fff", borderTop:"1px solid rgba(0,0,0,0.07)", padding:"16px clamp(14px,4vw,20px)", zIndex:90 }}>
           <div style={{ maxWidth:560, margin:"0 auto" }}>
             <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
-              <span style={{ fontSize:12, color:"#888" }}>R$ {mensalFinal}/mês · {meses} meses</span>
-              <span style={{ fontSize:14, fontWeight:800, color:"#021d34" }}>Total R$ {totalMens+totalAddons}</span>
+              <span style={{ fontSize:12, color:"#888" }}>R$ {mensalFinal.toFixed(2).replace(".",",")}/mês · {meses} meses</span>
+              <span style={{ fontSize:14, fontWeight:800, color:"#021d34" }}>Total R$ {totalGeral.toFixed(2).replace(".",",")}</span>
             </div>
             <button onClick={() => setPhase("contact")} style={{ width:"100%", background:"#012e46", color:"#fff", border:"none", borderRadius:100, padding:"17px", fontSize:15, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
               Criar minha conta →
@@ -2005,17 +2014,34 @@ export default function Quiz() {
         {/* Senha */}
         <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>🔒 Crie sua senha de acesso</div>
         <div style={{ display:"flex", flexDirection:"column", gap:12, marginBottom:20 }}>
-          {[
-            { key:"senha", label:"Senha", placeholder:"Mínimo 6 caracteres", type:"password" },
-            { key:"confirmarSenha", label:"Confirmar senha", placeholder:"Repita a senha", type:"password" },
-          ].map(f => (
-            <div key={f.key}>
-              <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:5 }}>{f.label}</label>
-              <input className="contact-input" type={f.type} placeholder={f.placeholder} value={contactInfo[f.key]}
-                onChange={e => setContactInfo(p => ({ ...p, [f.key]: e.target.value }))}
-                style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s" }} />
-            </div>
-          ))}
+          {/* Campo senha */}
+          <div>
+            <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:5 }}>Senha</label>
+            <input className="contact-input" type="password" placeholder="Mínimo 6 caracteres" value={contactInfo.senha}
+              onChange={e => setContactInfo(p => ({ ...p, senha: e.target.value }))}
+              style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s" }} />
+          </div>
+          {/* Campo confirmar senha com feedback de correspondência */}
+          <div>
+            <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:5 }}>Confirmar senha</label>
+            <input className="contact-input" type="password" placeholder="Repita a senha" value={contactInfo.confirmarSenha}
+              onChange={e => setContactInfo(p => ({ ...p, confirmarSenha: e.target.value }))}
+              style={{ width:"100%", padding:"13px 15px", border:`1.5px solid ${
+                contactInfo.confirmarSenha.length === 0 ? "rgba(0,0,0,0.12)"
+                  : contactInfo.senha === contactInfo.confirmarSenha ? "#16a34a"
+                  : "#dc2626"
+              }`, borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s" }} />
+            {contactInfo.confirmarSenha.length > 0 && (
+              <div style={{ marginTop:6, fontSize:12, fontWeight:600,
+                color: contactInfo.senha === contactInfo.confirmarSenha ? "#16a34a" : "#dc2626",
+                display:"flex", alignItems:"center", gap:5 }}>
+                {contactInfo.senha === contactInfo.confirmarSenha
+                  ? <><span>✓</span><span>Senhas coincidem</span></>
+                  : <><span>✗</span><span>As senhas não coincidem</span></>
+                }
+              </div>
+            )}
+          </div>
           <div style={{ fontSize:11, color:"#888", lineHeight:1.6 }}>
             Você usará essa senha para acessar seus resultados e protocolo em <strong>fioraiz.com.br/minha-conta</strong>
           </div>
@@ -2271,13 +2297,14 @@ export default function Quiz() {
 
   // ── PAGAMENTO SIMULADO ─────────────────────────────────────────────────────
   if (phase === "pagamento") {
-    const descPct2     = planPeriod === "semestral" ? 0.10 : 0;
-    const mensalPag    = Math.round(((protocoloSel.bloqueador?.preco||0)+(protocoloSel.minoxidil?.preco||0))*(1-descPct2));
-    const mesesPag     = planPeriod === "semestral" ? 6 : 3;
-    const totalMensPag = mensalPag * mesesPag;
+    const mesesPag       = planPeriod === "semestral" ? 6 : 3;
+    const blPrecoPag     = getPreco(protocoloSel.bloqueador, planPeriod);
+    const mnxPrecoPag    = getPreco(protocoloSel.minoxidil, planPeriod);
     const totalAddonsPag = protocoloSel.addons.reduce((a, x) => a + x.preco, 0);
-    const total        = totalMensPag + totalAddonsPag;
-    const itens        = [protocoloSel.bloqueador, protocoloSel.minoxidil, ...protocoloSel.addons].filter(Boolean);
+    const totalGeralPag  = (blPrecoPag + mnxPrecoPag) * mesesPag + totalAddonsPag;
+    const mensalPag      = totalGeralPag / mesesPag;
+    const total          = totalGeralPag;
+    const itens          = [protocoloSel.bloqueador, protocoloSel.minoxidil, ...protocoloSel.addons].filter(Boolean);
     async function finalizarPagamento() {
       setPagLoading(true);
       await new Promise(r => setTimeout(r, 2200));
@@ -2308,23 +2335,18 @@ export default function Quiz() {
           <div style={{ background:"#fff", borderRadius:14, padding:"18px", border:"1px solid rgba(0,0,0,0.07)", marginBottom:20 }}>
             <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:12 }}>Resumo do pedido</div>
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-              {[protocoloSel.bloqueador, protocoloSel.minoxidil].filter(Boolean).map((p,i) => (
-                <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:13 }}>
-                  <span style={{ color:"#555" }}>{p.nome}</span>
-                  <span style={{ fontWeight:600, color:"#021d34" }}>R$ {p.preco}/mês</span>
-                </div>
-              ))}
-              {descPct2>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"#16a34a"}}><span>Desconto {mesesPag} meses</span><span style={{fontWeight:700}}>-{descPct2*100}%</span></div>}
+              {protocoloSel.bloqueador&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>{protocoloSel.bloqueador.nome}</span><span style={{fontWeight:600,color:"#021d34"}}>R$ {blPrecoPag}/mês</span></div>}
+              {protocoloSel.minoxidil&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>{protocoloSel.minoxidil.nome}</span><span style={{fontWeight:600,color:"#021d34"}}>R$ {mnxPrecoPag}/mês</span></div>}
+              {totalAddonsPag>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>Potencializadores (÷{mesesPag} meses)</span><span style={{fontWeight:600,color:"#021d34"}}>+ R$ {(totalAddonsPag/mesesPag).toFixed(2).replace(".",",")}/mês</span></div>}
               <div style={{ height:1, background:"rgba(0,0,0,0.07)", margin:"4px 0" }} />
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:13 }}>
-                <span style={{ color:"#555" }}>Mensalidade ({mesesPag}× R$ {mensalPag})</span>
-                <span style={{ fontWeight:700, color:"#021d34" }}>R$ {totalMensPag}</span>
+                <span style={{ color:"#555" }}>Mensalidade (R$ {mensalPag.toFixed(2).replace(".",",")} × {mesesPag})</span>
+                <span style={{ fontWeight:700, color:"#021d34" }}>R$ {totalGeralPag.toFixed(2).replace(".",",")}</span>
               </div>
-              {totalAddonsPag>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>Potencializadores (único)</span><span style={{fontWeight:700,color:"#021d34"}}>R$ {totalAddonsPag}</span></div>}
               <div style={{ height:1, background:"rgba(0,0,0,0.07)", margin:"4px 0" }} />
               <div style={{ display:"flex", justifyContent:"space-between" }}>
-                <span style={{ fontSize:14, fontWeight:700, color:"#021d34" }}>Total</span>
-                <span style={{ fontSize:17, fontWeight:800, color:"#021d34" }}>R$ {total}</span>
+                <span style={{ fontSize:14, fontWeight:700, color:"#021d34" }}>Total do plano</span>
+                <span style={{ fontSize:17, fontWeight:800, color:"#021d34" }}>R$ {total.toFixed(2).replace(".",",")}</span>
               </div>
             </div>
           </div>

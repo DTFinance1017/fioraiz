@@ -190,6 +190,12 @@ export default function App() {
           ))}
         </div>
         <div style={{ display:"flex", gap:12, alignItems:"center" }}>
+          <button className="hide-mob" onClick={() => navigate("/minha-conta")}
+            style={{ background:"none", border:"1.5px solid rgba(2,29,52,0.18)", color:"#021d34", borderRadius:100, padding:"8px 18px", fontSize:13, fontWeight:600, cursor:"pointer", fontFamily:"'Outfit',sans-serif", transition:"all 0.2s" }}
+            onMouseEnter={e=>{e.currentTarget.style.background="#021d34";e.currentTarget.style.color="#fff";}}
+            onMouseLeave={e=>{e.currentTarget.style.background="none";e.currentTarget.style.color="#021d34";}}>
+            Entrar
+          </button>
           <button className="btn hide-mob" onClick={() => navigate("/avaliacao")} style={c.cta}>Avaliação gratuita</button>
           {/* Hamburger mobile */}
           <button onClick={() => setMenuOpen(o => !o)}
@@ -219,8 +225,12 @@ export default function App() {
           <a key={h} href={h} onClick={() => setMenuOpen(false)}
             style={{ fontSize:18, fontWeight:500, color:"#555", padding:"14px 0", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"block" }}>{l}</a>
         ))}
+        <button onClick={() => { setMenuOpen(false); navigate("/minha-conta"); }}
+          style={{ marginTop:16, padding:"14px 0", border:"1.5px solid rgba(2,29,52,0.18)", borderRadius:100, background:"none", color:"#021d34", fontSize:15, fontWeight:600, cursor:"pointer", fontFamily:"'Outfit',sans-serif", width:"100%", textAlign:"center" }}>
+          Entrar na minha conta
+        </button>
         <button className="btn" onClick={() => { setMenuOpen(false); navigate("/avaliacao"); }}
-          style={{ ...c.ctaLg, marginTop:24, textAlign:"center", width:"100%" }}>
+          style={{ ...c.ctaLg, marginTop:12, textAlign:"center", width:"100%" }}>
           Avaliação gratuita
         </button>
       </div>
