@@ -314,7 +314,7 @@ export default function Quiz() {
   const [discountApplied, setDiscountApplied] = useState(false);
   const [format, setFormat] = useState("unicas");
   const [planPeriod, setPlanPeriod] = useState("semestral");
-  const [contactInfo, setContactInfo] = useState({ nome:"", email:"", whatsapp:"" });
+  const [contactInfo, setContactInfo] = useState({ nome:"", email:"", whatsapp:"", cep:"" });
   const [contactError, setContactError] = useState("");
   const [showConsentTooltip, setShowConsentTooltip] = useState(false);
 
@@ -429,6 +429,7 @@ export default function Quiz() {
         p_nome:          contactInfo.nome,
         p_email:         contactInfo.email,
         p_telefone:      contactInfo.whatsapp,
+        p_cep:           contactInfo.cep || "",
         p_respostas:     answers,
         p_grau_calvicie: answers.hairType || null,
         p_condicoes:     answers.conditions || null,
@@ -1587,9 +1588,10 @@ export default function Quiz() {
 
         <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
           {[
-            { key:"nome",     label:"Nome completo",   placeholder:"Seu nome",       type:"text"  },
-            { key:"email",    label:"E-mail",           placeholder:"seu@email.com",  type:"email" },
-            { key:"whatsapp", label:"WhatsApp",         placeholder:"(11) 99999-9999", type:"tel"  },
+            { key:"nome",     label:"Nome completo",   placeholder:"Seu nome",        type:"text"  },
+            { key:"email",    label:"E-mail",           placeholder:"seu@email.com",   type:"email" },
+            { key:"whatsapp", label:"WhatsApp",         placeholder:"(11) 99999-9999", type:"tel"   },
+            { key:"cep",      label:"CEP",              placeholder:"00000-000",       type:"text"  },
           ].map(f => (
             <div key={f.key}>
               <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:6 }}>{f.label}</label>
