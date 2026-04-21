@@ -2425,7 +2425,7 @@ export default function Quiz() {
             }}>
               {pagLoading
                 ? "Processando pagamento…"
-                : `Finalizar pedido · R$ ${mensalPag}/mês →`}
+                : `Finalizar pedido · R$ ${mensalPag.toFixed(2).replace(".",",")}/mês →`}
             </button>
           </div>
         </div>
