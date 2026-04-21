@@ -45,6 +45,7 @@ export default function DashboardMedico() {
   const [filtro,    setFiltro]    = useState("aguardando_avaliacao");
   const [busca,     setBusca]     = useState("");
   const [claiming,  setClaiming]  = useState(null); // pedido id being claimed
+  const [ganhos, setGanhos] = useState({ total: 0, pendente: 0, prescricoes: 0 });
   const channelRef = useRef(null);
 
   useEffect(() => {
@@ -59,6 +60,7 @@ export default function DashboardMedico() {
       if (mounted) setMedico({ ...user, ...perfil });
 
       await fetchPedidos();
+      await fetchGanhos(user.id);
 
       // Realtime subscription
       channelRef.current = supabase
@@ -86,6 +88,20 @@ export default function DashboardMedico() {
     if (error) console.error("fetchPedidos:", error);
     if (!error) setPedidos(data || []);
     setLoading(false);
+  }
+
+  async function fetchGanhos(userId) {
+    const { data } = await supabase
+      .from("pedidos")
+      .select("id, status, medico_id, created_at")
+      .eq("medico_id", userId)
+      .eq("status", "prescrito");
+    const count = data?.length || 0;
+    setGanhos({
+      prescricoes: count,
+      total: count * 30,
+      pendente: count * 30, // simplificado: tudo pendente até pagamento
+    });
   }
 
   async function analisarPedido(pedido) {
@@ -164,6 +180,31 @@ export default function DashboardMedico() {
       </nav>
 
       <div style={{ maxWidth:1100, margin:"0 auto", padding:"32px 5%" }}>
+
+        {/* Painel de Ganhos */}
+        <div style={{ background:"linear-gradient(135deg,#012e46,#021d34)", borderRadius:16, padding:"20px 24px", marginBottom:20, color:"#fff" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:16 }}>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:4 }}>💰 Meus Ganhos</div>
+              <div style={{ fontSize:28, fontWeight:800, letterSpacing:"-0.02em" }}>R$ {ganhos.pendente.toFixed(2).replace(".",",")}</div>
+              <div style={{ fontSize:12, color:"rgba(255,255,255,0.5)", marginTop:2 }}>a receber · {ganhos.prescricoes} prescrições × R$ 30,00</div>
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:8, alignItems:"flex-end" }}>
+              <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)" }}>Total acumulado: <strong style={{color:"#fff"}}>R$ {ganhos.total.toFixed(2).replace(".",",")}</strong></div>
+              <button onClick={async () => {
+                await supabase.from("solicitacoes_pagamento").insert({
+                  medico_id: medico?.id,
+                  valor: ganhos.pendente,
+                  status: "pendente",
+                  created_at: new Date().toISOString(),
+                });
+                alert(`Solicitação de R$ ${ganhos.pendente.toFixed(2).replace(".",",")} enviada ao financeiro!`);
+              }} style={{ background:"rgba(255,255,255,0.15)", border:"1.5px solid rgba(255,255,255,0.25)", color:"#fff", padding:"8px 18px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+                💸 Solicitar pagamento
+              </button>
+            </div>
+          </div>
+        </div>
 
         {/* Stats */}
         <div className="dash-stats" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:28 }}>

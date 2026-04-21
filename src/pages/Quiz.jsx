@@ -1680,279 +1680,241 @@ export default function Quiz() {
         </div>
 
         <div style={s.cta}>
-          <button style={s.ctaBtn} onClick={() => setPhase("protocolo")}>
-            Montar meu protocolo →
+          <button style={s.ctaBtn} onClick={() => {
+            // Auto-monta protocolo com base nas respostas do quiz
+            const fl = getSafetyFlags(answers.conditions || [], answers.scalpConditions || [], answers.performance || {});
+            let bId = "fin";
+            if (fl.blockOralDHT) bId = "saw";
+            else if (fl.finasteridaFail) bId = "dut";
+            else if (/dutasterida|dut/i.test(answers.medication || "")) bId = "dut";
+            else if (/saw|palmetto/i.test(answers.medication || "")) bId = "saw";
+            const bloqueador = PROTOCOLOS.bloqueador.find(p => p.id === bId) || PROTOCOLOS.bloqueador[0];
+            const mId = fl.blockMinoxOral ? "mnx_topico"
+              : /tópico|topico|spray/i.test(answers.minoxidilType || "") ? "mnx_topico"
+              : "mnx_oral";
+            const minoxidil = PROTOCOLOS.minoxidil.find(p => p.id === mId) || PROTOCOLOS.minoxidil[0];
+            setProtocoloSel({ bloqueador, minoxidil, addons: [...PROTOCOLOS.addons] });
+            setPlanPeriod("semestral");
+            setPhase("protocolo");
+          }}>
+            Ver meu plano personalizado →
           </button>
         </div>
       </div>
     );
   }
 
-  // ── PROTOCOLO ──────────────────────────────────────────────────────────────
+  // ── PROTOCOLO (pré-montado) ────────────────────────────────────────────────
   if (phase === "protocolo") {
-    const total = (protocoloSel.bloqueador?.preco || 0) + (protocoloSel.minoxidil?.preco || 0) +
-      protocoloSel.addons.reduce((acc, a) => acc + a.preco, 0);
-    const canContinue = !!protocoloSel.bloqueador && !!protocoloSel.minoxidil;
-
-    function toggleAddon(addon) {
-      setProtocoloSel(p => ({
-        ...p,
-        addons: p.addons.find(a => a.id === addon.id)
-          ? p.addons.filter(a => a.id !== addon.id)
-          : [...p.addons, addon],
-      }));
-    }
-
-    function CardProduto({ prod, selecionado, onSelect }) {
-      return (
-        <div onClick={onSelect} style={{
-          background:"#fff", borderRadius:14, padding:"16px",
-          border:`2px solid ${selecionado ? "#012e46" : "rgba(0,0,0,0.08)"}`,
-          marginBottom:10, cursor:"pointer", transition:"all 0.15s",
-          boxShadow: selecionado ? "0 0 0 4px rgba(1,46,70,0.08)" : "0 1px 4px rgba(0,0,0,0.04)",
-        }}>
-          <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
-            <div style={{
-              width:22, height:22, borderRadius:"50%", flexShrink:0, marginTop:1,
-              border:`2px solid ${selecionado ? "#012e46" : "#ddd"}`,
-              background: selecionado ? "#012e46" : "#fff",
-              display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.15s",
-            }}>
-              {selecionado && <span style={{ color:"#fff", fontSize:11, fontWeight:800 }}>✓</span>}
-            </div>
-            <div style={{ flex:1 }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-                <div>
-                  <div style={{ fontSize:15, fontWeight:700, color:"#021d34" }}>{prod.nome}</div>
-                  <div style={{ fontSize:12, color:"#888", marginTop:1 }}>{prod.sub}</div>
-                </div>
-                <div style={{ textAlign:"right", flexShrink:0 }}>
-                  <div style={{ fontSize:16, fontWeight:800, color:"#021d34" }}>R$ {prod.preco}</div>
-                  <div style={{ fontSize:10, color:"#aaa" }}>/mês</div>
-                </div>
-              </div>
-              <div style={{ fontSize:12, color:"#666", marginTop:6, lineHeight:1.55 }}>{prod.desc}</div>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:8 }}>
-                <span style={{ fontSize:10, fontWeight:700, color:"#012e46", background:"#EDF5F8", padding:"2px 8px", borderRadius:100 }}>{prod.tag}</span>
-                <button onClick={e => { e.stopPropagation(); setProdutoInfo(prod); }}
-                  style={{ fontSize:11, color:"#94b8d7", fontWeight:600, background:"none", border:"none", cursor:"pointer", padding:"2px 6px", fontFamily:"'Outfit',sans-serif", textDecoration:"underline" }}>
-                  saiba mais
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    function CardAddon({ prod }) {
-      const sel = !!protocoloSel.addons.find(a => a.id === prod.id);
-      return (
-        <div onClick={() => toggleAddon(prod)} style={{
-          background:"#fff", borderRadius:14, padding:"16px",
-          border:`2px solid ${sel ? "#012e46" : "rgba(0,0,0,0.08)"}`,
-          marginBottom:10, cursor:"pointer", transition:"all 0.15s",
-          boxShadow: sel ? "0 0 0 4px rgba(1,46,70,0.08)" : "0 1px 4px rgba(0,0,0,0.04)",
-        }}>
-          <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
-            <div style={{
-              width:22, height:22, borderRadius:6, flexShrink:0, marginTop:1,
-              border:`2px solid ${sel ? "#012e46" : "#ddd"}`,
-              background: sel ? "#012e46" : "#fff",
-              display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.15s",
-            }}>
-              {sel && <span style={{ color:"#fff", fontSize:11, fontWeight:800 }}>✓</span>}
-            </div>
-            <div style={{ flex:1 }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-                <div>
-                  <div style={{ fontSize:14, fontWeight:700, color:"#021d34" }}>{prod.nome}</div>
-                  <div style={{ fontSize:11, color:"#888", marginTop:1 }}>{prod.sub}</div>
-                </div>
-                <div style={{ textAlign:"right", flexShrink:0 }}>
-                  <div style={{ fontSize:15, fontWeight:800, color:"#021d34" }}>R$ {prod.preco}</div>
-                </div>
-              </div>
-              <div style={{ fontSize:12, color:"#666", marginTop:5, lineHeight:1.55 }}>{prod.desc}</div>
-              <button onClick={e => { e.stopPropagation(); setProdutoInfo(prod); }}
-                style={{ fontSize:11, color:"#94b8d7", fontWeight:600, background:"none", border:"none", cursor:"pointer", padding:"4px 0 0", fontFamily:"'Outfit',sans-serif", textDecoration:"underline", display:"block" }}>
-                saiba mais
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    }
+    const bl  = protocoloSel.bloqueador;
+    const mnx = protocoloSel.minoxidil;
+    const mensalBase  = (bl?.preco || 0) + (mnx?.preco || 0);
+    const descPct     = planPeriod === "semestral" ? 0.10 : 0;
+    const mensalFinal = Math.round(mensalBase * (1 - descPct));
+    const meses       = planPeriod === "semestral" ? 6 : 3;
+    const totalMens   = mensalFinal * meses;
+    const totalAddons = protocoloSel.addons.reduce((a, x) => a + x.preco, 0);
 
     return (
       <div style={{ ...s.wrap, background:"#F0F7FA" }}>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}`}</style>
 
-        {/* Breadcrumb nav */}
+        {/* Breadcrumb */}
         <div style={{ background:"#fff", height:52, display:"flex", alignItems:"center", justifyContent:"center", gap:6, borderBottom:"1px solid rgba(0,0,0,0.07)", position:"sticky", top:0, zIndex:100 }}>
-          {[["Tratamento", true], ["Conta", false], ["Pagamento", false]].map(([label, active], i, arr) => (
-            <span key={i} style={{ display:"flex", alignItems:"center", gap:6 }}>
-              <span style={{ fontSize:"clamp(11px,3vw,13px)", fontWeight: active ? 700 : 400, color: active ? "#021d34" : "#aaa", borderBottom: active ? "2px solid #021d34" : "none", paddingBottom:active ? 1 : 0 }}>{label}</span>
-              {i < arr.length-1 && <span style={{ color:"#ccc", fontSize:12 }}>›</span>}
+          {[["Tratamento",true],["Conta",false],["Pagamento",false]].map(([label,active],i,arr)=>(
+            <span key={i} style={{display:"flex",alignItems:"center",gap:6}}>
+              <span style={{fontSize:"clamp(11px,3vw,13px)",fontWeight:active?700:400,color:active?"#021d34":"#aaa",borderBottom:active?"2px solid #021d34":"none",paddingBottom:active?1:0}}>{label}</span>
+              {i<arr.length-1&&<span style={{color:"#ccc",fontSize:12}}>›</span>}
             </span>
           ))}
         </div>
-        <div style={s.progressBg}><div style={{ ...s.progressBar, width:"70%" }}/></div>
+        <div style={s.progressBg}><div style={{...s.progressBar,width:"70%"}}/></div>
 
-        <div style={{ padding:"24px clamp(14px,4vw,20px) 160px", maxWidth:560, margin:"0 auto", width:"100%" }}>
-          <h2 style={{ fontSize:"clamp(20px,5vw,26px)", fontWeight:800, color:"#021d34", marginBottom:6, letterSpacing:"-0.02em" }}>
-            Monte seu protocolo
+        <div style={{ padding:"24px clamp(14px,4vw,20px) 180px", maxWidth:560, margin:"0 auto", width:"100%" }}>
+          <h2 style={{ fontSize:"clamp(20px,5vw,26px)", fontWeight:800, color:"#021d34", marginBottom:4, letterSpacing:"-0.02em" }}>
+            Seu Protocolo Fio Raiz
           </h2>
           <p style={{ fontSize:13, color:"#888", marginBottom:24, lineHeight:1.6 }}>
-            Um médico parceiro irá revisar e personalizar com base no seu perfil clínico.
+            Montado com base no seu perfil clínico. Um médico parceiro irá revisar antes da prescrição.
           </p>
 
-          {/* ── Seção 1: Bloqueador DHT ── */}
-          <div style={{ marginBottom:28 }}>
-            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-              <span style={{ fontSize:14, fontWeight:800, color:"#021d34" }}>1. Bloqueador de DHT</span>
-              <span style={{ fontSize:9, fontWeight:700, color:"#dc2626", background:"#FEF2F2", padding:"2px 7px", borderRadius:100, letterSpacing:"0.06em" }}>OBRIGATÓRIO</span>
-            </div>
-            <p style={{ fontSize:12, color:"#888", marginBottom:12, lineHeight:1.6 }}>
-              O DHT miniaturiza os folículos. Escolha o inibidor ideal para o seu caso:
-            </p>
-            {PROTOCOLOS.bloqueador.map(prod => (
-              <CardProduto key={prod.id} prod={prod}
-                selecionado={protocoloSel.bloqueador?.id === prod.id}
-                onSelect={() => setProtocoloSel(p => ({ ...p, bloqueador: prod }))} />
-            ))}
+          {/* Bloqueador fixo */}
+          <div style={{ marginBottom:24 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>💊 Bloqueador de DHT — indicado para você</div>
+            {bl && (
+              <div style={{ background:"#fff", borderRadius:14, padding:"16px", border:"2px solid #012e46", boxShadow:"0 0 0 4px rgba(1,46,70,0.06)" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:2 }}>
+                      <div style={{ width:20,height:20,borderRadius:"50%",background:"#012e46",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
+                        <span style={{ color:"#fff",fontSize:10,fontWeight:800 }}>✓</span>
+                      </div>
+                      <span style={{ fontSize:15, fontWeight:800, color:"#021d34" }}>{bl.nome}</span>
+                      <span style={{ fontSize:10, fontWeight:700, color:"#012e46", background:"#EDF5F8", padding:"2px 8px", borderRadius:100 }}>{bl.tag}</span>
+                    </div>
+                    <div style={{ fontSize:12, color:"#555", marginLeft:28, lineHeight:1.55, marginTop:4 }}>{bl.desc}</div>
+                    <button onClick={() => setProdutoInfo(bl)} style={{ fontSize:11, color:"#94b8d7", background:"none", border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", textDecoration:"underline", marginLeft:28, marginTop:6, padding:0 }}>saiba mais</button>
+                  </div>
+                  <div style={{ textAlign:"right", flexShrink:0, marginLeft:12 }}>
+                    <div style={{ fontSize:17, fontWeight:800, color:"#021d34" }}>R$ {bl.preco}</div>
+                    <div style={{ fontSize:10, color:"#aaa" }}>/mês</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* ── Seção 2: Minoxidil ── */}
-          <div style={{ marginBottom:28 }}>
-            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-              <span style={{ fontSize:14, fontWeight:800, color:"#021d34" }}>2. Ativador de Crescimento (Minoxidil)</span>
-              <span style={{ fontSize:9, fontWeight:700, color:"#dc2626", background:"#FEF2F2", padding:"2px 7px", borderRadius:100, letterSpacing:"0.06em" }}>OBRIGATÓRIO</span>
+          {/* Minoxidil — escolha */}
+          <div style={{ marginBottom:24 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>🌱 Minoxidil — escolha como aplicar</div>
+            <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+              {PROTOCOLOS.minoxidil.map(prod => {
+                const sel = protocoloSel.minoxidil?.id === prod.id;
+                return (
+                  <div key={prod.id} onClick={() => setProtocoloSel(p=>({...p,minoxidil:prod}))} style={{
+                    background:"#fff", borderRadius:14, padding:"14px 16px",
+                    border:`2px solid ${sel?"#012e46":"rgba(0,0,0,0.08)"}`,
+                    cursor:"pointer", transition:"all 0.15s",
+                    boxShadow:sel?"0 0 0 4px rgba(1,46,70,0.06)":"0 1px 3px rgba(0,0,0,0.04)",
+                    display:"flex", alignItems:"center", gap:12,
+                  }}>
+                    <div style={{ width:20,height:20,borderRadius:"50%",flexShrink:0,border:`2px solid ${sel?"#012e46":"#ddd"}`,background:sel?"#012e46":"#fff",display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.15s" }}>
+                      {sel&&<span style={{color:"#fff",fontSize:10,fontWeight:800}}>✓</span>}
+                    </div>
+                    <div style={{ flex:1 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                        <div>
+                          <div style={{ fontSize:14, fontWeight:700, color:"#021d34" }}>{prod.nome}</div>
+                          <div style={{ fontSize:11, color:"#888" }}>{prod.sub}</div>
+                        </div>
+                        <div style={{ textAlign:"right" }}>
+                          <div style={{ fontSize:15, fontWeight:800, color:"#021d34" }}>R$ {prod.preco}</div>
+                          <div style={{ fontSize:9, color:"#aaa" }}>/mês</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-            <p style={{ fontSize:12, color:"#888", marginBottom:12, lineHeight:1.6 }}>
-              Estimula os folículos dormentes e ativa a fase de crescimento:
-            </p>
-            {PROTOCOLOS.minoxidil.map(prod => (
-              <CardProduto key={prod.id} prod={prod}
-                selecionado={protocoloSel.minoxidil?.id === prod.id}
-                onSelect={() => setProtocoloSel(p => ({ ...p, minoxidil: prod }))} />
-            ))}
           </div>
 
-          {/* ── Seção 3: Potencializadores ── */}
-          <div style={{ marginBottom:28 }}>
-            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-              <span style={{ fontSize:14, fontWeight:800, color:"#021d34" }}>3. Potencializadores</span>
-              <span style={{ fontSize:9, fontWeight:700, color:"#16a34a", background:"#F0FDF4", padding:"2px 7px", borderRadius:100, letterSpacing:"0.06em" }}>OPCIONAL</span>
+          {/* Potencializadores — compra única, já incluídos, removíveis */}
+          <div style={{ marginBottom:24 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:10 }}>
+              <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase" }}>✨ Potencializadores</div>
+              <span style={{ fontSize:9, fontWeight:700, color:"#16a34a", background:"#F0FDF4", padding:"2px 7px", borderRadius:100 }}>JÁ INCLUÍDOS · compra única</span>
             </div>
-            <p style={{ fontSize:12, color:"#888", marginBottom:12, lineHeight:1.6 }}>
-              Acelere e fortaleça seus resultados com suporte nutricional e capilar:
-            </p>
-            {PROTOCOLOS.addons.map(prod => <CardAddon key={prod.id} prod={prod} />)}
+            <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+              {PROTOCOLOS.addons.map(prod => {
+                const sel = !!protocoloSel.addons.find(a=>a.id===prod.id);
+                return (
+                  <div key={prod.id} onClick={() => setProtocoloSel(p=>({ ...p, addons: sel ? p.addons.filter(a=>a.id!==prod.id) : [...p.addons,prod] }))} style={{
+                    background:"#fff", borderRadius:14, padding:"14px 16px",
+                    border:`2px solid ${sel?"#012e46":"rgba(0,0,0,0.08)"}`,
+                    cursor:"pointer", transition:"all 0.15s", opacity:sel?1:0.55,
+                    display:"flex", alignItems:"center", gap:12,
+                  }}>
+                    <div style={{ width:20,height:20,borderRadius:5,flexShrink:0,border:`2px solid ${sel?"#012e46":"#ddd"}`,background:sel?"#012e46":"#fff",display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.15s" }}>
+                      {sel&&<span style={{color:"#fff",fontSize:10,fontWeight:800}}>✓</span>}
+                    </div>
+                    <div style={{ flex:1 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                        <div>
+                          <div style={{ fontSize:13, fontWeight:700, color:"#021d34" }}>{prod.nome}</div>
+                          <div style={{ fontSize:11, color:"#888" }}>{prod.sub}</div>
+                        </div>
+                        <div style={{ textAlign:"right" }}>
+                          <div style={{ fontSize:14, fontWeight:800, color:"#021d34" }}>R$ {prod.preco}</div>
+                          <div style={{ fontSize:9, color:"#16a34a", fontWeight:700 }}>compra única</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Período */}
+          <div style={{ marginBottom:24 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>📅 Período do plano</div>
+            <div style={{ display:"flex", gap:10 }}>
+              {[
+                { val:"trimestral", label:"3 meses", desc:"Plano trimestral", badge:null, preco:mensalBase },
+                { val:"semestral",  label:"6 meses", desc:"10% de desconto",  badge:"Mais econômico", preco:mensalFinal },
+              ].map(({ val, label, desc, badge, preco }) => (
+                <div key={val} onClick={() => setPlanPeriod(val)} style={{
+                  flex:1, background:"#fff", borderRadius:14, padding:"14px",
+                  border:`2px solid ${planPeriod===val?"#012e46":"rgba(0,0,0,0.08)"}`,
+                  cursor:"pointer", transition:"all 0.15s", textAlign:"center",
+                  boxShadow:planPeriod===val?"0 0 0 4px rgba(1,46,70,0.06)":"none",
+                  position:"relative",
+                }}>
+                  {badge && <div style={{ position:"absolute", top:-8, left:"50%", transform:"translateX(-50%)", background:"#16a34a", color:"#fff", fontSize:9, fontWeight:700, padding:"2px 10px", borderRadius:100, whiteSpace:"nowrap" }}>{badge}</div>}
+                  <div style={{ fontSize:16, fontWeight:800, color:"#021d34", marginTop:badge?4:0 }}>{label}</div>
+                  <div style={{ fontSize:11, color:"#888", marginTop:2 }}>{desc}</div>
+                  <div style={{ fontSize:15, fontWeight:700, color:planPeriod===val?"#012e46":"#888", marginTop:6 }}>R$ {preco}/mês</div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Resumo */}
-          {(protocoloSel.bloqueador || protocoloSel.minoxidil || protocoloSel.addons.length > 0) && (
-            <div style={{ background:"#fff", borderRadius:14, padding:"18px", border:"1px solid rgba(0,0,0,0.07)", marginBottom:20 }}>
-              <div style={{ fontSize:12, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:12 }}>Resumo da compra</div>
-              <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                {[protocoloSel.bloqueador, protocoloSel.minoxidil, ...protocoloSel.addons].filter(Boolean).map((p, i) => (
-                  <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:13 }}>
-                    <span style={{ color:"#555" }}>{p.nome}</span>
-                    <span style={{ fontWeight:700, color:"#021d34" }}>R$ {p.preco}/mês</span>
-                  </div>
-                ))}
-                <div style={{ height:1, background:"rgba(0,0,0,0.07)", margin:"4px 0" }} />
-                <div style={{ display:"flex", justifyContent:"space-between" }}>
-                  <span style={{ fontSize:14, fontWeight:700, color:"#021d34" }}>Total mensal</span>
-                  <span style={{ fontSize:16, fontWeight:800, color:"#021d34" }}>R$ {total}/mês</span>
-                </div>
+          <div style={{ background:"#fff", borderRadius:14, padding:"18px", border:"1px solid rgba(0,0,0,0.07)" }}>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:12 }}>Resumo</div>
+            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+              {bl&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>{bl.nome}</span><span style={{fontWeight:600}}>R$ {bl.preco}/mês</span></div>}
+              {mnx&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>{mnx.nome}</span><span style={{fontWeight:600}}>R$ {mnx.preco}/mês</span></div>}
+              {descPct>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"#16a34a"}}><span>Desconto plano {meses} meses</span><span style={{fontWeight:700}}>-{descPct*100}%</span></div>}
+              <div style={{height:1,background:"rgba(0,0,0,0.07)",margin:"4px 0"}}/>
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>Mensalidade ({meses}× R$ {mensalFinal})</span><span style={{fontWeight:700}}>R$ {totalMens}</span></div>
+              {protocoloSel.addons.length>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>Potencializadores (compra única)</span><span style={{fontWeight:700}}>R$ {totalAddons}</span></div>}
+              <div style={{height:1,background:"rgba(0,0,0,0.07)",margin:"4px 0"}}/>
+              <div style={{display:"flex",justifyContent:"space-between"}}>
+                <span style={{fontSize:14,fontWeight:700,color:"#021d34"}}>Total hoje</span>
+                <span style={{fontSize:17,fontWeight:800,color:"#021d34"}}>R$ {totalMens+totalAddons}</span>
               </div>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Bottom CTA */}
         <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"#fff", borderTop:"1px solid rgba(0,0,0,0.07)", padding:"16px clamp(14px,4vw,20px)", zIndex:90 }}>
           <div style={{ maxWidth:560, margin:"0 auto" }}>
-            {total > 0 && (
-              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
-                <span style={{ fontSize:12, color:"#888" }}>Total mensal</span>
-                <span style={{ fontSize:16, fontWeight:800, color:"#021d34" }}>R$ {total}/mês</span>
-              </div>
-            )}
-            <button onClick={() => canContinue && setPhase("contact")} disabled={!canContinue}
-              style={{
-                width:"100%", background: canContinue ? "#012e46" : "#ccc",
-                color:"#fff", border:"none", borderRadius:100, padding:"17px",
-                fontSize:15, fontWeight:700, cursor: canContinue ? "pointer" : "not-allowed",
-                fontFamily:"'Outfit',sans-serif",
-              }}>
-              {canContinue ? "Criar minha conta →" : "Selecione os itens obrigatórios"}
+            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
+              <span style={{ fontSize:12, color:"#888" }}>R$ {mensalFinal}/mês · {meses} meses</span>
+              <span style={{ fontSize:14, fontWeight:800, color:"#021d34" }}>Total R$ {totalMens+totalAddons}</span>
+            </div>
+            <button onClick={() => setPhase("contact")} style={{ width:"100%", background:"#012e46", color:"#fff", border:"none", borderRadius:100, padding:"17px", fontSize:15, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+              Criar minha conta →
             </button>
           </div>
         </div>
 
-        {/* Modal de detalhes do produto */}
+        {/* Modal saiba mais */}
         {produtoInfo && (
-          <div style={{ position:"fixed", inset:0, zIndex:500, background:"rgba(2,29,52,0.6)", display:"flex", alignItems:"flex-end" }}
-            onClick={() => setProdutoInfo(null)}>
-            <div onClick={e => e.stopPropagation()} style={{
-              background:"#fff", borderRadius:"20px 20px 0 0",
-              padding:"28px clamp(16px,4vw,24px) 48px",
-              width:"100%", maxHeight:"85vh", overflowY:"auto",
-              fontFamily:"'Outfit',sans-serif",
-            }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
+          <div style={{ position:"fixed", inset:0, zIndex:500, background:"rgba(2,29,52,0.6)", display:"flex", alignItems:"flex-end" }} onClick={() => setProdutoInfo(null)}>
+            <div onClick={e => e.stopPropagation()} style={{ background:"#fff", borderRadius:"20px 20px 0 0", padding:"28px clamp(16px,4vw,24px) 48px", width:"100%", maxHeight:"80vh", overflowY:"auto", fontFamily:"'Outfit',sans-serif" }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18 }}>
                 <div>
                   <div style={{ fontSize:18, fontWeight:800, color:"#021d34" }}>{produtoInfo.nome}</div>
                   <div style={{ fontSize:12, color:"#888", marginTop:2 }}>{produtoInfo.sub}</div>
                 </div>
-                <button onClick={() => setProdutoInfo(null)}
-                  style={{ background:"#EDF5F8", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:16, color:"#666", display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
+                <button onClick={() => setProdutoInfo(null)} style={{ background:"#EDF5F8", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:16, color:"#666" }}>×</button>
               </div>
-
-              <div style={{ background:"#F0F7FA", borderRadius:12, padding:"14px 16px", marginBottom:18, border:"1px solid #dde8ee" }}>
-                <div style={{ fontSize:12, color:"#888", marginBottom:4 }}>Sobre este produto</div>
-                <p style={{ fontSize:14, color:"#021d34", lineHeight:1.7 }}>{produtoInfo.detalhes}</p>
-              </div>
-
+              <p style={{ fontSize:14, color:"#021d34", lineHeight:1.7, marginBottom:18 }}>{produtoInfo.detalhes}</p>
               <div style={{ marginBottom:20 }}>
-                <div style={{ fontSize:12, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>Benefícios</div>
-                <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                  {(produtoInfo.beneficios || []).map((b, i) => (
-                    <div key={i} style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
-                      <div style={{ width:20, height:20, borderRadius:"50%", background:"#012e46", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>
-                        <span style={{ color:"#fff", fontSize:10, fontWeight:800 }}>✓</span>
-                      </div>
-                      <span style={{ fontSize:14, color:"#021d34", lineHeight:1.5 }}>{b}</span>
-                    </div>
-                  ))}
-                </div>
+                <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>Benefícios</div>
+                {(produtoInfo.beneficios||[]).map((b,i) => (
+                  <div key={i} style={{ display:"flex", gap:10, alignItems:"flex-start", marginBottom:8 }}>
+                    <div style={{ width:18,height:18,borderRadius:"50%",background:"#012e46",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:2 }}><span style={{color:"#fff",fontSize:9,fontWeight:800}}>✓</span></div>
+                    <span style={{ fontSize:13, color:"#021d34", lineHeight:1.5 }}>{b}</span>
+                  </div>
+                ))}
               </div>
-
-              <div style={{ background:"#F0F7FA", borderRadius:12, padding:"14px 16px", marginBottom:20, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <span style={{ fontSize:13, color:"#555" }}>Valor mensal</span>
-                <span style={{ fontSize:20, fontWeight:800, color:"#021d34" }}>R$ {produtoInfo.preco}/mês</span>
-              </div>
-
-              <button onClick={() => {
-                  if (PROTOCOLOS.bloqueador.find(p => p.id === produtoInfo.id)) {
-                    setProtocoloSel(p => ({ ...p, bloqueador: produtoInfo }));
-                  } else if (PROTOCOLOS.minoxidil.find(p => p.id === produtoInfo.id)) {
-                    setProtocoloSel(p => ({ ...p, minoxidil: produtoInfo }));
-                  } else {
-                    setProtocoloSel(p => ({
-                      ...p,
-                      addons: p.addons.find(a => a.id === produtoInfo.id)
-                        ? p.addons
-                        : [...p.addons, produtoInfo],
-                    }));
-                  }
-                  setProdutoInfo(null);
-                }}
-                style={{ width:"100%", background:"#012e46", color:"#fff", border:"none", borderRadius:100, padding:"17px", fontSize:15, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
-                Adicionar ao protocolo →
+              <button onClick={() => setProdutoInfo(null)} style={{ width:"100%", background:"#012e46", color:"#fff", border:"none", borderRadius:100, padding:"16px", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+                Entendido →
               </button>
             </div>
           </div>
@@ -2309,9 +2271,13 @@ export default function Quiz() {
 
   // ── PAGAMENTO SIMULADO ─────────────────────────────────────────────────────
   if (phase === "pagamento") {
-    const total = (protocoloSel.bloqueador?.preco || 0) + (protocoloSel.minoxidil?.preco || 0) +
-      protocoloSel.addons.reduce((acc, a) => acc + a.preco, 0);
-    const itens = [protocoloSel.bloqueador, protocoloSel.minoxidil, ...protocoloSel.addons].filter(Boolean);
+    const descPct2     = planPeriod === "semestral" ? 0.10 : 0;
+    const mensalPag    = Math.round(((protocoloSel.bloqueador?.preco||0)+(protocoloSel.minoxidil?.preco||0))*(1-descPct2));
+    const mesesPag     = planPeriod === "semestral" ? 6 : 3;
+    const totalMensPag = mensalPag * mesesPag;
+    const totalAddonsPag = protocoloSel.addons.reduce((a, x) => a + x.preco, 0);
+    const total        = totalMensPag + totalAddonsPag;
+    const itens        = [protocoloSel.bloqueador, protocoloSel.minoxidil, ...protocoloSel.addons].filter(Boolean);
     async function finalizarPagamento() {
       setPagLoading(true);
       await new Promise(r => setTimeout(r, 2200));
@@ -2342,16 +2308,23 @@ export default function Quiz() {
           <div style={{ background:"#fff", borderRadius:14, padding:"18px", border:"1px solid rgba(0,0,0,0.07)", marginBottom:20 }}>
             <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:12 }}>Resumo do pedido</div>
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-              {itens.map((p, i) => (
+              {[protocoloSel.bloqueador, protocoloSel.minoxidil].filter(Boolean).map((p,i) => (
                 <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:13 }}>
                   <span style={{ color:"#555" }}>{p.nome}</span>
                   <span style={{ fontWeight:600, color:"#021d34" }}>R$ {p.preco}/mês</span>
                 </div>
               ))}
+              {descPct2>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"#16a34a"}}><span>Desconto {mesesPag} meses</span><span style={{fontWeight:700}}>-{descPct2*100}%</span></div>}
+              <div style={{ height:1, background:"rgba(0,0,0,0.07)", margin:"4px 0" }} />
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:13 }}>
+                <span style={{ color:"#555" }}>Mensalidade ({mesesPag}× R$ {mensalPag})</span>
+                <span style={{ fontWeight:700, color:"#021d34" }}>R$ {totalMensPag}</span>
+              </div>
+              {totalAddonsPag>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13}}><span style={{color:"#555"}}>Potencializadores (único)</span><span style={{fontWeight:700,color:"#021d34"}}>R$ {totalAddonsPag}</span></div>}
               <div style={{ height:1, background:"rgba(0,0,0,0.07)", margin:"4px 0" }} />
               <div style={{ display:"flex", justifyContent:"space-between" }}>
-                <span style={{ fontSize:14, fontWeight:700, color:"#021d34" }}>Total mensal</span>
-                <span style={{ fontSize:17, fontWeight:800, color:"#021d34" }}>R$ {total}/mês</span>
+                <span style={{ fontSize:14, fontWeight:700, color:"#021d34" }}>Total</span>
+                <span style={{ fontSize:17, fontWeight:800, color:"#021d34" }}>R$ {total}</span>
               </div>
             </div>
           </div>
@@ -2396,14 +2369,6 @@ export default function Quiz() {
                       style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", background:"#fff" }} />
                   </div>
                 </div>
-                <div>
-                  <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:5 }}>Parcelas</label>
-                  <select className="pag-input" style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", background:"#fff", appearance:"none" }}>
-                    <option>1× de R$ {total},00 (sem juros)</option>
-                    <option>3× de R$ {(total/3).toFixed(2).replace(".",",")} (sem juros)</option>
-                    <option>6× de R$ {(total/6).toFixed(2).replace(".",",")} (sem juros)</option>
-                  </select>
-                </div>
               </div>
             )}
 
@@ -2438,7 +2403,7 @@ export default function Quiz() {
             }}>
               {pagLoading
                 ? "Processando pagamento…"
-                : `Finalizar pedido · R$ ${total}/mês →`}
+                : `Finalizar pedido · R$ ${mensalPag}/mês →`}
             </button>
           </div>
         </div>
