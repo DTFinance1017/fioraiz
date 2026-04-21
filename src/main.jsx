@@ -12,6 +12,7 @@ import Comunidade from './pages/Comunidade'
 import SiteGate from './pages/SiteGate'
 import LoginMedico from './pages/medico/LoginMedico'
 import DashboardMedico from './pages/medico/DashboardMedico'
+import AvaliacaoMedico from './pages/medico/AvaliacaoMedico'
 import RotaMedico from './pages/medico/RotaMedico'
 import LoginPaciente from './pages/paciente/LoginPaciente'
 import DashboardPaciente from './pages/paciente/DashboardPaciente'
@@ -32,6 +33,7 @@ function App() {
           <Route path="/comunidade" element={<Comunidade />} />
           <Route path="/medico/login" element={<LoginMedico />} />
           <Route path="/medico/dashboard" element={<RotaMedico><DashboardMedico /></RotaMedico>} />
+          <Route path="/medico/avaliacao/:id" element={<RotaMedico><AvaliacaoMedico /></RotaMedico>} />
           <Route path="/paciente/login" element={<LoginPaciente />} />
           <Route path="/minha-conta" element={<RotaPaciente><DashboardPaciente /></RotaPaciente>} />
         </Routes>
