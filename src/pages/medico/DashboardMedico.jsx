@@ -43,6 +43,7 @@ export default function DashboardMedico() {
       `)
       .order("created_at", { ascending: false });
 
+    if (error) console.error("fetchPedidos error:", error);
     if (!error) setPedidos(data || []);
     setLoading(false);
   }
