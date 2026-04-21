@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
@@ -358,6 +358,13 @@ function ConsentModal({ onClose, onAccept }) {
   );
 }
 
+// ── Slots de foto ─────────────────────────────────────────────────────────────
+const FOTO_SLOTS = [
+  { key:"entradas", label:"Entradas frontais", emoji:"👆", dica:"Frente com a testa aparecendo" },
+  { key:"perfil",   label:"Perfil lateral",   emoji:"👤", dica:"Vista lateral da cabeça" },
+  { key:"coroa",    label:"Vista superior",   emoji:"⬆️", dica:"De cima mostrando o topo" },
+];
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function Quiz() {
   const [phase, setPhase] = useState("intro");
@@ -377,6 +384,10 @@ export default function Quiz() {
   const [contactLoading, setContactLoading] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
   const [fotos, setFotos] = useState({ entradas: null, perfil: null, coroa: null });
+  const [fotoPreviews, setFotoPreviews] = useState({});
+  const [fotoModal, setFotoModal] = useState(null); // null | 'entradas' | 'perfil' | 'coroa'
+  const cameraInputRef = useRef(null);
+  const galleryInputRef = useRef(null);
   const [showConsentTooltip, setShowConsentTooltip] = useState(false);
   const [protocoloSel, setProtocoloSel] = useState({ bloqueador: null, minoxidil: null, addons: [] });
   const [produtoInfo, setProdutoInfo] = useState(null);
@@ -483,6 +494,23 @@ export default function Quiz() {
         setContactInfo(p => ({ ...p, rua: data.logradouro || "", bairro: data.bairro || "", cidade: data.localidade || "", estado: data.uf || "" }));
       }
     } catch {} finally { setCepLoading(false); }
+  }
+
+  function handleFotoChange(e, key) {
+    const file = e.target.files?.[0];
+    if (!file || !key) return;
+    setFotos(p => ({ ...p, [key]: file }));
+    const previewUrl = URL.createObjectURL(file);
+    setFotoPreviews(p => ({ ...p, [key]: previewUrl }));
+    setFotoModal(null);
+    e.target.value = ""; // permite selecionar o mesmo arquivo novamente
+  }
+
+  function removerFoto(key) {
+    setFotos(p => ({ ...p, [key]: null }));
+    if (fotoPreviews[key]) URL.revokeObjectURL(fotoPreviews[key]);
+    setFotoPreviews(p => ({ ...p, [key]: null }));
+    setFotoModal(null);
   }
 
   async function uploadFotos(userId) {
@@ -2057,30 +2085,81 @@ export default function Quiz() {
           </div>
         </div>
 
-        {/* Fotos */}
-        <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>📸 Fotos do couro cabeludo <span style={{ fontWeight:400, textTransform:"none", fontSize:10 }}>(opcional)</span></div>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:20 }}>
-          {[
-            { key:"entradas", label:"Entradas frontais", emoji:"👆" },
-            { key:"perfil",   label:"Perfil lateral",   emoji:"👤" },
-            { key:"coroa",    label:"Vista superior",   emoji:"⬆️" },
-          ].map(f => (
-            <label key={f.key} className="foto-box" style={{
-              display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
-              gap:6, padding:"16px 8px", borderRadius:12, border:"1.5px dashed",
-              borderColor: fotos[f.key] ? "#16a34a" : "rgba(0,0,0,0.15)",
-              background: fotos[f.key] ? "#F0FDF4" : "#F8FBFD",
-              cursor:"pointer", textAlign:"center", transition:"all 0.15s",
-            }}>
-              <input type="file" accept="image/*" style={{ display:"none" }}
-                onChange={e => { const file = e.target.files?.[0]; if (file) setFotos(p => ({ ...p, [f.key]: file })); }} />
-              <span style={{ fontSize:22 }}>{fotos[f.key] ? "✅" : f.emoji}</span>
-              <span style={{ fontSize:10, fontWeight:600, color: fotos[f.key] ? "#16a34a" : "#888", lineHeight:1.3 }}>
-                {fotos[f.key] ? fotos[f.key].name.slice(0,12)+"…" : f.label}
-              </span>
-            </label>
+        {/* ── Fotos mobile-first ── */}
+        {/* Inputs ocultos — câmera e galeria */}
+        <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" style={{ display:"none" }}
+          onChange={e => handleFotoChange(e, fotoModal)} />
+        <input ref={galleryInputRef} type="file" accept="image/*" style={{ display:"none" }}
+          onChange={e => handleFotoChange(e, fotoModal)} />
+
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+          <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase" }}>📸 Fotos do couro cabeludo</div>
+          <span style={{ fontSize:10, color:"#aaa" }}>opcional</span>
+        </div>
+        <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:20 }}>
+          {FOTO_SLOTS.map(f => (
+            <div key={f.key} onClick={() => setFotoModal(f.key)}
+              style={{ display:"flex", alignItems:"center", gap:14, padding:"14px 16px",
+                background: fotoPreviews[f.key] ? "#F0FDF4" : "#fff",
+                border:`1.5px solid ${fotoPreviews[f.key] ? "#86efac" : "rgba(0,0,0,0.1)"}`,
+                borderRadius:14, cursor:"pointer", transition:"all 0.15s", WebkitTapHighlightColor:"transparent" }}>
+              {fotoPreviews[f.key] ? (
+                <img src={fotoPreviews[f.key]} alt={f.label}
+                  style={{ width:56, height:56, objectFit:"cover", borderRadius:10, flexShrink:0, border:"1px solid #86efac" }} />
+              ) : (
+                <div style={{ width:56, height:56, borderRadius:10, background:"#F0F7FA", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, flexShrink:0 }}>
+                  {f.emoji}
+                </div>
+              )}
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontSize:14, fontWeight:600, color:"#021d34" }}>{f.label}</div>
+                <div style={{ fontSize:12, color: fotoPreviews[f.key] ? "#16a34a" : "#aaa", marginTop:2 }}>
+                  {fotoPreviews[f.key] ? "✓ Foto adicionada · toque para trocar" : f.dica}
+                </div>
+              </div>
+              <div style={{ fontSize:20, flexShrink:0 }}>
+                {fotoPreviews[f.key] ? "✅" : <span style={{ fontSize:22, color:"#94b8d7", fontWeight:300 }}>+</span>}
+              </div>
+            </div>
           ))}
         </div>
+
+        {/* Modal de captura (bottom sheet) */}
+        {fotoModal && (
+          <div style={{ position:"fixed", inset:0, zIndex:700, background:"rgba(0,0,0,0.55)", display:"flex", alignItems:"flex-end" }}
+            onClick={() => setFotoModal(null)}>
+            <div onClick={e => e.stopPropagation()}
+              style={{ background:"#fff", width:"100%", borderRadius:"20px 20px 0 0", padding:"24px 20px 48px", fontFamily:"'Outfit',sans-serif" }}>
+              <div style={{ width:40, height:4, background:"rgba(0,0,0,0.1)", borderRadius:2, margin:"0 auto 20px" }} />
+              <div style={{ fontSize:13, fontWeight:700, color:"#021d34", marginBottom:4, textAlign:"center" }}>
+                {FOTO_SLOTS.find(f => f.key === fotoModal)?.label}
+              </div>
+              <div style={{ fontSize:12, color:"#aaa", textAlign:"center", marginBottom:24 }}>
+                {FOTO_SLOTS.find(f => f.key === fotoModal)?.dica}
+              </div>
+              <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                <button onClick={() => cameraInputRef.current?.click()}
+                  style={{ width:"100%", padding:"16px", borderRadius:14, border:"none", background:"#012e46", color:"#fff", fontSize:15, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif", display:"flex", alignItems:"center", justifyContent:"center", gap:10 }}>
+                  <span style={{ fontSize:20 }}>📷</span> Tirar foto agora
+                </button>
+                <button onClick={() => galleryInputRef.current?.click()}
+                  style={{ width:"100%", padding:"16px", borderRadius:14, border:"1.5px solid rgba(0,0,0,0.1)", background:"#fff", color:"#021d34", fontSize:15, fontWeight:600, cursor:"pointer", fontFamily:"'Outfit',sans-serif", display:"flex", alignItems:"center", justifyContent:"center", gap:10 }}>
+                  <span style={{ fontSize:20 }}>🖼️</span> Escolher da galeria
+                </button>
+                {fotoPreviews[fotoModal] && (
+                  <button onClick={() => removerFoto(fotoModal)}
+                    style={{ width:"100%", padding:"14px", borderRadius:14, border:"1.5px solid #fca5a5", background:"#fff", color:"#dc2626", fontSize:14, fontWeight:600, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+                    🗑️ Remover foto
+                  </button>
+                )}
+                <button onClick={() => setFotoModal(null)}
+                  style={{ width:"100%", padding:"14px", borderRadius:14, border:"none", background:"none", color:"#aaa", fontSize:14, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {contactError && (
           <div style={{ marginTop:4, marginBottom:12, fontSize:13, color:"#e53e3e", fontWeight:500, background:"#FFF1F1", padding:"10px 14px", borderRadius:8, border:"1px solid #fca5a5" }}>{contactError}</div>
