@@ -127,6 +127,58 @@ const HAIR_TYPES = [
   { id: "total",          label: "Queda Total",         stage: 6, col: 1, row: 2 },
 ];
 
+// ── Catálogo de produtos do protocolo ────────────────────────────────────────
+const PROTOCOLOS = {
+  bloqueador: [
+    {
+      id:"dut", nome:"Dutasterida", sub:"Mais potente", preco:80, tag:"Mais potente",
+      desc:"Inibidor duplo de DHT de alta eficácia. Para casos moderados a avançados.",
+      detalhes:"A Dutasterida inibe as enzimas 5-alfa-redutase tipo 1 e tipo 2, responsáveis pela conversão de testosterona em DHT — chegando a reduzir 93% dos níveis hormonais. Indicada para casos que não responderam adequadamente à Finasterida.",
+      beneficios:["Redução de até 93% do DHT","Inibe as duas isoformas da enzima","Resultados visíveis em 3–6 meses"],
+    },
+    {
+      id:"fin", nome:"Finasterida", sub:"Mais prescrito", preco:70, tag:"Mais prescrito",
+      desc:"Inibidor seletivo DHT tipo 2. O mais estudado e prescrito mundialmente.",
+      detalhes:"A Finasterida reduz em ~70% os níveis de DHT no couro cabeludo, interrompendo a miniaturização folicular. Com mais de 20 anos de estudos, é o padrão-ouro no tratamento da alopecia androgenética.",
+      beneficios:["~70% de redução do DHT","Padrão ouro global","Mantém e recupera o cabelo"],
+    },
+    {
+      id:"saw", nome:"Saw Palmetto", sub:"Natural · menor eficácia", preco:60, tag:"Natural",
+      desc:"Extrato vegetal com ação antiandrogênica. Opção para quem prefere via natural.",
+      detalhes:"O Saw Palmetto (Serenoa repens) atua como inibidor natural da 5-alfa-redutase com eficácia menor que a Finasterida, porém com perfil de efeitos colaterais favorável. Indicado para casos iniciais ou em complemento.",
+      beneficios:["Origem natural","Boa tolerância","Pode ser combinado com outros ativos"],
+    },
+  ],
+  minoxidil: [
+    {
+      id:"mnx_oral", nome:"Minoxidil Comprimido", sub:"Mais eficaz · oral", preco:30, tag:"Mais eficaz",
+      desc:"Via sistêmica com maior biodisponibilidade. Atua uniformemente no couro cabeludo.",
+      detalhes:"O Minoxidil oral em baixa dose apresenta maior absorção e cobertura uniforme em relação ao tópico. Indicado para casos moderados a avançados, com dose personalizada pelo médico.",
+      beneficios:["Ação em todo o couro cabeludo","Maior biodisponibilidade","Dose controlada pelo médico"],
+    },
+    {
+      id:"mnx_topico", nome:"Minoxidil Spray", sub:"Uso tópico", preco:20, tag:"Tópico",
+      desc:"Aplicação diária localizada no couro cabeludo. Boa tolerância e sem absorção sistêmica.",
+      detalhes:"O Minoxidil tópico 5% estimula a circulação nos folículos pilosos quando aplicado diretamente na área afetada. Indicado para casos iniciais ou como complemento ao oral.",
+      beneficios:["Ação direta no foco","Boa tolerância","Sem absorção sistêmica relevante"],
+    },
+  ],
+  addons: [
+    {
+      id:"shampoo", nome:"Shampoo Fortalecedor Fio Raiz", sub:"2 frascos de 400ml", preco:25,
+      desc:"Fórmula com Ketoconazol 2% + ativos fortalecedores. Higiene terapêutica capilar.",
+      detalhes:"Nosso Shampoo combina Ketoconazol 2% (anticaspa e antiandrogênico tópico) com Biotina, Pantenol e Saw Palmetto. Uso diário como complemento ao protocolo principal.",
+      beneficios:["Ketoconazol 2% anticaspa","Fortalece a fibra capilar","Complementa o protocolo hormonal"],
+    },
+    {
+      id:"biotina", nome:"Biotina Fio Raiz", sub:"180 cápsulas", preco:25,
+      desc:"Vitamina B7 em alta concentração para suporte nutricional da haste capilar.",
+      detalhes:"A Biotina (Vitamina B7) é essencial para a síntese de queratina. Nossa fórmula contém 10.000mcg por cápsula — concentração clínica para suporte nutricional efetivo ao crescimento capilar.",
+      beneficios:["Fortalece a haste capilar","Reduz queda por deficiência nutricional","Suporte à síntese de queratina"],
+    },
+  ],
+};
+
 const CONDITIONS = [
   "Queda de libido ou disfunção erétil recorrente",
   "Ginecomastia (aumento do tecido mamário)",
@@ -320,6 +372,9 @@ export default function Quiz() {
   const [cepLoading, setCepLoading] = useState(false);
   const [fotos, setFotos] = useState({ entradas: null, perfil: null, coroa: null });
   const [showConsentTooltip, setShowConsentTooltip] = useState(false);
+  const [protocoloSel, setProtocoloSel] = useState({ bloqueador: null, minoxidil: null, addons: [] });
+  const [produtoInfo, setProdutoInfo] = useState(null);
+  const [pagLoading, setPagLoading] = useState(false);
 
   // ── Loading animation ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -501,8 +556,7 @@ export default function Quiz() {
         p_fotos: fotosUrls,
       });
       if (error) console.error("submit_avaliacao error:", error);
-      setPhase("plan");
-      setTimeout(() => setShowDiscount(true), 800);
+      setPhase("pagamento");
     } finally { setContactLoading(false); }
   }
 
@@ -1625,10 +1679,283 @@ export default function Quiz() {
         </div>
 
         <div style={s.cta}>
-          <button style={s.ctaBtn} onClick={() => setPhase("contact")}>
-            Quero meu plano personalizado →
+          <button style={s.ctaBtn} onClick={() => setPhase("protocolo")}>
+            Montar meu protocolo →
           </button>
         </div>
+      </div>
+    );
+  }
+
+  // ── PROTOCOLO ──────────────────────────────────────────────────────────────
+  if (phase === "protocolo") {
+    const total = (protocoloSel.bloqueador?.preco || 0) + (protocoloSel.minoxidil?.preco || 0) +
+      protocoloSel.addons.reduce((acc, a) => acc + a.preco, 0);
+    const canContinue = !!protocoloSel.bloqueador && !!protocoloSel.minoxidil;
+
+    function toggleAddon(addon) {
+      setProtocoloSel(p => ({
+        ...p,
+        addons: p.addons.find(a => a.id === addon.id)
+          ? p.addons.filter(a => a.id !== addon.id)
+          : [...p.addons, addon],
+      }));
+    }
+
+    function CardProduto({ prod, selecionado, onSelect }) {
+      return (
+        <div onClick={onSelect} style={{
+          background:"#fff", borderRadius:14, padding:"16px",
+          border:`2px solid ${selecionado ? "#012e46" : "rgba(0,0,0,0.08)"}`,
+          marginBottom:10, cursor:"pointer", transition:"all 0.15s",
+          boxShadow: selecionado ? "0 0 0 4px rgba(1,46,70,0.08)" : "0 1px 4px rgba(0,0,0,0.04)",
+        }}>
+          <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
+            <div style={{
+              width:22, height:22, borderRadius:"50%", flexShrink:0, marginTop:1,
+              border:`2px solid ${selecionado ? "#012e46" : "#ddd"}`,
+              background: selecionado ? "#012e46" : "#fff",
+              display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.15s",
+            }}>
+              {selecionado && <span style={{ color:"#fff", fontSize:11, fontWeight:800 }}>✓</span>}
+            </div>
+            <div style={{ flex:1 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                <div>
+                  <div style={{ fontSize:15, fontWeight:700, color:"#021d34" }}>{prod.nome}</div>
+                  <div style={{ fontSize:12, color:"#888", marginTop:1 }}>{prod.sub}</div>
+                </div>
+                <div style={{ textAlign:"right", flexShrink:0 }}>
+                  <div style={{ fontSize:16, fontWeight:800, color:"#021d34" }}>R$ {prod.preco}</div>
+                  <div style={{ fontSize:10, color:"#aaa" }}>/mês</div>
+                </div>
+              </div>
+              <div style={{ fontSize:12, color:"#666", marginTop:6, lineHeight:1.55 }}>{prod.desc}</div>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:8 }}>
+                <span style={{ fontSize:10, fontWeight:700, color:"#012e46", background:"#EDF5F8", padding:"2px 8px", borderRadius:100 }}>{prod.tag}</span>
+                <button onClick={e => { e.stopPropagation(); setProdutoInfo(prod); }}
+                  style={{ fontSize:11, color:"#94b8d7", fontWeight:600, background:"none", border:"none", cursor:"pointer", padding:"2px 6px", fontFamily:"'Outfit',sans-serif", textDecoration:"underline" }}>
+                  saiba mais
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function CardAddon({ prod }) {
+      const sel = !!protocoloSel.addons.find(a => a.id === prod.id);
+      return (
+        <div onClick={() => toggleAddon(prod)} style={{
+          background:"#fff", borderRadius:14, padding:"16px",
+          border:`2px solid ${sel ? "#012e46" : "rgba(0,0,0,0.08)"}`,
+          marginBottom:10, cursor:"pointer", transition:"all 0.15s",
+          boxShadow: sel ? "0 0 0 4px rgba(1,46,70,0.08)" : "0 1px 4px rgba(0,0,0,0.04)",
+        }}>
+          <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
+            <div style={{
+              width:22, height:22, borderRadius:6, flexShrink:0, marginTop:1,
+              border:`2px solid ${sel ? "#012e46" : "#ddd"}`,
+              background: sel ? "#012e46" : "#fff",
+              display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.15s",
+            }}>
+              {sel && <span style={{ color:"#fff", fontSize:11, fontWeight:800 }}>✓</span>}
+            </div>
+            <div style={{ flex:1 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                <div>
+                  <div style={{ fontSize:14, fontWeight:700, color:"#021d34" }}>{prod.nome}</div>
+                  <div style={{ fontSize:11, color:"#888", marginTop:1 }}>{prod.sub}</div>
+                </div>
+                <div style={{ textAlign:"right", flexShrink:0 }}>
+                  <div style={{ fontSize:15, fontWeight:800, color:"#021d34" }}>R$ {prod.preco}</div>
+                </div>
+              </div>
+              <div style={{ fontSize:12, color:"#666", marginTop:5, lineHeight:1.55 }}>{prod.desc}</div>
+              <button onClick={e => { e.stopPropagation(); setProdutoInfo(prod); }}
+                style={{ fontSize:11, color:"#94b8d7", fontWeight:600, background:"none", border:"none", cursor:"pointer", padding:"4px 0 0", fontFamily:"'Outfit',sans-serif", textDecoration:"underline", display:"block" }}>
+                saiba mais
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ ...s.wrap, background:"#F0F7FA" }}>
+        <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}`}</style>
+
+        {/* Breadcrumb nav */}
+        <div style={{ background:"#fff", height:52, display:"flex", alignItems:"center", justifyContent:"center", gap:6, borderBottom:"1px solid rgba(0,0,0,0.07)", position:"sticky", top:0, zIndex:100 }}>
+          {[["Tratamento", true], ["Conta", false], ["Pagamento", false]].map(([label, active], i, arr) => (
+            <span key={i} style={{ display:"flex", alignItems:"center", gap:6 }}>
+              <span style={{ fontSize:"clamp(11px,3vw,13px)", fontWeight: active ? 700 : 400, color: active ? "#021d34" : "#aaa", borderBottom: active ? "2px solid #021d34" : "none", paddingBottom:active ? 1 : 0 }}>{label}</span>
+              {i < arr.length-1 && <span style={{ color:"#ccc", fontSize:12 }}>›</span>}
+            </span>
+          ))}
+        </div>
+        <div style={s.progressBg}><div style={{ ...s.progressBar, width:"70%" }}/></div>
+
+        <div style={{ padding:"24px clamp(14px,4vw,20px) 160px", maxWidth:560, margin:"0 auto", width:"100%" }}>
+          <h2 style={{ fontSize:"clamp(20px,5vw,26px)", fontWeight:800, color:"#021d34", marginBottom:6, letterSpacing:"-0.02em" }}>
+            Monte seu protocolo
+          </h2>
+          <p style={{ fontSize:13, color:"#888", marginBottom:24, lineHeight:1.6 }}>
+            Um médico parceiro irá revisar e personalizar com base no seu perfil clínico.
+          </p>
+
+          {/* ── Seção 1: Bloqueador DHT ── */}
+          <div style={{ marginBottom:28 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+              <span style={{ fontSize:14, fontWeight:800, color:"#021d34" }}>1. Bloqueador de DHT</span>
+              <span style={{ fontSize:9, fontWeight:700, color:"#dc2626", background:"#FEF2F2", padding:"2px 7px", borderRadius:100, letterSpacing:"0.06em" }}>OBRIGATÓRIO</span>
+            </div>
+            <p style={{ fontSize:12, color:"#888", marginBottom:12, lineHeight:1.6 }}>
+              O DHT miniaturiza os folículos. Escolha o inibidor ideal para o seu caso:
+            </p>
+            {PROTOCOLOS.bloqueador.map(prod => (
+              <CardProduto key={prod.id} prod={prod}
+                selecionado={protocoloSel.bloqueador?.id === prod.id}
+                onSelect={() => setProtocoloSel(p => ({ ...p, bloqueador: prod }))} />
+            ))}
+          </div>
+
+          {/* ── Seção 2: Minoxidil ── */}
+          <div style={{ marginBottom:28 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+              <span style={{ fontSize:14, fontWeight:800, color:"#021d34" }}>2. Ativador de Crescimento (Minoxidil)</span>
+              <span style={{ fontSize:9, fontWeight:700, color:"#dc2626", background:"#FEF2F2", padding:"2px 7px", borderRadius:100, letterSpacing:"0.06em" }}>OBRIGATÓRIO</span>
+            </div>
+            <p style={{ fontSize:12, color:"#888", marginBottom:12, lineHeight:1.6 }}>
+              Estimula os folículos dormentes e ativa a fase de crescimento:
+            </p>
+            {PROTOCOLOS.minoxidil.map(prod => (
+              <CardProduto key={prod.id} prod={prod}
+                selecionado={protocoloSel.minoxidil?.id === prod.id}
+                onSelect={() => setProtocoloSel(p => ({ ...p, minoxidil: prod }))} />
+            ))}
+          </div>
+
+          {/* ── Seção 3: Potencializadores ── */}
+          <div style={{ marginBottom:28 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
+              <span style={{ fontSize:14, fontWeight:800, color:"#021d34" }}>3. Potencializadores</span>
+              <span style={{ fontSize:9, fontWeight:700, color:"#16a34a", background:"#F0FDF4", padding:"2px 7px", borderRadius:100, letterSpacing:"0.06em" }}>OPCIONAL</span>
+            </div>
+            <p style={{ fontSize:12, color:"#888", marginBottom:12, lineHeight:1.6 }}>
+              Acelere e fortaleça seus resultados com suporte nutricional e capilar:
+            </p>
+            {PROTOCOLOS.addons.map(prod => <CardAddon key={prod.id} prod={prod} />)}
+          </div>
+
+          {/* Resumo */}
+          {(protocoloSel.bloqueador || protocoloSel.minoxidil || protocoloSel.addons.length > 0) && (
+            <div style={{ background:"#fff", borderRadius:14, padding:"18px", border:"1px solid rgba(0,0,0,0.07)", marginBottom:20 }}>
+              <div style={{ fontSize:12, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:12 }}>Resumo da compra</div>
+              <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                {[protocoloSel.bloqueador, protocoloSel.minoxidil, ...protocoloSel.addons].filter(Boolean).map((p, i) => (
+                  <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:13 }}>
+                    <span style={{ color:"#555" }}>{p.nome}</span>
+                    <span style={{ fontWeight:700, color:"#021d34" }}>R$ {p.preco}/mês</span>
+                  </div>
+                ))}
+                <div style={{ height:1, background:"rgba(0,0,0,0.07)", margin:"4px 0" }} />
+                <div style={{ display:"flex", justifyContent:"space-between" }}>
+                  <span style={{ fontSize:14, fontWeight:700, color:"#021d34" }}>Total mensal</span>
+                  <span style={{ fontSize:16, fontWeight:800, color:"#021d34" }}>R$ {total}/mês</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom CTA */}
+        <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"#fff", borderTop:"1px solid rgba(0,0,0,0.07)", padding:"16px clamp(14px,4vw,20px)", zIndex:90 }}>
+          <div style={{ maxWidth:560, margin:"0 auto" }}>
+            {total > 0 && (
+              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
+                <span style={{ fontSize:12, color:"#888" }}>Total mensal</span>
+                <span style={{ fontSize:16, fontWeight:800, color:"#021d34" }}>R$ {total}/mês</span>
+              </div>
+            )}
+            <button onClick={() => canContinue && setPhase("contact")} disabled={!canContinue}
+              style={{
+                width:"100%", background: canContinue ? "#012e46" : "#ccc",
+                color:"#fff", border:"none", borderRadius:100, padding:"17px",
+                fontSize:15, fontWeight:700, cursor: canContinue ? "pointer" : "not-allowed",
+                fontFamily:"'Outfit',sans-serif",
+              }}>
+              {canContinue ? "Criar minha conta →" : "Selecione os itens obrigatórios"}
+            </button>
+          </div>
+        </div>
+
+        {/* Modal de detalhes do produto */}
+        {produtoInfo && (
+          <div style={{ position:"fixed", inset:0, zIndex:500, background:"rgba(2,29,52,0.6)", display:"flex", alignItems:"flex-end" }}
+            onClick={() => setProdutoInfo(null)}>
+            <div onClick={e => e.stopPropagation()} style={{
+              background:"#fff", borderRadius:"20px 20px 0 0",
+              padding:"28px clamp(16px,4vw,24px) 48px",
+              width:"100%", maxHeight:"85vh", overflowY:"auto",
+              fontFamily:"'Outfit',sans-serif",
+            }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20 }}>
+                <div>
+                  <div style={{ fontSize:18, fontWeight:800, color:"#021d34" }}>{produtoInfo.nome}</div>
+                  <div style={{ fontSize:12, color:"#888", marginTop:2 }}>{produtoInfo.sub}</div>
+                </div>
+                <button onClick={() => setProdutoInfo(null)}
+                  style={{ background:"#EDF5F8", border:"none", borderRadius:"50%", width:32, height:32, cursor:"pointer", fontSize:16, color:"#666", display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
+              </div>
+
+              <div style={{ background:"#F0F7FA", borderRadius:12, padding:"14px 16px", marginBottom:18, border:"1px solid #dde8ee" }}>
+                <div style={{ fontSize:12, color:"#888", marginBottom:4 }}>Sobre este produto</div>
+                <p style={{ fontSize:14, color:"#021d34", lineHeight:1.7 }}>{produtoInfo.detalhes}</p>
+              </div>
+
+              <div style={{ marginBottom:20 }}>
+                <div style={{ fontSize:12, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:10 }}>Benefícios</div>
+                <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                  {(produtoInfo.beneficios || []).map((b, i) => (
+                    <div key={i} style={{ display:"flex", gap:10, alignItems:"flex-start" }}>
+                      <div style={{ width:20, height:20, borderRadius:"50%", background:"#012e46", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>
+                        <span style={{ color:"#fff", fontSize:10, fontWeight:800 }}>✓</span>
+                      </div>
+                      <span style={{ fontSize:14, color:"#021d34", lineHeight:1.5 }}>{b}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ background:"#F0F7FA", borderRadius:12, padding:"14px 16px", marginBottom:20, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <span style={{ fontSize:13, color:"#555" }}>Valor mensal</span>
+                <span style={{ fontSize:20, fontWeight:800, color:"#021d34" }}>R$ {produtoInfo.preco}/mês</span>
+              </div>
+
+              <button onClick={() => {
+                  if (PROTOCOLOS.bloqueador.find(p => p.id === produtoInfo.id)) {
+                    setProtocoloSel(p => ({ ...p, bloqueador: produtoInfo }));
+                  } else if (PROTOCOLOS.minoxidil.find(p => p.id === produtoInfo.id)) {
+                    setProtocoloSel(p => ({ ...p, minoxidil: produtoInfo }));
+                  } else {
+                    setProtocoloSel(p => ({
+                      ...p,
+                      addons: p.addons.find(a => a.id === produtoInfo.id)
+                        ? p.addons
+                        : [...p.addons, produtoInfo],
+                    }));
+                  }
+                  setProdutoInfo(null);
+                }}
+                style={{ width:"100%", background:"#012e46", color:"#fff", border:"none", borderRadius:100, padding:"17px", fontSize:15, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+                Adicionar ao protocolo →
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -1978,6 +2305,147 @@ export default function Quiz() {
       </div>
     </div>
   );
+
+  // ── PAGAMENTO SIMULADO ─────────────────────────────────────────────────────
+  if (phase === "pagamento") {
+    const total = (protocoloSel.bloqueador?.preco || 0) + (protocoloSel.minoxidil?.preco || 0) +
+      protocoloSel.addons.reduce((acc, a) => acc + a.preco, 0);
+    const itens = [protocoloSel.bloqueador, protocoloSel.minoxidil, ...protocoloSel.addons].filter(Boolean);
+    const [metodo, setMetodo] = useState("cartao");
+
+    async function finalizarPagamento() {
+      setPagLoading(true);
+      await new Promise(r => setTimeout(r, 2200));
+      setPagLoading(false);
+      setPhase("done");
+    }
+
+    return (
+      <div style={{ ...s.wrap, background:"#F0F7FA" }}>
+        <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}.pag-input:focus{outline:none;border-color:#021d34!important;box-shadow:0 0 0 3px rgba(2,29,52,0.08);}`}</style>
+
+        {/* Breadcrumb nav */}
+        <div style={{ background:"#fff", height:52, display:"flex", alignItems:"center", justifyContent:"center", gap:6, borderBottom:"1px solid rgba(0,0,0,0.07)", position:"sticky", top:0, zIndex:100 }}>
+          {[["Tratamento", false], ["Conta", false], ["Pagamento", true]].map(([label, active], i, arr) => (
+            <span key={i} style={{ display:"flex", alignItems:"center", gap:6 }}>
+              <span style={{ fontSize:"clamp(11px,3vw,13px)", fontWeight: active ? 700 : 400, color: active ? "#021d34" : "#aaa", borderBottom: active ? "2px solid #021d34" : "none", paddingBottom: active ? 1 : 0 }}>{label}</span>
+              {i < arr.length-1 && <span style={{ color:"#ccc", fontSize:12 }}>›</span>}
+            </span>
+          ))}
+        </div>
+        <div style={s.progressBg}><div style={{ ...s.progressBar, width:"95%" }}/></div>
+
+        <div style={{ padding:"24px clamp(14px,4vw,20px) 140px", maxWidth:560, margin:"0 auto", width:"100%" }}>
+          <h2 style={{ fontSize:"clamp(18px,5vw,24px)", fontWeight:800, color:"#021d34", marginBottom:4, letterSpacing:"-0.02em" }}>Pagamento</h2>
+          <p style={{ fontSize:13, color:"#888", marginBottom:20, lineHeight:1.6 }}>Ambiente 100% seguro. Seus dados são criptografados.</p>
+
+          {/* Resumo do pedido */}
+          <div style={{ background:"#fff", borderRadius:14, padding:"18px", border:"1px solid rgba(0,0,0,0.07)", marginBottom:20 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:12 }}>Resumo do pedido</div>
+            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+              {itens.map((p, i) => (
+                <div key={i} style={{ display:"flex", justifyContent:"space-between", fontSize:13 }}>
+                  <span style={{ color:"#555" }}>{p.nome}</span>
+                  <span style={{ fontWeight:600, color:"#021d34" }}>R$ {p.preco}/mês</span>
+                </div>
+              ))}
+              <div style={{ height:1, background:"rgba(0,0,0,0.07)", margin:"4px 0" }} />
+              <div style={{ display:"flex", justifyContent:"space-between" }}>
+                <span style={{ fontSize:14, fontWeight:700, color:"#021d34" }}>Total mensal</span>
+                <span style={{ fontSize:17, fontWeight:800, color:"#021d34" }}>R$ {total}/mês</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Método de pagamento */}
+          <div style={{ background:"#fff", borderRadius:14, padding:"18px", border:"1px solid rgba(0,0,0,0.07)", marginBottom:20 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:"#94b8d7", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:14 }}>Método de pagamento</div>
+            <div style={{ display:"flex", gap:10, marginBottom:20 }}>
+              {[["cartao","💳 Cartão"], ["pix","⚡ PIX"]].map(([val, label]) => (
+                <button key={val} onClick={() => setMetodo(val)} style={{
+                  flex:1, padding:"12px", borderRadius:10, border:`2px solid ${metodo===val ? "#012e46" : "rgba(0,0,0,0.1)"}`,
+                  background: metodo===val ? "#EDF5F8" : "#fff",
+                  fontFamily:"'Outfit',sans-serif", fontSize:13, fontWeight: metodo===val ? 700 : 400,
+                  cursor:"pointer", color:"#021d34", transition:"all 0.15s",
+                }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {metodo === "cartao" && (
+              <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                <div>
+                  <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:5 }}>Número do cartão</label>
+                  <input className="pag-input" placeholder="0000 0000 0000 0000" maxLength={19}
+                    style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", background:"#fff" }} />
+                </div>
+                <div>
+                  <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:5 }}>Nome no cartão</label>
+                  <input className="pag-input" placeholder="NOME COMO NO CARTÃO"
+                    style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", background:"#fff" }} />
+                </div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+                  <div>
+                    <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:5 }}>Validade</label>
+                    <input className="pag-input" placeholder="MM/AA" maxLength={5}
+                      style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", background:"#fff" }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:5 }}>CVV</label>
+                    <input className="pag-input" placeholder="123" maxLength={4}
+                      style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", background:"#fff" }} />
+                  </div>
+                </div>
+                <div>
+                  <label style={{ fontSize:11, fontWeight:600, color:"#888", display:"block", marginBottom:5 }}>Parcelas</label>
+                  <select className="pag-input" style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", background:"#fff", appearance:"none" }}>
+                    <option>1× de R$ {total},00 (sem juros)</option>
+                    <option>3× de R$ {(total/3).toFixed(2).replace(".",",")} (sem juros)</option>
+                    <option>6× de R$ {(total/6).toFixed(2).replace(".",",")} (sem juros)</option>
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {metodo === "pix" && (
+              <div style={{ textAlign:"center", padding:"20px 0" }}>
+                <div style={{ background:"#F0F7FA", borderRadius:12, padding:"24px", border:"1px dashed #c8dde6", marginBottom:14 }}>
+                  <div style={{ fontSize:40, marginBottom:8 }}>⚡</div>
+                  <div style={{ fontSize:14, fontWeight:700, color:"#021d34", marginBottom:4 }}>Pagamento via PIX</div>
+                  <div style={{ fontSize:12, color:"#888", lineHeight:1.6 }}>
+                    Após clicar em "Finalizar", você receberá o QR Code e a chave PIX por e-mail para concluir o pagamento.
+                  </div>
+                </div>
+                <div style={{ fontSize:11, color:"#aaa" }}>Aprovação em até 5 minutos</div>
+              </div>
+            )}
+          </div>
+
+          <div style={{ background:"#EDF5F8", borderRadius:12, padding:"12px 16px", fontSize:12, color:"#555", lineHeight:1.6, display:"flex", gap:8 }}>
+            <span>🔒</span>
+            <span>Pagamento seguro com criptografia SSL. Seus dados não são armazenados.</span>
+          </div>
+        </div>
+
+        {/* Bottom CTA */}
+        <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"#fff", borderTop:"1px solid rgba(0,0,0,0.07)", padding:"16px clamp(14px,4vw,20px)", zIndex:90 }}>
+          <div style={{ maxWidth:560, margin:"0 auto" }}>
+            <button onClick={finalizarPagamento} disabled={pagLoading} style={{
+              width:"100%", background: pagLoading ? "#555" : "#012e46",
+              color:"#fff", border:"none", borderRadius:100, padding:"17px",
+              fontSize:15, fontWeight:700, cursor: pagLoading ? "wait" : "pointer",
+              fontFamily:"'Outfit',sans-serif", transition:"background 0.2s",
+            }}>
+              {pagLoading
+                ? "Processando pagamento…"
+                : `Finalizar pedido · R$ ${total}/mês →`}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // ── DONE ───────────────────────────────────────────────────────────────────
   if (phase === "done") return (
