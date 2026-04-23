@@ -587,8 +587,7 @@ export default function Quiz() {
     if (!contactInfo.email.trim()) { setContactError("Por favor, informe seu e-mail."); return; }
     if (!contactInfo.whatsapp.trim()) { setContactError("Por favor, informe seu WhatsApp."); return; }
     if (!contactInfo.dataNascimento) { setContactError("Por favor, informe sua data de nascimento."); return; }
-    const hoje = new Date(); const nasc = new Date(contactInfo.dataNascimento);
-    const idade = hoje.getFullYear() - nasc.getFullYear() - (hoje < new Date(nasc.setFullYear(nasc.getFullYear() + (hoje.getFullYear() - new Date(contactInfo.dataNascimento).getFullYear()))) ? 1 : 0);
+    const hoje = new Date();
     const nascFull = new Date(contactInfo.dataNascimento);
     const idadeReal = Math.floor((hoje - nascFull) / (365.25 * 24 * 60 * 60 * 1000));
     if (idadeReal < 18) { setContactError("É necessário ter 18 anos ou mais para utilizar a plataforma."); return; }
