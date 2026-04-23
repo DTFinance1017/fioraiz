@@ -374,7 +374,7 @@ export default function Quiz() {
   const [hairStep, setHairStep] = useState(0);
   const [healthStep, setHealthStep] = useState(0);
   const [loadingStep, setLoadingStep] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState({ peso: "", altura: "" });
   const [showDiscount, setShowDiscount] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
   const [format, setFormat] = useState("unicas");
@@ -452,11 +452,10 @@ export default function Quiz() {
   function answerHealthSingle(key, val) {
     const updated = { ...answers, [key]: val };
     setAnswers(updated);
-    const sel = updated.treatments || [];
     if (healthStep === 0) { setHealthStep(1); } // scalp multi handled by nextHealthMulti
-    else if (healthStep === 1) { val === "Sim" ? setHealthStep(2) : setHealthStep(5); }
-    else if (healthStep === 6) { setHealthStep(7); }
-    else if (healthStep === 7) { setPhase("section3-intro"); }
+    else if (healthStep === 1) { setHealthStep(2); } // sempre vai para novo step 2 (peso/altura)
+    else if (healthStep === 7) { setHealthStep(8); }
+    else if (healthStep === 8) { setPhase("section3-intro"); }
   }
 
   function nextHealthMulti() {
@@ -466,20 +465,26 @@ export default function Quiz() {
       setHealthStep(1);
       return;
     }
-    const sel = answers.treatments || [];
+    // Novo step 2: peso/altura → ramifica conforme tratamento anterior
     if (healthStep === 2) {
+      if (answers.prevTreatment12mo === "Sim") setHealthStep(3);
+      else setHealthStep(6);
+      return;
+    }
+    const sel = answers.treatments || [];
+    if (healthStep === 3) {
       // Se selecionou ao menos 1 ativo, vai para drill-down de performance; senão, pula para condições
-      if (sel.length > 0) setHealthStep(3);
-      else setHealthStep(5);
-    } else if (healthStep === 3) {
-      setHealthStep(5);
-    } else if (healthStep === 5) {
+      if (sel.length > 0) setHealthStep(4);
+      else setHealthStep(6);
+    } else if (healthStep === 4) {
+      setHealthStep(6);
+    } else if (healthStep === 6) {
       const conds = answers.conditions || [];
       // Bloqueio oncológico: interrompe o fluxo
       if (conds.some(c => /oncológico|oncologico|câncer|cancer/i.test(c))) {
         setPhase("oncology-stop"); return;
       }
-      setHealthStep(6);
+      setHealthStep(7);
     }
   }
 
@@ -610,6 +615,8 @@ export default function Quiz() {
         p_data_nascimento: contactInfo.dataNascimento,
         p_cpf: contactInfo.cpf.replace(/\D/g,""),
         p_medicamentos_atuais: contactInfo.medicamentosAtuais,
+        p_peso: answers.peso ? Number(answers.peso) : null,
+        p_altura: answers.altura ? Number(answers.altura) : null,
       });
       if (error) console.error("submit_avaliacao error:", error);
       setPhase("pagamento");
@@ -1086,7 +1093,7 @@ export default function Quiz() {
         <button style={{ background:"none", border:"1px solid #c8dde6", color:"#1A1A1A",
           borderRadius:6, padding:"14px 0", fontSize:14, fontWeight:600,
           cursor:"pointer", width:"100%", fontFamily:"'Outfit',sans-serif" }}
-          onClick={() => { setHealthStep(5); setPhase("quiz-health"); }}>
+          onClick={() => { setHealthStep(6); setPhase("quiz-health"); }}>
           ← Voltar ao questionário
         </button>
       </div>
@@ -1263,7 +1270,7 @@ export default function Quiz() {
       { val:"none", label:"Não houve evolução perceptível" },
     ];
 
-    const totalHealthSteps = 8;
+    const totalHealthSteps = 9;
     // Visible steps: map actual healthStep to display step number
     const displayStep = healthStep + 1;
     const pct = 50 + Math.round((healthStep / totalHealthSteps) * 45);
@@ -1334,8 +1341,44 @@ export default function Quiz() {
         </div>
       );
 
-      // Step 2 – Quais tratamentos?
-      if (healthStep === 2) {
+      // Step 2 (NOVO) – Peso e altura
+      if (healthStep === 2) return (
+        <div>
+          <div style={s.tag}>Sua saúde · Passo 2 de 2</div>
+          <h2 style={s.heading}>Algumas medidas para o médico</h2>
+          <p style={{ fontSize:13, color:"#888", lineHeight:1.65, marginBottom:20 }}>
+            Usadas para ajustar a dose do Minoxidil oral ao seu perfil.
+          </p>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:16 }}>
+            <div>
+              <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:6 }}>Peso</label>
+              <input
+                type="number" placeholder="kg" min={40} max={250}
+                value={answers.peso || ""}
+                onChange={e => setAnswers(p => ({ ...p, peso: e.target.value }))}
+                style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10,
+                  fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", boxSizing:"border-box" }}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:6 }}>Altura</label>
+              <input
+                type="number" placeholder="cm" min={140} max={220}
+                value={answers.altura || ""}
+                onChange={e => setAnswers(p => ({ ...p, altura: e.target.value }))}
+                style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10,
+                  fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", boxSizing:"border-box" }}
+              />
+            </div>
+          </div>
+          <div style={{ background:"#EDF5F8", borderRadius:10, padding:"12px 14px", fontSize:12, color:"#555", lineHeight:1.65 }}>
+            O Minoxidil oral é prescrito em doses baixas personalizadas. Peso e altura ajudam o médico a definir a dose mais segura para você.
+          </div>
+        </div>
+      );
+
+      // Step 3 (era 2) – Quais tratamentos?
+      if (healthStep === 3) {
         const sel = answers.treatments || [];
         const toggle = (opt) => {
           const newSel = sel.includes(opt) ? sel.filter(x => x !== opt) : [...sel, opt];
@@ -1362,8 +1405,8 @@ export default function Quiz() {
         );
       }
 
-      // Step 3 – Drill-down de performance por ativo
-      if (healthStep === 3) {
+      // Step 4 (era 3) – Drill-down de performance por ativo
+      if (healthStep === 4) {
         const selIds = answers.treatments || [];
         const perf = answers.performance || {};
         const setPerf = (id, val) => setAnswers(p => ({ ...p, performance: { ...(p.performance||{}), [id]: val } }));
@@ -1407,8 +1450,8 @@ export default function Quiz() {
         );
       }
 
-      // Step 5 – Condições médicas (multi-select)
-      if (healthStep === 5) {
+      // Step 6 (era 5) – Condições médicas (multi-select)
+      if (healthStep === 6) {
         const sel = answers.conditions || [];
         const toggle = (opt) => {
           const excl = "Não, eu nunca tive nenhum desses";
@@ -1443,8 +1486,8 @@ export default function Quiz() {
         );
       }
 
-      // Step 6 – Preferência do bloqueador de DHT (com blindagem)
-      if (healthStep === 6) {
+      // Step 7 (era 6) – Preferência do bloqueador de DHT (com blindagem)
+      if (healthStep === 7) {
         const flags = getSafetyFlags(answers.conditions, answers.scalpConditions, answers.performance);
         const allOpts = [
           { val:"Dutasterida",           label:"Protocolo de Alta Potência",      sub:"Dutasterida 0,5mg — bloqueio ampliado da via DHT",                route:"oral",   key:"dutOral" },
@@ -1487,8 +1530,8 @@ export default function Quiz() {
         );
       }
 
-      // Step 7 – Tipo de Minoxidil preferido
-      if (healthStep === 7) {
+      // Step 8 (era 7) – Tipo de Minoxidil preferido
+      if (healthStep === 8) {
         const flags7 = getSafetyFlags(answers.conditions, answers.scalpConditions, answers.performance);
         const hideTopico = flags7.topicalContraindicated;
         const hideOral = flags7.blockMinoxOral;
@@ -1520,13 +1563,16 @@ export default function Quiz() {
       return null;
     }
 
-    const isMultiStep = healthStep === 0 || healthStep === 2 || healthStep === 3 || healthStep === 5;
+    const isMultiStep = healthStep === 0 || healthStep === 2 || healthStep === 3 || healthStep === 4 || healthStep === 6;
     const selIds_ = answers.treatments || [];
     const perf_ = answers.performance || {};
+    const pesoOk = answers.peso && Number(answers.peso) >= 40 && Number(answers.peso) <= 250;
+    const alturaOk = answers.altura && Number(answers.altura) >= 140 && Number(answers.altura) <= 220;
     const canContinueMulti =
       healthStep === 0 ? (answers.scalpConditions || []).length > 0 :
-      healthStep === 2 ? (answers.treatments || []).length > 0 :
-      healthStep === 3 ? selIds_.every(id => perf_[id]) :
+      healthStep === 2 ? (pesoOk && alturaOk) :
+      healthStep === 3 ? (answers.treatments || []).length > 0 :
+      healthStep === 4 ? selIds_.every(id => perf_[id]) :
                          (answers.conditions || []).length > 0;
 
     return (
@@ -1534,7 +1580,7 @@ export default function Quiz() {
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0;}`}</style>
         <div style={s.nav}>
           <Logo />
-          <span style={{ fontSize:11, color:"#aaa" }}>{displayStep} / 8</span>
+          <span style={{ fontSize:11, color:"#aaa" }}>{displayStep} / 9</span>
         </div>
         <div style={s.progressBg}><div style={{ ...s.progressBar, width:`${pct}%` }}/></div>
 
