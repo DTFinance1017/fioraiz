@@ -396,6 +396,7 @@ export default function Quiz() {
   const [pagLoading, setPagLoading] = useState(false);
   const [metodo, setMetodo] = useState("cartao");
   const [prontuarioId, setProntuarioId] = useState("");
+  const [showProntuario, setShowProntuario] = useState(false);
 
   // ── Gera prontuarioId uma única vez ao entrar na fase "done" ─────────────
   useEffect(() => {
@@ -2709,6 +2710,50 @@ export default function Quiz() {
               <span style={{ fontSize:13, color:"#444" }}>{d}</span>
             </div>
           ))}
+        </div>
+
+        {/* Resumo clínico colapsável */}
+        <div style={{ marginTop:16, textAlign:"left" }}>
+          <button
+            onClick={() => setShowProntuario(v => !v)}
+            style={{ fontSize:13, fontWeight:600, color:"#021d34", background:"none",
+              border:"none", cursor:"pointer", width:"100%", textAlign:"left",
+              padding:"12px 0", fontFamily:"'Outfit',sans-serif" }}>
+            {showProntuario ? "Ver resumo do meu prontuário ↑" : "Ver resumo do meu prontuário ↓"}
+          </button>
+
+          {showProntuario && (
+            <div style={{ background:"#fff", borderRadius:14, padding:20,
+              border:"1px solid rgba(0,0,0,0.08)" }}>
+              {[
+                ["Nome",                  contactInfo.nome],
+                ["Data de nascimento",    contactInfo.dataNascimento],
+                ["Tipo de calvície",      answers.hairType],
+                ["Progressão",            answers.gradual],
+                ["Histórico familiar",    answers.family],
+                ["Objetivo",              answers.goal],
+                ["Medicamentos em uso",   contactInfo.medicamentosAtuais],
+                ["Condições de saúde",    (answers.conditions || []).join(", ") || "Nenhuma"],
+                ["Inibidor de DHT",       answers.medication],
+                ["Minoxidil indicado",    answers.minoxidilType],
+                ["Peso / Altura",         (answers.peso && answers.altura) ? `${answers.peso}kg / ${answers.altura}cm` : "—"],
+              ].map(([label, valor], i, arr) => (
+                <div key={label} style={{ display:"flex", justifyContent:"space-between",
+                  alignItems:"flex-start", gap:12, fontSize:13, padding:"8px 0",
+                  borderBottom: i < arr.length - 1 ? "1px solid rgba(0,0,0,0.05)" : "none" }}>
+                  <span style={{ color:"#888", flexShrink:0 }}>{label}</span>
+                  <span style={{ color:"#021d34", fontWeight:600, textAlign:"right",
+                    wordBreak:"break-word", maxWidth:"60%" }}>
+                    {valor || "—"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <p style={{ fontSize:11, color:"#aaa", textAlign:"center", marginTop:12 }}>
+            Este resumo também foi enviado ao médico parceiro responsável pela sua avaliação.
+          </p>
         </div>
       </div>
     </div>
