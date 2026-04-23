@@ -9,7 +9,6 @@ import TermsOfUse from './pages/TermsOfUse'
 import Admin from './pages/Admin'
 import QuemSomos from './pages/QuemSomos'
 import Comunidade from './pages/Comunidade'
-import SiteGate from './pages/SiteGate'
 import LoginMedico from './pages/medico/LoginMedico'
 import DashboardMedico from './pages/medico/DashboardMedico'
 import AvaliacaoMedico from './pages/medico/AvaliacaoMedico'
@@ -20,9 +19,8 @@ import RotaPaciente from './pages/paciente/RotaPaciente'
 
 function App() {
   return (
-    <SiteGate>
-      <BrowserRouter>
-        <Routes>
+    <BrowserRouter>
+      <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/avaliacao" element={<Quiz />} />
           <Route path="/termo-consentimento" element={<ConsentForm />} />
@@ -36,9 +34,8 @@ function App() {
           <Route path="/medico/avaliacao/:id" element={<RotaMedico><AvaliacaoMedico /></RotaMedico>} />
           <Route path="/paciente/login" element={<LoginPaciente />} />
           <Route path="/minha-conta" element={<RotaPaciente><DashboardPaciente /></RotaPaciente>} />
-        </Routes>
-      </BrowserRouter>
-    </SiteGate>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
