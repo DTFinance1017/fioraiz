@@ -393,6 +393,19 @@ export default function Quiz() {
   const [produtoInfo, setProdutoInfo] = useState(null);
   const [pagLoading, setPagLoading] = useState(false);
   const [metodo, setMetodo] = useState("cartao");
+  const [prontuarioId, setProntuarioId] = useState("");
+
+  // ── Gera prontuarioId uma única vez ao entrar na fase "done" ─────────────
+  useEffect(() => {
+    if (phase !== "done") return;
+    if (prontuarioId) return; // já gerado
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+    const xxxx = String(Math.floor(Math.random() * 9000) + 1000);
+    setProntuarioId(`FR-${yyyy}${mm}${dd}-${xxxx}`);
+  }, [phase]);
 
   // ── Loading animation ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -604,6 +617,15 @@ export default function Quiz() {
         localStorage.setItem("fioraiz_leads", JSON.stringify(existing));
       } catch {}
 
+      // Gera ID do prontuário antes de salvar
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, "0");
+      const dd = String(now.getDate()).padStart(2, "0");
+      const xxxx = String(Math.floor(Math.random() * 9000) + 1000);
+      const geradoProntuarioId = `FR-${yyyy}${mm}${dd}-${xxxx}`;
+      setProntuarioId(geradoProntuarioId);
+
       // Salva tudo no Supabase (única chamada, com fotos)
       const { error } = await supabase.rpc("submit_avaliacao", {
         p_user_id: userId,
@@ -617,6 +639,7 @@ export default function Quiz() {
         p_medicamentos_atuais: contactInfo.medicamentosAtuais,
         p_peso: answers.peso ? Number(answers.peso) : null,
         p_altura: answers.altura ? Number(answers.altura) : null,
+        p_prontuario_id: geradoProntuarioId,
       });
       if (error) console.error("submit_avaliacao error:", error);
       setPhase("pagamento");
@@ -2626,6 +2649,23 @@ export default function Quiz() {
           display:"flex", alignItems:"center", justifyContent:"center",
           margin:"0 auto 24px", fontSize:28 }}>✓</div>
         <h2 style={{ ...s.heading, textAlign:"center" }}>Pedido recebido.</h2>
+
+        {/* Card de identificação do prontuário */}
+        <div style={{ background:"#fff", borderRadius:12, padding:"14px 18px",
+          border:"1px solid rgba(0,0,0,0.08)", marginBottom:20, textAlign:"center" }}>
+          <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.14em",
+            textTransform:"uppercase", color:"#aaa", marginBottom:6 }}>
+            Número do atendimento
+          </div>
+          <div style={{ fontSize:20, fontWeight:800, color:"#021d34",
+            fontFamily:"'Outfit',sans-serif", letterSpacing:"0.04em" }}>
+            {prontuarioId}
+          </div>
+          <div style={{ fontSize:11, color:"#888", marginTop:6 }}>
+            Guarde este número. Ele identifica seu prontuário junto ao médico.
+          </div>
+        </div>
+
         <p style={{ ...s.sub, textAlign:"center" }}>Um médico parceiro vai revisar suas respostas e emitir a prescrição em até 24h. Você recebe por e-mail.</p>
         <div style={{ background:"#fff", border:"1px solid rgba(0,0,0,0.08)", borderRadius:14, padding:20, textAlign:"left" }}>
           {[
