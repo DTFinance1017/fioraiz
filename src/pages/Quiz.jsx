@@ -193,6 +193,8 @@ const CONDITIONS = [
   "Diagnóstico oncológico atual ou pregresso (próstata, mama, hormônio-dependente)",
   "Comprometimento hepático (hepatite, cirrose ou esteatose avançada)",
   "Quadro de ansiedade, depressão ou síndrome do pânico em acompanhamento",
+  "Uso de anticoagulantes (varfarina, heparina, rivaroxabana)",
+  "Alergia conhecida a algum medicamento (informe qual no campo a seguir)",
   "Nenhuma das situações acima",
 ];
 
@@ -640,6 +642,7 @@ export default function Quiz() {
         p_peso: answers.peso ? Number(answers.peso) : null,
         p_altura: answers.altura ? Number(answers.altura) : null,
         p_prontuario_id: geradoProntuarioId,
+        p_alergia_detalhe: answers.alergiaDetalhe || null,
       });
       if (error) console.error("submit_avaliacao error:", error);
       setPhase("pagamento");
@@ -1476,11 +1479,17 @@ export default function Quiz() {
       // Step 6 (era 5) – Condições médicas (multi-select)
       if (healthStep === 6) {
         const sel = answers.conditions || [];
+        const ALERGIA_OPT = "Alergia conhecida a algum medicamento (informe qual no campo a seguir)";
+        const temAlergia = sel.includes(ALERGIA_OPT);
         const toggle = (opt) => {
-          const excl = "Não, eu nunca tive nenhum desses";
+          const excl = "Nenhuma das situações acima";
           let newSel;
-          if (opt === excl) newSel = [excl];
-          else newSel = sel.filter(x => x !== excl).includes(opt)
+          if (opt === excl) {
+            newSel = [excl];
+            setAnswers(p => ({ ...p, conditions: newSel, alergiaDetalhe: "" }));
+            return;
+          }
+          newSel = sel.filter(x => x !== excl).includes(opt)
             ? sel.filter(x => x !== opt)
             : [...sel.filter(x => x !== excl), opt];
           setAnswers(p => ({ ...p, conditions: newSel }));
@@ -1505,6 +1514,23 @@ export default function Quiz() {
                 <span style={{ fontSize:13 }}>{opt}</span>
               </button>
             ))}
+            {temAlergia && (
+              <div style={{ marginTop:4, marginBottom:8 }}>
+                <textarea
+                  placeholder="Descreva a alergia. Ex: penicilina, dipirona..."
+                  value={answers.alergiaDetalhe || ""}
+                  onChange={e => setAnswers(p => ({ ...p, alergiaDetalhe: e.target.value }))}
+                  rows={3}
+                  style={{
+                    width:"100%", height:80, padding:"13px 15px",
+                    border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10,
+                    fontSize:14, fontFamily:"'Outfit',sans-serif",
+                    outline:"none", resize:"none", boxSizing:"border-box",
+                    color:"#021d34", lineHeight:1.55,
+                  }}
+                />
+              </div>
+            )}
           </div>
         );
       }
@@ -1591,12 +1617,15 @@ export default function Quiz() {
     const perf_ = answers.performance || {};
     const pesoOk = answers.peso && Number(answers.peso) >= 40 && Number(answers.peso) <= 250;
     const alturaOk = answers.altura && Number(answers.altura) >= 140 && Number(answers.altura) <= 220;
+    const ALERGIA_KEY = "Alergia conhecida a algum medicamento (informe qual no campo a seguir)";
+    const temAlergiaSelected = (answers.conditions || []).includes(ALERGIA_KEY);
+    const alergiaOk = !temAlergiaSelected || (answers.alergiaDetalhe || "").trim().length >= 3;
     const canContinueMulti =
       healthStep === 0 ? (answers.scalpConditions || []).length > 0 :
       healthStep === 2 ? (pesoOk && alturaOk) :
       healthStep === 3 ? (answers.treatments || []).length > 0 :
       healthStep === 4 ? selIds_.every(id => perf_[id]) :
-                         (answers.conditions || []).length > 0;
+                         ((answers.conditions || []).length > 0 && alergiaOk);
 
     return (
       <div style={s.wrap}>
