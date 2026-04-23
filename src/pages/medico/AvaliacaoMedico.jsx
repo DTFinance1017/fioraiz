@@ -3,14 +3,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 
 const ANSWER_LABELS = {
-  hairType:        "Tipo de calvície",
-  gradual:         "Início da queda",
-  duration:        "Duração",
-  age:             "Faixa etária",
-  family:          "Histórico familiar",
-  scalpConditions: "Condições do couro cabeludo",
-  treatments:      "Tratamentos anteriores",
-  conditions:      "Condições médicas",
+  hairType:          "Tipo de calvície",
+  gradual:           "Início da queda",
+  hairTexture:       "Couro cabeludo",
+  family:            "Histórico familiar",
+  goal:              "Objetivo do tratamento",
+  scalpConditions:   "Sinais no couro cabeludo",
+  prevTreatment12mo: "Tratamento nos últimos 12 meses",
+  treatments:        "Ativos utilizados anteriormente",
+  medication:        "Preferência de inibidor DHT",
+  minoxidilType:     "Preferência de Minoxidil",
 };
 
 function getProtocolo(respostas = {}) {
@@ -83,7 +85,7 @@ export default function AvaliacaoMedico() {
     setLoading(true);
     const { data, error } = await supabase
       .from("pedidos")
-      .select(`*, pacientes(nome, email, telefone, data_nascimento, endereco),
+      .select(`*, prontuario_id, pacientes(nome, email, telefone, data_nascimento, cpf, medicamentos_em_uso, endereco),
         avaliacoes(grau_calvicie, respostas, condicoes_medicas, fotos_urls),
         receitas(status, observacoes, farmacia_nome, medico_id)`)
       .eq("id", id)
@@ -205,6 +207,11 @@ export default function AvaliacaoMedico() {
                   <Field label="CEP" value={cep} />
                   {pac.endereco?.rua && <Field label="Endereço" value={`${pac.endereco.rua}${pac.endereco.numero ? ", "+pac.endereco.numero : ""}${pac.endereco.complemento ? " "+pac.endereco.complemento : ""}`} />}
                   {pac.endereco?.cidade && <Field label="Cidade / Estado" value={`${pac.endereco.cidade} - ${pac.endereco.estado}`} />}
+                  <Field label="Prontuário ID" value={pedido?.prontuario_id} />
+                  <Field label="Data de Nascimento" value={pac.data_nascimento ? new Date(pac.data_nascimento).toLocaleDateString("pt-BR") : "—"} />
+                  <Field label="CPF" value={pac.cpf || aval?.respostas?.cpf || "—"} />
+                  <Field label="Peso / Altura" value={(respostas.peso && respostas.altura) ? `${respostas.peso}kg / ${respostas.altura}cm` : "—"} />
+                  <Field label="Medicamentos em uso" value={pac.medicamentos_em_uso || respostas.medicamentosAtuais || "—"} />
                 </div>
               </Section>
               <div style={{ marginTop:12, display:"flex", gap:8, flexWrap:"wrap" }}>
@@ -275,6 +282,12 @@ export default function AvaliacaoMedico() {
                       <div key={i} style={{ fontSize:13, color:"#92400e", padding:"8px 12px", background:"#FFF8E7", borderRadius:8, border:"1px solid #fde68a" }}>⚠️ {c}</div>
                     ))}
                   </div>
+                  {respostas.alergiaDetalhe && (
+                    <div style={{ fontSize:13, color:"#b91c1c", padding:"8px 12px", background:"#FEF2F2",
+                      borderRadius:8, border:"1px solid #fca5a5", marginTop:8 }}>
+                      🚨 Alergia relatada: {respostas.alergiaDetalhe}
+                    </div>
+                  )}
                 </Section>
               </div>
             )}
