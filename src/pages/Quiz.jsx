@@ -379,7 +379,7 @@ export default function Quiz() {
   const [discountApplied, setDiscountApplied] = useState(false);
   const [format, setFormat] = useState("unicas");
   const [planPeriod, setPlanPeriod] = useState("semestral");
-  const [contactInfo, setContactInfo] = useState({ nome:"", email:"", whatsapp:"", cep:"", rua:"", bairro:"", cidade:"", estado:"", numero:"", senha:"", confirmarSenha:"" });
+  const [contactInfo, setContactInfo] = useState({ nome:"", email:"", whatsapp:"", dataNascimento:"", cpf:"", medicamentosAtuais:"", cep:"", rua:"", bairro:"", cidade:"", estado:"", numero:"", senha:"", confirmarSenha:"" });
   const [contactError, setContactError] = useState("");
   const [contactLoading, setContactLoading] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
@@ -565,6 +565,14 @@ export default function Quiz() {
     if (!contactInfo.nome.trim()) { setContactError("Por favor, informe seu nome."); return; }
     if (!contactInfo.email.trim()) { setContactError("Por favor, informe seu e-mail."); return; }
     if (!contactInfo.whatsapp.trim()) { setContactError("Por favor, informe seu WhatsApp."); return; }
+    if (!contactInfo.dataNascimento) { setContactError("Por favor, informe sua data de nascimento."); return; }
+    const hoje = new Date(); const nasc = new Date(contactInfo.dataNascimento);
+    const idade = hoje.getFullYear() - nasc.getFullYear() - (hoje < new Date(nasc.setFullYear(nasc.getFullYear() + (hoje.getFullYear() - new Date(contactInfo.dataNascimento).getFullYear()))) ? 1 : 0);
+    const nascFull = new Date(contactInfo.dataNascimento);
+    const idadeReal = Math.floor((hoje - nascFull) / (365.25 * 24 * 60 * 60 * 1000));
+    if (idadeReal < 18) { setContactError("É necessário ter 18 anos ou mais para utilizar a plataforma."); return; }
+    if (!contactInfo.cpf || contactInfo.cpf.replace(/\D/g,"").length !== 11) { setContactError("Por favor, informe um CPF válido com 11 dígitos."); return; }
+    if (!contactInfo.medicamentosAtuais.trim()) { setContactError("Por favor, informe seus medicamentos em uso (ou 'Nenhum')."); return; }
     if (!contactInfo.senha || contactInfo.senha.length < 6) { setContactError("A senha deve ter ao menos 6 caracteres."); return; }
     if (contactInfo.senha !== contactInfo.confirmarSenha) { setContactError("As senhas não coincidem."); return; }
     setContactError("");
@@ -599,6 +607,9 @@ export default function Quiz() {
         p_endereco: { rua: contactInfo.rua, numero: contactInfo.numero, bairro: contactInfo.bairro, cidade: contactInfo.cidade, estado: contactInfo.estado },
         p_respostas: answers, p_grau_calvicie: answers.hairType || null, p_condicoes: answers.conditions || null,
         p_fotos: fotosUrls,
+        p_data_nascimento: contactInfo.dataNascimento,
+        p_cpf: contactInfo.cpf.replace(/\D/g,""),
+        p_medicamentos_atuais: contactInfo.medicamentosAtuais,
       });
       if (error) console.error("submit_avaliacao error:", error);
       setPhase("pagamento");
@@ -1995,6 +2006,43 @@ export default function Quiz() {
                 style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s" }} />
             </div>
           ))}
+
+          {/* Data de nascimento */}
+          <div>
+            <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:5 }}>Data de nascimento</label>
+            <input className="contact-input" type="date" value={contactInfo.dataNascimento}
+              onChange={e => setContactInfo(p => ({ ...p, dataNascimento: e.target.value }))}
+              max={new Date(new Date().setFullYear(new Date().getFullYear()-18)).toISOString().split("T")[0]}
+              style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s", colorScheme:"light" }} />
+          </div>
+
+          {/* CPF com máscara */}
+          <div>
+            <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:5 }}>CPF</label>
+            <input className="contact-input" type="text" placeholder="000.000.000-00" value={contactInfo.cpf} maxLength={14}
+              onChange={e => {
+                const digits = e.target.value.replace(/\D/g,"").slice(0,11);
+                const masked = digits
+                  .replace(/(\d{3})(\d)/, "$1.$2")
+                  .replace(/(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+                  .replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
+                setContactInfo(p => ({ ...p, cpf: masked }));
+              }}
+              style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s" }} />
+          </div>
+
+          {/* Medicamentos em uso */}
+          <div>
+            <label style={{ fontSize:12, fontWeight:700, color:"#555", display:"block", marginBottom:5 }}>Medicamentos que você usa atualmente</label>
+            <textarea className="contact-input" placeholder="Ex: losartana 50mg, omeprazol 20mg... Se não usa nenhum, escreva 'Nenhum'."
+              value={contactInfo.medicamentosAtuais}
+              onChange={e => setContactInfo(p => ({ ...p, medicamentosAtuais: e.target.value }))}
+              rows={3}
+              style={{ width:"100%", padding:"13px 15px", border:"1.5px solid rgba(0,0,0,0.12)", borderRadius:10, fontSize:14, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s", resize:"vertical", minHeight:90 }} />
+            <div style={{ fontSize:11, color:"#888", marginTop:5, lineHeight:1.6 }}>
+              Inclua todos os medicamentos de uso contínuo. Essa informação é usada exclusivamente pelo médico para verificar interações.
+            </div>
+          </div>
 
           {/* CEP com auto-fill */}
           <div>
