@@ -56,14 +56,29 @@ export default function AvaliacaoMedico() {
   const [medico,    setMedico]    = useState(null);
   const [loading,   setLoading]   = useState(true);
   const [erro,      setErro]      = useState("");
+  const [fotoUrls,  setFotoUrls]  = useState({});
 
   // form prescrição
-  const [farmaciaSel, setFarmaciaSel] = useState(null);
-  const [obsReceita,  setObsReceita]  = useState("");
-  const [salvando,    setSalvando]    = useState(false);
-  const [prescrito,   setPrescrito]   = useState(false);
+  const [farmaciaSel,   setFarmaciaSel]   = useState(null);
+  const [obsReceita,    setObsReceita]    = useState("");
+  const [salvando,      setSalvando]      = useState(false);
+  const [prescrito,     setPrescrito]     = useState(false);
+
+  // form recusa
+  const [recusando,     setRecusando]     = useState(false);
+  const [motivoRecusa,  setMotivoRecusa]  = useState("");
+  const [showRecusaForm, setShowRecusaForm] = useState(false);
+
+  // responsividade
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
 
   useEffect(() => { init(); }, [id]);
+
+  useEffect(() => {
+    const fn = () => setIsMobile(window.innerWidth < 900);
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
+  }, []);
 
   async function init() {
     // auth check
@@ -81,6 +96,26 @@ export default function AvaliacaoMedico() {
     await loadPedido(fList || []);
   }
 
+  async function generateSignedUrls(fotosObj) {
+    if (!fotosObj || typeof fotosObj !== "object") return;
+    const entries = Object.entries(fotosObj);
+    if (entries.length === 0) return;
+    const result = {};
+    await Promise.all(
+      entries.map(async ([k, fullUrl]) => {
+        try {
+          const path = fullUrl.split("/avaliacoes-fotos/")[1];
+          if (!path) { result[k] = fullUrl; return; }
+          const { data, error } = await supabase.storage
+            .from("avaliacoes-fotos")
+            .createSignedUrl(path, 3600);
+          result[k] = error ? fullUrl : data.signedUrl;
+        } catch { result[k] = fullUrl; }
+      })
+    );
+    setFotoUrls(result);
+  }
+
   async function loadPedido(fList) {
     setLoading(true);
     const { data, error } = await supabase
@@ -96,6 +131,12 @@ export default function AvaliacaoMedico() {
     setPedido(data);
     if (data.status === "prescrito") setPrescrito(true);
 
+    // gera URLs assinadas para as fotos (válidas por 1 hora)
+    const fotosObj = data?.avaliacoes?.[0]?.fotos_urls;
+    if (fotosObj && Object.keys(fotosObj).length > 0) {
+      await generateSignedUrls(fotosObj);
+    }
+
     // pré-seleciona farmácia mais próxima
     const cep = data.pacientes?.endereco?.cep || "";
     const prefix = cep.replace(/\D/g, "").substring(0, 2);
@@ -104,6 +145,31 @@ export default function AvaliacaoMedico() {
     if (data.receitas?.[0]?.observacoes) setObsReceita(data.receitas[0].observacoes);
 
     setLoading(false);
+  }
+
+  async function recusarAvaliacao() {
+    if (motivoRecusa.trim().length < 10) {
+      setErro("Informe o motivo com ao menos 10 caracteres.");
+      return;
+    }
+    setRecusando(true);
+    setErro("");
+
+    const { error: e1 } = await supabase.from("pedidos")
+      .update({ status: "cancelado", medico_id: medico.id })
+      .eq("id", pedido.id);
+
+    const { error: e2 } = await supabase.from("receitas").insert({
+      pedido_id:    pedido.id,
+      medico_id:    medico.id,
+      status:       "recusada",
+      observacoes:  motivoRecusa,
+      farmacia_nome: null,
+    });
+
+    setRecusando(false);
+    if (e1 || e2) { setErro("Erro ao registrar recusa. Tente novamente."); return; }
+    navigate("/medico/dashboard");
   }
 
   async function confirmarReceita() {
@@ -152,26 +218,30 @@ export default function AvaliacaoMedico() {
   const aval    = pedido?.avaliacoes?.[0] || {};
   const respostas = aval.respostas || {};
   const proto   = getProtocolo(respostas);
-  const cep     = pac.endereco?.cep || "—";
-  const receita = pedido?.receitas?.[0];
-  const jaPrescritos = pedido?.status === "prescrito" || pedido?.status === "cancelado";
+  const cep     = pac.endereco?.cep || "";
+  const receita      = pedido?.receitas?.find(r => r.status === "emitida") || pedido?.receitas?.[0] || null;
+  const jaPrescritos = pedido?.receitas?.some(r => r.status === "emitida") || pedido?.status === "prescrito" || pedido?.status === "cancelado";
 
   return (
     <div style={{ minHeight:"100vh", background:"#F0F7FA", fontFamily:"'Outfit',sans-serif" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}.farm-card{cursor:pointer;transition:all 0.15s;}.farm-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.08)!important;}`}</style>
 
       {/* NAV */}
-      <nav style={{ background:"#021d34", padding:"0 5%", height:60, display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100, boxShadow:"0 2px 12px rgba(0,0,0,0.2)" }}>
+      <nav style={{ background:"#021d34", padding: isMobile ? "0 16px" : "0 5%", height:60, display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100, boxShadow:"0 2px 12px rgba(0,0,0,0.2)" }}>
         <div style={{ display:"flex", alignItems:"center", gap:16 }}>
           <button onClick={() => navigate("/medico/dashboard")} style={{ background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.15)", color:"rgba(255,255,255,0.8)", padding:"7px 14px", borderRadius:6, fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>← Painel</button>
-          <div style={{ width:1, height:24, background:"rgba(255,255,255,0.15)" }} />
-          <div>
-            <div style={{ fontSize:11, color:"rgba(255,255,255,0.4)", letterSpacing:"0.1em", textTransform:"uppercase" }}>Avaliação</div>
-            <div style={{ fontSize:14, fontWeight:700, color:"#fff", marginTop:1 }}>{pac.nome || "Paciente"}</div>
-          </div>
+          {!isMobile && (
+            <>
+              <div style={{ width:1, height:24, background:"rgba(255,255,255,0.15)" }} />
+              <div>
+                <div style={{ fontSize:11, color:"rgba(255,255,255,0.4)", letterSpacing:"0.1em", textTransform:"uppercase" }}>Avaliação</div>
+                <div style={{ fontSize:14, fontWeight:700, color:"#fff", marginTop:1 }}>{pac.nome || "Paciente"}</div>
+              </div>
+            </>
+          )}
         </div>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-          <span style={{ fontSize:12, color:"rgba(255,255,255,0.5)" }}>{medico?.nome || medico?.email}</span>
+          {!isMobile && <span style={{ fontSize:12, color:"rgba(255,255,255,0.5)" }}>{medico?.nome || medico?.email}</span>}
           <button onClick={async () => { await supabase.auth.signOut(); navigate("/medico/login"); }}
             style={{ background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.15)", color:"#fff", padding:"7px 14px", borderRadius:6, fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
             Sair
@@ -179,7 +249,7 @@ export default function AvaliacaoMedico() {
         </div>
       </nav>
 
-      <div style={{ maxWidth:900, margin:"0 auto", padding:"32px 5%" }}>
+      <div style={{ maxWidth:900, margin:"0 auto", padding: isMobile ? "20px 16px" : "32px 5%", paddingBottom: isMobile && !prescrito && !jaPrescritos ? 100 : undefined }}>
 
         {/* Status banner prescrito */}
         {prescrito && (
@@ -192,7 +262,7 @@ export default function AvaliacaoMedico() {
           </div>
         )}
 
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20 }}>
+        <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap:20 }}>
 
           {/* ── COLUNA ESQUERDA: dados + respostas ── */}
           <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
@@ -232,17 +302,16 @@ export default function AvaliacaoMedico() {
             </div>
 
             {/* Fotos */}
-            {aval.fotos_urls && Object.keys(aval.fotos_urls).length > 0 && (
+            {Object.keys(fotoUrls).length > 0 && (
               <div style={{ background:"#fff", borderRadius:16, padding:"24px", border:"1px solid rgba(0,0,0,0.07)", boxShadow:"0 1px 4px rgba(0,0,0,0.04)" }}>
                 <Section title="📸 Fotos Enviadas">
-                  <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
-                    {Object.entries(aval.fotos_urls).map(([k, url]) => (
-                      <a key={k} href={url} target="_blank" rel="noreferrer" style={{ textDecoration:"none" }}>
-                        <div style={{ position:"relative" }}>
-                          <img src={url} alt={k} style={{ width:120, height:120, objectFit:"cover", borderRadius:12, border:"1px solid #dde8ee", display:"block" }} />
-                          <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(2,29,52,0.6)", borderRadius:"0 0 12px 12px", padding:"4px 8px", fontSize:10, color:"#fff", fontWeight:600, textTransform:"capitalize" }}>{k}</div>
-                        </div>
-                      </a>
+                  <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(auto-fill, 120px)", gap:12 }}>
+                    {Object.entries(fotoUrls).map(([k, url]) => (
+                      <div key={k} onClick={() => window.open(url, "_blank")}
+                        style={{ position:"relative", cursor:"pointer", borderRadius:12, overflow:"hidden", border:"1px solid #dde8ee" }}>
+                        <img src={url} alt={k} style={{ width:"100%", aspectRatio:"1/1", objectFit:"cover", display:"block" }} />
+                        <div style={{ position:"absolute", bottom:0, left:0, right:0, background:"rgba(2,29,52,0.6)", borderRadius:"0 0 12px 12px", padding:"4px 8px", fontSize:10, color:"#fff", fontWeight:600, textTransform:"capitalize" }}>{k}</div>
+                      </div>
                     ))}
                   </div>
                 </Section>
@@ -274,23 +343,27 @@ export default function AvaliacaoMedico() {
             </div>
 
             {/* Condições médicas */}
-            {(aval.condicoes_medicas || []).length > 0 && (
-              <div style={{ background:"#fff", borderRadius:16, padding:"24px", border:"1px solid rgba(0,0,0,0.07)", boxShadow:"0 1px 4px rgba(0,0,0,0.04)" }}>
-                <Section title="⚕️ Condições Médicas Relatadas">
-                  <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-                    {(aval.condicoes_medicas || []).map((c, i) => (
-                      <div key={i} style={{ fontSize:13, color:"#92400e", padding:"8px 12px", background:"#FFF8E7", borderRadius:8, border:"1px solid #fde68a" }}>⚠️ {c}</div>
-                    ))}
-                  </div>
-                  {respostas.alergiaDetalhe && (
-                    <div style={{ fontSize:13, color:"#b91c1c", padding:"8px 12px", background:"#FEF2F2",
-                      borderRadius:8, border:"1px solid #fca5a5", marginTop:8 }}>
-                      🚨 Alergia relatada: {respostas.alergiaDetalhe}
+            {(() => {
+              const condicoes = (aval.condicoes_medicas || []).filter(c => !c.toLowerCase().includes("nenhuma"));
+              if (condicoes.length === 0 && !respostas.alergiaDetalhe) return null;
+              return (
+                <div style={{ background:"#fff", borderRadius:16, padding:"24px", border:"1px solid rgba(0,0,0,0.07)", boxShadow:"0 1px 4px rgba(0,0,0,0.04)" }}>
+                  <Section title="⚕️ Condições Médicas Relatadas">
+                    <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                      {condicoes.map((c, i) => (
+                        <div key={i} style={{ fontSize:13, color:"#92400e", padding:"8px 12px", background:"#FFF8E7", borderRadius:8, border:"1px solid #fde68a" }}>⚠️ {c}</div>
+                      ))}
                     </div>
-                  )}
-                </Section>
-              </div>
-            )}
+                    {respostas.alergiaDetalhe && (
+                      <div style={{ fontSize:13, color:"#b91c1c", padding:"8px 12px", background:"#FEF2F2",
+                        borderRadius:8, border:"1px solid #fca5a5", marginTop:8 }}>
+                        🚨 Alergia relatada: {respostas.alergiaDetalhe}
+                      </div>
+                    )}
+                  </Section>
+                </div>
+              );
+            })()}
 
             {/* PRESCRIÇÃO */}
             {!prescrito && !jaPrescritos ? (
@@ -299,7 +372,7 @@ export default function AvaliacaoMedico() {
                   <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:16 }}>
                     {farmacias.map(f => {
                       const prefix = cep.replace(/\D/g,"").substring(0,2);
-                      const isProxima = cep !== "—" && f.cep_prefixos?.includes(prefix);
+                      const isProxima = cep !== "" && f.cep_prefixos?.includes(prefix);
                       const isSel = farmaciaSel?.id === f.id;
                       return (
                         <div key={f.id} className="farm-card" onClick={() => setFarmaciaSel(f)} style={{
@@ -339,18 +412,60 @@ export default function AvaliacaoMedico() {
                     ⚠️ Ao confirmar, o status será atualizado para <strong>Prescrito</strong> e a farmácia será notificada.
                   </div>
 
+                  {!isMobile && (
+                    <button
+                      onClick={confirmarReceita}
+                      disabled={!farmaciaSel || salvando}
+                      style={{
+                        width:"100%", padding:"15px", borderRadius:10, border:"none",
+                        background: farmaciaSel ? "#16a34a" : "#ccc",
+                        color:"#fff", fontSize:15, fontWeight:800,
+                        cursor: farmaciaSel ? "pointer" : "not-allowed",
+                        fontFamily:"'Outfit',sans-serif", transition:"background 0.2s",
+                      }}>
+                      {salvando ? "Salvando…" : "✓ Confirmar Prescrição"}
+                    </button>
+                  )}
+
+                  {/* ── Recusa ── */}
                   <button
-                    onClick={confirmarReceita}
-                    disabled={!farmaciaSel || salvando}
+                    onClick={() => { setShowRecusaForm(v => !v); setErro(""); setMotivoRecusa(""); }}
                     style={{
-                      width:"100%", padding:"15px", borderRadius:10, border:"none",
-                      background: farmaciaSel ? "#16a34a" : "#ccc",
-                      color:"#fff", fontSize:15, fontWeight:800,
-                      cursor: farmaciaSel ? "pointer" : "not-allowed",
-                      fontFamily:"'Outfit',sans-serif", transition:"background 0.2s",
+                      width:"100%", marginTop:10, padding:"12px", borderRadius:10,
+                      border:"1.5px solid #fca5a5", background:"#fff",
+                      color:"#b91c1c", fontSize:13, fontWeight:700,
+                      cursor:"pointer", fontFamily:"'Outfit',sans-serif", transition:"background 0.15s",
                     }}>
-                    {salvando ? "Salvando…" : "✓ Confirmar Prescrição"}
+                    {showRecusaForm ? "↑ Fechar formulário de recusa" : "✕ Recusar caso"}
                   </button>
+
+                  {showRecusaForm && (
+                    <div style={{ marginTop:12, display:"flex", flexDirection:"column", gap:10 }}>
+                      <textarea
+                        value={motivoRecusa}
+                        onChange={e => setMotivoRecusa(e.target.value)}
+                        placeholder="Descreva o motivo da recusa clínica…"
+                        rows={3}
+                        style={{ width:"100%", padding:"12px 14px", borderRadius:10, border:"1.5px solid #fca5a5", fontSize:13, fontFamily:"'Outfit',sans-serif", color:"#021d34", resize:"vertical", outline:"none", boxSizing:"border-box" }}
+                      />
+                      <div style={{ background:"#FFF8E7", borderRadius:8, padding:"10px 14px", border:"1px solid #fde68a", fontSize:12, color:"#92400e", lineHeight:1.6 }}>
+                        ⚠️ A recusa será registrada no prontuário do paciente.
+                      </div>
+                      <div style={{ display:"flex", gap:8 }}>
+                        <button
+                          onClick={recusarAvaliacao}
+                          disabled={recusando}
+                          style={{ flex:1, padding:"12px", borderRadius:10, border:"none", background:"#b91c1c", color:"#fff", fontSize:13, fontWeight:800, cursor:"pointer", fontFamily:"'Outfit',sans-serif", opacity: recusando ? 0.7 : 1 }}>
+                          {recusando ? "Registrando…" : "Confirmar recusa"}
+                        </button>
+                        <button
+                          onClick={() => { setShowRecusaForm(false); setMotivoRecusa(""); setErro(""); }}
+                          style={{ flex:1, padding:"12px", borderRadius:10, border:"1.5px solid #dde8ee", background:"#f5f7f9", color:"#555", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}>
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </Section>
               </div>
             ) : prescrito && receita && (
@@ -367,6 +482,28 @@ export default function AvaliacaoMedico() {
           </div>
         </div>
       </div>
+
+      {/* ── Barra fixa mobile: Confirmar Prescrição ── */}
+      {isMobile && !prescrito && !jaPrescritos && (
+        <div style={{
+          position:"fixed", bottom:0, left:0, right:0, zIndex:200,
+          background:"#fff", borderTop:"1px solid #e5eef3",
+          padding:"12px 16px", boxShadow:"0 -4px 20px rgba(0,0,0,0.1)",
+        }}>
+          <button
+            onClick={confirmarReceita}
+            disabled={!farmaciaSel || salvando}
+            style={{
+              width:"100%", padding:"15px", borderRadius:12, border:"none",
+              background: farmaciaSel ? "#16a34a" : "#ccc",
+              color:"#fff", fontSize:15, fontWeight:800,
+              cursor: farmaciaSel ? "pointer" : "not-allowed",
+              fontFamily:"'Outfit',sans-serif", transition:"background 0.2s",
+            }}>
+            {salvando ? "Salvando…" : "✓ Confirmar Prescrição"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

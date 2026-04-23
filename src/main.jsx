@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import SiteGate from './pages/SiteGate'
 import LandingPage from './pages/LandingPage'
 import Quiz from './pages/Quiz'
 import ConsentForm from './pages/ConsentForm'
@@ -19,6 +20,7 @@ import RotaPaciente from './pages/paciente/RotaPaciente'
 
 function App() {
   return (
+    <SiteGate>
     <BrowserRouter>
       <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -36,6 +38,7 @@ function App() {
           <Route path="/minha-conta" element={<RotaPaciente><DashboardPaciente /></RotaPaciente>} />
       </Routes>
     </BrowserRouter>
+    </SiteGate>
   )
 }
 

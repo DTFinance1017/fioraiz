@@ -81,14 +81,16 @@ export default function DashboardMedico() {
   async function fetchPedidos() {
     const { data, error } = await supabase
       .from("pedidos")
-      .select(`*, pacientes(nome, email, telefone, data_nascimento, endereco),
-        avaliacoes(grau_calvicie, respostas, condicoes_medicas),
+      .select(`*, pacientes(nome, email, telefone, data_nascimento, cpf, medicamentos_em_uso, endereco),
+        avaliacoes(grau_calvicie, respostas, condicoes_medicas, fotos_urls),
         receitas(status, farmacia_nome)`)
       .order("created_at", { ascending: false });
     if (error) console.error("fetchPedidos:", error);
     if (!error) setPedidos(data || []);
     setLoading(false);
   }
+
+  const VALOR_POR_PRESCRICAO = 30;
 
   async function fetchGanhos(userId) {
     const { data } = await supabase
@@ -99,8 +101,8 @@ export default function DashboardMedico() {
     const count = data?.length || 0;
     setGanhos({
       prescricoes: count,
-      total: count * 30,
-      pendente: count * 30, // simplificado: tudo pendente até pagamento
+      total:    count * VALOR_POR_PRESCRICAO,
+      pendente: count * VALOR_POR_PRESCRICAO, // simplificado: tudo pendente até pagamento
     });
   }
 
@@ -292,7 +294,30 @@ export default function DashboardMedico() {
                           {pac.telefone ? ` · ${pac.telefone}` : ""}
                           {cep ? ` · CEP ${cep}` : ""}
                         </div>
-                        <div style={{ display:"flex", gap:6, marginTop:6, flexWrap:"wrap", alignItems:"center" }}>
+
+                        {/* linha de metadados clínicos */}
+                        <div style={{ display:"flex", gap:6, marginTop:5, flexWrap:"wrap", alignItems:"center" }}>
+                          <span style={{ fontSize:10, color:"#aaa", background:"#f5f5f5", padding:"2px 8px", borderRadius:4, fontWeight:600 }}>
+                            {pedido.prontuario_id || "sem ID"}
+                          </span>
+                          {aval.respostas?.peso && (
+                            <span style={{ fontSize:10, color:"#555", background:"#f0f4f8", padding:"2px 8px", borderRadius:4, fontWeight:600 }}>
+                              ⚖️ {aval.respostas.peso}kg
+                            </span>
+                          )}
+                          {(aval.condicoes_medicas || []).some(c => !c.toLowerCase().includes("nenhuma")) && (
+                            <span style={{ fontSize:10, fontWeight:700, color:"#92400e", background:"#FFF8E7", padding:"2px 8px", borderRadius:4, border:"1px solid #fde68a" }}>
+                              ⚠️ Condições
+                            </span>
+                          )}
+                          {aval.respostas?.alergiaDetalhe && (
+                            <span style={{ fontSize:10, fontWeight:700, color:"#b91c1c", background:"#FEF2F2", padding:"2px 8px", borderRadius:4, border:"1px solid #fca5a5" }}>
+                              🚨 Alergia
+                            </span>
+                          )}
+                        </div>
+
+                        <div style={{ display:"flex", gap:6, marginTop:5, flexWrap:"wrap", alignItems:"center" }}>
                           {aval.grau_calvicie && (
                             <span style={{ fontSize:11, fontWeight:600, color:"#012e46", background:"#EDF5F8", padding:"2px 10px", borderRadius:100 }}>{aval.grau_calvicie}</span>
                           )}
