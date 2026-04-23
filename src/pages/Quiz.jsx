@@ -2733,7 +2733,15 @@ export default function Quiz() {
                 ["Histórico familiar",    answers.family],
                 ["Objetivo",              answers.goal],
                 ["Medicamentos em uso",   contactInfo.medicamentosAtuais],
-                ["Condições de saúde",    (answers.conditions || []).join(", ") || "Nenhuma"],
+                ["Condições de saúde",    (() => {
+                  const ALERGIA_LABEL = "Alergia conhecida a algum medicamento (informe qual no campo a seguir)";
+                  const conds = (answers.conditions || []).map(c =>
+                    c === ALERGIA_LABEL
+                      ? `Alergia a medicamento: ${answers.alergiaDetalhe || "não informado"}`
+                      : c
+                  );
+                  return conds.join(", ") || "Nenhuma";
+                })()],
                 ["Inibidor de DHT",       answers.medication],
                 ["Minoxidil indicado",    answers.minoxidilType],
                 ["Peso / Altura",         (answers.peso && answers.altura) ? `${answers.peso}kg / ${answers.altura}cm` : "—"],
