@@ -30,6 +30,22 @@ function getProtocolo(respostas = {}) {
 }
 
 // ── helpers ──
+const STATUS_BADGE = {
+  enviado:         { color:"#16a34a", bg:"#F0FDF4", border:"#86efac", label:"Enviado ✓" },
+  erro:            { color:"#b91c1c", bg:"#FEF2F2", border:"#fca5a5", label:"Erro ✗"    },
+  nao_configurado: { color:"#92400e", bg:"#FFF8E7", border:"#fde68a", label:"Não configurado" },
+  sem_chave:       { color:"#7c3aed", bg:"#F5F3FF", border:"#c4b5fd", label:"Sem chave API" },
+  nao_enviado:     { color:"#aaa",    bg:"#f5f5f5", border:"#e5e5e5", label:"Não enviado" },
+};
+function StatusBadge({ icon, label, status }) {
+  const s = STATUS_BADGE[status] || STATUS_BADGE.nao_enviado;
+  return (
+    <span style={{ fontSize:12, fontWeight:700, color:s.color, background:s.bg, padding:"5px 14px", borderRadius:100, border:`1px solid ${s.border}`, display:"inline-flex", alignItems:"center", gap:5 }}>
+      {icon} {label}: {s.label}
+    </span>
+  );
+}
+
 function Section({ title, children }) {
   return (
     <div style={{ marginBottom:24 }}>
@@ -60,9 +76,11 @@ export default function AvaliacaoMedico() {
 
   // form prescrição
   const [farmaciaSel,   setFarmaciaSel]   = useState(null);
+  const [medicamentos,  setMedicamentos]  = useState([{ nome: "", posologia: "" }]);
   const [obsReceita,    setObsReceita]    = useState("");
   const [salvando,      setSalvando]      = useState(false);
   const [prescrito,     setPrescrito]     = useState(false);
+  const [envioResult,   setEnvioResult]   = useState(null); // { pdf_url, email_status, whatsapp_status }
 
   // form recusa
   const [recusando,     setRecusando]     = useState(false);
@@ -122,7 +140,7 @@ export default function AvaliacaoMedico() {
       .from("pedidos")
       .select(`*, prontuario_id, pacientes(nome, email, telefone, data_nascimento, cpf, medicamentos_em_uso, endereco),
         avaliacoes(grau_calvicie, respostas, condicoes_medicas, fotos_urls),
-        receitas(status, observacoes, farmacia_nome, medico_id)`)
+        receitas(status, observacoes, farmacia_nome, farmacia_id, medico_id, pdf_url, email_status, whatsapp_status, medicamentos)`)
       .eq("id", id)
       .single();
 
@@ -172,27 +190,65 @@ export default function AvaliacaoMedico() {
     navigate("/medico/dashboard");
   }
 
+  // ── helpers de medicamentos ──────────────────────────────────────────────
+  function addMed() {
+    setMedicamentos(prev => [...prev, { nome: "", posologia: "" }]);
+  }
+  function removeMed(idx) {
+    setMedicamentos(prev => prev.filter((_, i) => i !== idx));
+  }
+  function updateMed(idx, field, value) {
+    setMedicamentos(prev => prev.map((m, i) => i === idx ? { ...m, [field]: value } : m));
+  }
+
   async function confirmarReceita() {
     if (!farmaciaSel || !pedido) return;
+    const medsValidos = medicamentos.filter(m => m.nome.trim());
+    if (medsValidos.length === 0) {
+      setErro("Adicione ao menos um medicamento na prescrição.");
+      return;
+    }
+
     setSalvando(true);
     setErro("");
 
-    const { error: e1 } = await supabase.from("pedidos")
-      .update({ status: "prescrito", medico_id: medico.id })
-      .eq("id", pedido.id);
+    try {
+      // Obter token JWT do usuário atual
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error("Sessão expirada. Faça login novamente.");
 
-    const { error: e2 } = await supabase.from("receitas").insert({
-      pedido_id:    pedido.id,
-      medico_id:    medico.id,
-      status:       "emitida",
-      observacoes:  obsReceita,
-      farmacia_nome: farmaciaSel.nome,
-    });
+      const SUPABASE_URL = "https://lkltmzsllhlwpegumxsm.supabase.co";
+      const res = await fetch(
+        `${SUPABASE_URL}/functions/v1/enviar-receita`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":  "application/json",
+            "Authorization": `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            pedido_id:    pedido.id,
+            farmacia_id:  farmaciaSel.id,
+            medicamentos: medsValidos,
+            observacoes:  obsReceita,
+          }),
+        }
+      );
 
-    setSalvando(false);
-    if (e1 || e2) { setErro("Erro ao salvar prescrição. Tente novamente."); return; }
-    setPrescrito(true);
-    await loadPedido(farmacias);
+      const result = await res.json();
+
+      if (!res.ok || result.error) {
+        throw new Error(result.error || "Erro ao enviar receita.");
+      }
+
+      setEnvioResult(result);
+      setPrescrito(true);
+      await loadPedido(farmacias);
+    } catch (e) {
+      setErro(e.message || "Erro ao enviar receita. Tente novamente.");
+    } finally {
+      setSalvando(false);
+    }
   }
 
   // ── render ────────────────────────────────────────────────────────────────
@@ -253,12 +309,32 @@ export default function AvaliacaoMedico() {
 
         {/* Status banner prescrito */}
         {prescrito && (
-          <div style={{ background:"#F0FDF4", borderRadius:14, padding:"18px 24px", marginBottom:24, border:"1px solid #86efac", display:"flex", alignItems:"center", gap:12 }}>
-            <span style={{ fontSize:28 }}>✅</span>
-            <div>
-              <div style={{ fontSize:15, fontWeight:800, color:"#16a34a" }}>Protocolo prescrito com sucesso!</div>
-              {receita?.farmacia_nome && <div style={{ fontSize:13, color:"#555", marginTop:2 }}>Farmácia: {receita.farmacia_nome}</div>}
+          <div style={{ background:"#F0FDF4", borderRadius:14, padding:"18px 24px", marginBottom:24, border:"1px solid #86efac" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom: envioResult ? 16 : 0 }}>
+              <span style={{ fontSize:28 }}>✅</span>
+              <div>
+                <div style={{ fontSize:15, fontWeight:800, color:"#16a34a" }}>Receita enviada com sucesso!</div>
+                {receita?.farmacia_nome && <div style={{ fontSize:13, color:"#555", marginTop:2 }}>Farmácia: {receita.farmacia_nome}</div>}
+              </div>
             </div>
+
+            {/* Status de entrega */}
+            {envioResult && (
+              <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+                <StatusBadge icon="📧" label="Email" status={envioResult.email_status} />
+                <StatusBadge icon="💬" label="WhatsApp" status={envioResult.whatsapp_status} />
+                {envioResult.pdf_url && (
+                  <a href={envioResult.pdf_url} target="_blank" rel="noopener noreferrer" style={{
+                    display:"inline-flex", alignItems:"center", gap:6,
+                    fontSize:12, fontWeight:700, color:"#021d34",
+                    background:"#EDF5F8", padding:"5px 14px", borderRadius:100,
+                    textDecoration:"none", border:"1px solid #c8dce8",
+                  }}>
+                    📄 Baixar PDF
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -395,21 +471,64 @@ export default function AvaliacaoMedico() {
                     })}
                   </div>
 
+                  {/* ── Lista de medicamentos ── */}
+                  <label style={{ fontSize:12, fontWeight:700, color:"#021d34", display:"block", marginBottom:10, letterSpacing:"0.06em", textTransform:"uppercase" }}>
+                    💊 Medicamentos Prescritos
+                  </label>
+                  <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:12 }}>
+                    {medicamentos.map((med, idx) => (
+                      <div key={idx} style={{ background:"#F8FBFD", borderRadius:10, padding:"12px 14px", border:"1.5px solid #dde8ee", position:"relative" }}>
+                        <div style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
+                          <div style={{ width:22, height:22, borderRadius:"50%", background:"#021d34", color:"#fff", fontSize:11, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:8 }}>
+                            {idx + 1}
+                          </div>
+                          <div style={{ flex:1, display:"flex", flexDirection:"column", gap:6 }}>
+                            <input
+                              placeholder="Nome do medicamento (ex: Finasterida 1mg)"
+                              value={med.nome}
+                              onChange={e => updateMed(idx, "nome", e.target.value)}
+                              style={{ width:"100%", padding:"9px 12px", borderRadius:8, border:"1.5px solid #dde8ee", fontSize:13, fontFamily:"'Outfit',sans-serif", color:"#021d34", outline:"none", boxSizing:"border-box", background:"#fff" }}
+                            />
+                            <input
+                              placeholder="Posologia (ex: 1 comprimido à noite por 12 meses)"
+                              value={med.posologia}
+                              onChange={e => updateMed(idx, "posologia", e.target.value)}
+                              style={{ width:"100%", padding:"9px 12px", borderRadius:8, border:"1.5px solid #dde8ee", fontSize:12, fontFamily:"'Outfit',sans-serif", color:"#555", outline:"none", boxSizing:"border-box", background:"#fff" }}
+                            />
+                          </div>
+                          {medicamentos.length > 1 && (
+                            <button onClick={() => removeMed(idx)} style={{ background:"none", border:"none", color:"#f87171", fontSize:16, cursor:"pointer", padding:"4px", marginTop:4, flexShrink:0 }} title="Remover">
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                    <button onClick={addMed} style={{
+                      padding:"10px", borderRadius:10, border:"1.5px dashed #c8dce8",
+                      background:"#F8FBFD", color:"#012e46", fontSize:13, fontWeight:700,
+                      cursor:"pointer", fontFamily:"'Outfit',sans-serif", letterSpacing:"0.02em",
+                    }}>
+                      + Adicionar medicamento
+                    </button>
+                  </div>
+
+                  {/* ── Orientações ── */}
                   <label style={{ fontSize:12, fontWeight:700, color:"#021d34", display:"block", marginBottom:8, letterSpacing:"0.06em", textTransform:"uppercase" }}>
-                    Orientações ao Paciente
+                    Orientações Gerais ao Paciente
                   </label>
                   <textarea
                     value={obsReceita}
                     onChange={e => setObsReceita(e.target.value)}
-                    placeholder="Ex: Minoxidil 5% pela manhã, Finasterida 1mg à noite com refeição…"
-                    rows={4}
+                    placeholder="Ex: Evitar lavagem do couro cabeludo 4h após aplicação. Retorno em 3 meses…"
+                    rows={3}
                     style={{ width:"100%", padding:"12px 14px", borderRadius:10, border:"1.5px solid #dde8ee", fontSize:13, fontFamily:"'Outfit',sans-serif", color:"#021d34", resize:"vertical", outline:"none", boxSizing:"border-box", marginBottom:12 }}
                   />
 
                   {erro && <div style={{ background:"#FEF2F2", borderRadius:8, padding:"10px 14px", fontSize:13, color:"#b91c1c", marginBottom:12 }}>{erro}</div>}
 
-                  <div style={{ background:"#FFF8E7", borderRadius:10, padding:"10px 14px", border:"1px solid #fde68a", fontSize:12, color:"#92400e", marginBottom:14, lineHeight:1.6 }}>
-                    ⚠️ Ao confirmar, o status será atualizado para <strong>Prescrito</strong> e a farmácia será notificada.
+                  <div style={{ background:"#EFF6FF", borderRadius:10, padding:"10px 14px", border:"1px solid #bfdbfe", fontSize:12, color:"#1d4ed8", marginBottom:14, lineHeight:1.6 }}>
+                    📤 Ao confirmar: a receita em PDF é gerada, enviada por <strong>e-mail</strong> e <strong>WhatsApp</strong> para a farmácia selecionada.
                   </div>
 
                   {!isMobile && (
@@ -423,7 +542,7 @@ export default function AvaliacaoMedico() {
                         cursor: farmaciaSel ? "pointer" : "not-allowed",
                         fontFamily:"'Outfit',sans-serif", transition:"background 0.2s",
                       }}>
-                      {salvando ? "Salvando…" : "✓ Confirmar Prescrição"}
+                      {salvando ? "Gerando e enviando receita…" : "📤 Enviar Receita para Farmácia"}
                     </button>
                   )}
 
@@ -471,9 +590,21 @@ export default function AvaliacaoMedico() {
             ) : prescrito && receita && (
               <div style={{ background:"#fff", borderRadius:16, padding:"24px", border:"1px solid rgba(0,0,0,0.07)", boxShadow:"0 1px 4px rgba(0,0,0,0.04)" }}>
                 <Section title="✅ Receita Emitida">
-                  <div style={{ background:"#F0FDF4", borderRadius:12, padding:"16px", border:"1px solid #86efac" }}>
-                    <div style={{ fontSize:14, fontWeight:700, color:"#16a34a", marginBottom:8 }}>🏥 {receita.farmacia_nome}</div>
+                  <div style={{ background:"#F0FDF4", borderRadius:12, padding:"16px", border:"1px solid #86efac", marginBottom:12 }}>
+                    <div style={{ fontSize:14, fontWeight:700, color:"#16a34a", marginBottom:6 }}>🏥 {receita.farmacia_nome}</div>
                     {receita.observacoes && <div style={{ fontSize:13, color:"#555", lineHeight:1.6 }}>📝 {receita.observacoes}</div>}
+                  </div>
+                  <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                    <StatusBadge icon="📧" label="Email"     status={receita.email_status     || "nao_enviado"} />
+                    <StatusBadge icon="💬" label="WhatsApp"  status={receita.whatsapp_status  || "nao_enviado"} />
+                    {receita.pdf_url && (
+                      <a href={receita.pdf_url} target="_blank" rel="noopener noreferrer" style={{
+                        display:"inline-flex", alignItems:"center", gap:6,
+                        fontSize:12, fontWeight:700, color:"#021d34",
+                        background:"#EDF5F8", padding:"5px 14px", borderRadius:100,
+                        textDecoration:"none", border:"1px solid #c8dce8",
+                      }}>📄 PDF</a>
+                    )}
                   </div>
                 </Section>
               </div>
@@ -500,7 +631,7 @@ export default function AvaliacaoMedico() {
               cursor: farmaciaSel ? "pointer" : "not-allowed",
               fontFamily:"'Outfit',sans-serif", transition:"background 0.2s",
             }}>
-            {salvando ? "Salvando…" : "✓ Confirmar Prescrição"}
+            {salvando ? "Gerando e enviando…" : "📤 Enviar Receita para Farmácia"}
           </button>
         </div>
       )}
