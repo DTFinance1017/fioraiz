@@ -16,10 +16,12 @@ import RotaMedico from './pages/medico/RotaMedico'
 import LoginPaciente from './pages/paciente/LoginPaciente'
 import DashboardPaciente from './pages/paciente/DashboardPaciente'
 import RotaPaciente from './pages/paciente/RotaPaciente'
+import CookieBanner from './components/CookieBanner'
 
 function App() {
   return (
     <BrowserRouter>
+      <CookieBanner />
       <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/avaliacao" element={<Quiz />} />
